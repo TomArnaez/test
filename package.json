@@ -12,8 +12,11 @@
     "express": "*",
     "http-errors": "*",
     "morgan": "*",
+    "multer": "*",
     "mysql": "*",
-    "pug": "*"
+    "pug": "*",
+    "sanitize-filename": "*",
+    "unique-filename": "*"
   },
   "devDependencies": {
     "chai": "*",

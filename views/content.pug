@@ -1,0 +1,10 @@
+extends layout
+block vars
+    - const title = 'Media Content Manager'
+
+block content
+    h1=title
+
+    ul
+        each file in files
+            li #[a(href=file) #{file}]
