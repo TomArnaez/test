@@ -7,12 +7,17 @@
     "test": "mocha"
   },
   "dependencies": {
+    "bcrypt": "^5.0.0",
+    "connect-flash": "^0.1.1",
     "cookie-parser": "*",
     "debug": "*",
     "express": "*",
+    "express-session": "^1.17.1",
     "http-errors": "*",
     "morgan": "*",
     "mysql": "*",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
     "pug": "*"
   },
   "devDependencies": {
