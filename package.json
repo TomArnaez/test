@@ -16,7 +16,8 @@
     "mysql": "*",
     "pug": "*",
     "sanitize-filename": "*",
-    "unique-filename": "*"
+    "unique-filename": "*",
+    "uuid": "*"
   },
   "devDependencies": {
     "chai": "*",
