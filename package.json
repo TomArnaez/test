@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "mocha"
+    "test": "mocha",
+    "dev": "nodemon ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "*",
@@ -13,6 +14,7 @@
     "http-errors": "*",
     "morgan": "*",
     "mysql": "*",
+    "nodemon": "^2.0.7",
     "pug": "*"
   },
   "devDependencies": {
