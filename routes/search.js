@@ -6,10 +6,12 @@ router.get('/', function(req, res, next) {
     const searchQuery = req.query.q;
     if (searchQuery != null) {
         const db = require('../database.js');
-        db.query("SELECT * FROM posts", function (err, result) {
+        const sql = "SELECT * FROM posts WHERE title LIKE '%" + searchQuery + "%'";
+        db.query(sql, [searchQuery], function(err, result) {
             if (err) {
                 console.log(err);
             } else {
+                console.log(result);
                 obj = {results: JSON.parse(JSON.stringify(result))};
                 res.render('search', obj);
             }
