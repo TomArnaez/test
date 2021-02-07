@@ -8,6 +8,7 @@
     "dev": "nodemon ./bin/www"
   },
   "dependencies": {
+    "bootstrap": "^4.6.0",
     "cookie-parser": "*",
     "debug": "*",
     "express": "*",
