@@ -91,6 +91,37 @@ router.get('/forgotpassword',(req,res)=>{
 })
 
 router.get('/forgotpassword/:token',(req,res)=>{
+  verifyJWTReset(req, res, function (req, res, token, decodedUserID) {
+    res.render('forgotpassword-reset', { token: token });
+  })
+})
+
+router.post('/forgotpassword/:token',(req,res)=> {
+  verifyJWTReset(req, res, function (req, res, token, decodedUserID) {
+    let newpass = req.body.newpass
+    let passmatch = req.body.newpass == req.body.newpass2
+    if(newpass == ""){
+      req.flash('error_msg','Missing field.');
+      res.redirect("/admin/forgotpassword/" + token);
+    } else if(!passmatch){
+      req.flash('error_msg','Passwords do not match.');
+      res.redirect("/admin/forgotpassword/" + token);
+    } else {
+      bcrypt.hash(newpass, 10, function(err, newhash) {
+        db.query("UPDATE users SET user_pass = ? WHERE id = ?;", [newhash, decodedUserID], function (err, result) {
+          if (err) {
+            req.flash('error_msg','No database connection.');
+            res.redirect("/admin/forgotpassword/" + token);
+          }
+          req.flash('success_msg','Password updated! Please login:');
+          res.redirect("/admin/login");
+        });
+      });
+    }
+  })
+})
+
+function verifyJWTReset(req, res, action){
   let token = req.params.token;
   if(token != ""){
     let jwt = require('jsonwebtoken');
@@ -114,11 +145,7 @@ router.get('/forgotpassword/:token',(req,res)=>{
             req.flash('error_msg','Invalid Token. Please try again.');
             res.redirect('/admin/forgotpassword');
           } else {
-
-            //BEGIN GET UNIQUE CODE
-            res.render('forgotpassword-reset', { token: token });
-            //END GET UNIQUE CODE
-
+            action(req, res, token, decodedUserID)
           }
         });
       } else {
@@ -129,67 +156,7 @@ router.get('/forgotpassword/:token',(req,res)=>{
   } else {
     res.redirect('/admin/forgotpassword');
   }
-})
-
-router.post('/forgotpassword/:token',(req,res)=>{
-  let token = req.params.token;
-  if(token != ""){
-    let jwt = require('jsonwebtoken');
-    let decodedUserID = "";
-    try {
-      decodedUserID = jwt.decode(token).id
-    }
-    catch(err) {
-      req.flash('error_msg','Invalid Token. Please try again.');
-      res.redirect('/admin/forgotpassword');
-      return;
-    }
-    db.query("SELECT id AS user_id, user_pass FROM users WHERE ? = id LIMIT 1;", [decodedUserID], function (err, result) {
-      if (err) {
-        req.flash('error_msg','No database connection.');
-        res.redirect('/admin/forgotpassword');
-      }
-      if(result.length > 0) {
-        jwt.verify(token, result[0].user_pass, function(err, decoded) {
-          if (err) {
-            req.flash('error_msg','Invalid Token. Please try again.');
-            res.redirect('/admin/forgotpassword');
-          } else {
-
-            //BEGIN POST UNIQUE CODE
-            let newpass = req.body.newpass
-            let passmatch = req.body.newpass == req.body.newpass2
-            if(newpass == ""){
-              req.flash('error_msg','Missing field.');
-              res.redirect("/admin/forgotpassword/" + token);
-            } else if(!passmatch){
-              req.flash('error_msg','Passwords do not match.');
-              res.redirect("/admin/forgotpassword/" + token);
-            } else {
-              bcrypt.hash(newpass, 10, function(err, newhash) {
-                db.query("UPDATE users SET user_pass = ? WHERE id = ?;", [newhash, decodedUserID], function (err, result) {
-                  if (err) {
-                    req.flash('error_msg','No database connection.');
-                    res.redirect("/admin/forgotpassword/" + token);
-                  }
-                  req.flash('success_msg','Password updated! Please login:');
-                  res.redirect("/admin/login");
-                });
-              });
-            }
-            //END POST UNIQUE CODE
-
-          }
-        });
-      } else {
-        req.flash('error_msg','Invalid Token. Please try again.');
-        res.redirect('/admin/forgotpassword');
-      }
-    });
-  } else {
-    res.redirect('/admin/forgotpassword');
-  }
-})
+}
 
 router.post('/forgotpassword',(req,res)=>{
   if(req.body.username != ""){
