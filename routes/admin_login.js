@@ -204,11 +204,11 @@ router.post('/forgotpassword',(req,res)=>{
           id: result[0].user_id
         }, result[0].user_pass, { expiresIn: '24h' });
 
+        //TODO: Here is where we should email the user their reset url
         console.log("Reset password for user '" + req.body.username + "' at [URL]/admin/forgotpassword/"+ token)
 
         req.flash('success_msg','Password reset email has been sent.');
         res.redirect('/admin/forgotpassword');
-
       } else {
         req.flash('error_msg','Invalid username or email.'); //do we really want to let a user know if a user exists/doesn't exist? Could send "If this user exists, a password reset has been sent" as same message as real user
         res.redirect('/admin/forgotpassword');
