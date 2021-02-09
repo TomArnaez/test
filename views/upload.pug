@@ -5,11 +5,15 @@ block vars
 block content
     h1=title
 
+    p
+        a(href='/content') View all uploaded files
+
     if result
         h2 File Upload Successful!
         p Access the file at #[a(href=result.url) #{result.name}]
 
         h2 Upload another file...
+
 
     form(action='/upload', method='POST', enctype="multipart/form-data")
         label(for="filename")="Override file name: "

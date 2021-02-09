@@ -5,6 +5,27 @@ block vars
 block content
     h1=title
 
+    a(href='/upload') Upload File
+
     ul
         each file in files
-            li #[a(href=file[0]) #{file[1]}]
+            li
+                a(href=file[0]) #{file[1]}
+                if file[3]
+                    form(action=file[2] + '?update', method='POST')
+                        label Name
+                        input(type='text', name='name', value=file[4])
+                        br
+                        label Alt Text
+                        input(type='text', name='alt', value=file[5])
+                        br
+                        label Title Text
+                        input(type='text', name='title', value=file[6])
+                        br
+                        input(type='submit', value='Update')
+                else
+                    form(action=file[2] + '?convert', method='POST')
+                        input(type='submit', value='Convert')
+                form(action=file[2] + '?delete', method='POST')
+                    input(type='submit', value='Delete')
+                br

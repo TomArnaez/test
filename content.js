@@ -26,8 +26,8 @@ async function addNewFileToDatabase(filename) {
     return id
 }
 
-async function getNameFromDatabase(id) {
-    return queryDatabase('SELECT filename FROM files WHERE uuid = UNHEX(?)', [id.replaceAll('-', '')])
+async function getFileFromDatabase(id) {
+    return queryDatabase('SELECT filename, title_text, alt_text FROM files WHERE uuid = UNHEX(?)', [id.replaceAll('-', '')])
 }
 
 async function listFiles() {
@@ -75,18 +75,20 @@ contentRouter.get('/', async (req, res) => {
     let names = []
     for (const file of await listFiles()) {
         const idnoext = file.substr(0, file.length - path.extname(file).length)
-        const result = await getNameFromDatabase(idnoext)
+        const result = await getFileFromDatabase(idnoext)
 
         if (result.length !== 0) {
-            names.push([file + '/' + result[0].filename, result[0].filename + " (" + idnoext + ")"])
+            names.push([file + '/' + result[0].filename, result[0].filename + " (" + idnoext + ")", file, true, result[0].filename, result[0].alt_text, result[0].title_text])
         } else {
-            names.push([file, file])
+            names.push([file, file, file, false, file])
         }
     }
 
     res.render('content', {files : names})
 })
 
+
+// TODO: make this more strict
 async function findFileID(id) {
     const idnoext = id.substr(0, id.length - path.extname(id).length)
 
@@ -117,6 +119,112 @@ contentRouter.get('/:id/:name', async (req, res) => {
     req.url = '/' + req.params.id
     req.fancyname = req.params.name
     contentRouter.handle(req, res)
+})
+
+contentRouter.post('/:id', async (req, res)=> {
+    // Get the ID including file extention
+    const id = req.params.id
+    // Get the UUID
+    const idnoext = id.substr(0, id.length - path.extname(id).length)
+
+    // Determine what action we need to take... First we figure out what action so we don't do multiple at once!
+    let action = ""
+    if (req.query.delete !== undefined) {
+        action = "delete"
+    }
+    if (req.query.convert !== undefined) {
+        if (action !== "") action = "conflict"
+        else action = "convert"
+    }
+    if (req.query.update !== undefined) {
+        if (action !== "") action = "conflict"
+        else action = "update"
+    }
+
+    const idhex = idnoext.replaceAll('-', '')
+
+    // TODO: Make it more obvious to the user that something happened?
+    switch (action) {
+        case "":
+        case "conflict":
+            res.sendStatus(400)
+            return;
+        case "delete":
+            // Attempt to delete the file in the DB if it is a UUID!
+            if (uuid.validate(idnoext)) await queryDatabase("UPDATE files SET deleted = True WHERE uuid = UNHEX(?)", [idhex])
+            try {
+                await fsp.rm(path.join(config.content.directory, id))
+            } catch (e) {
+                // TODO: Notify user of error properly?
+                console.error(e)
+                res.sendStatus(503)
+                return
+            }
+            break;
+        case "convert":
+
+            try {
+                const ext = path.extname(id)
+
+                // Generate UUID and add to database
+                const new_id = await addNewFileToDatabase(id)
+
+                try {
+                    // Rename the file to match the IID
+                    const new_filename = new_id + ext
+                    await fsp.rename(path.join(config.content.directory, id), path.join(config.content.directory, new_filename))
+                } catch (e) {
+                    await queryDatabase("DELETE FROM files WHERE uuid = UNHEX(?)", [idhex])
+                    // Throw it again!
+                    throw(e)
+                }
+            } catch (e) {
+                console.error(e)
+                res.sendStatus(503)
+                return
+            }
+            break;
+
+        case "update":
+            if (req.body.name === "") {
+                res.sendStatus(400)
+                console.error("Someone tried to set a filename to empty!", req)
+                return
+            }
+            if (req.body.name !== undefined) {
+                try {
+                    await queryDatabase("UPDATE files SET filename = ? WHERE uuid = UNHEX(?)", [req.body.name, idhex])
+                } catch (e) {
+                    console.error(e)
+                    res.sendStatus(503)
+                    return
+                }
+            }
+            if (req.body.alt !== undefined) {
+                if (req.body.alt === "") req.body.alt = null
+                try {
+                    await queryDatabase("UPDATE files SET alt_text = ? WHERE uuid = UNHEX(?)", [req.body.alt, idhex])
+                } catch (e) {
+                    console.error(e)
+                    res.sendStatus(503)
+                    return
+                }
+            }
+            if (req.body.title !== undefined) {
+                if (req.body.title === "") req.body.title = null
+                try {
+                    await queryDatabase("UPDATE files SET title_text = ? WHERE uuid = UNHEX(?)", [req.body.title, idhex])
+                } catch (e) {
+                    console.error(e)
+                    res.sendStatus(503)
+                    return
+                }
+            }
+            break;
+        default:
+    }
+
+    res.redirect(contentroot, 303)
 })
 
 module.exports = {
