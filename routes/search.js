@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
                 console.log(err);
             } else {
                 console.log(result);
-                obj = {results: JSON.parse(JSON.stringify(result))};
+                obj = {searchQuery: searchQuery, results: JSON.parse(JSON.stringify(result))};
                 res.render('search', obj);
             }
         });
