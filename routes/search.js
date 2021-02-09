@@ -4,6 +4,7 @@ var router = express.Router();
 /* GET search results. */
 router.get('/', function(req, res, next) {
     const searchQuery = req.query.q;
+
     if (searchQuery != null) {
         const db = require('../database.js');
         const sql = "SELECT * FROM posts WHERE title LIKE '%" + searchQuery + "%'";
