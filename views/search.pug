@@ -1,15 +1,45 @@
 extends layout
 
 block content
-    form
-        .typeahead__container
-            .typeahead__field
-                .typeahead__query
-                    input.js-typeahead(name='q' autocomplete='off')
-                .typeahead__button
-                    button(type='submit')
-                        span.typeahead__search-icon
 
+    form(action='search' method='GET')
+        input.typeahead(type='text', name='q', placeholder="Classes I've Taken", autocomplete='off' data-provide='typeahead')
+
+    script.
+        var substringMatcher = function (strs) {
+            return function findMatches(q, cb) {
+                var matches, substringRegex;
+
+                // an array that will be populated with substring matches
+                matches = [];
+
+                // regex used to determine if a string contains the substring `q`
+                substrRegex = new RegExp(q, 'i');
+
+                // iterate through the pool of strings and for any string that
+                // contains the substring `q`, add it to the `matches` array
+                $.each(strs, function (i, str) {
+                    if (substrRegex.test(str)) {
+                        matches.push(str);
+                    }
+                });
+
+                cb(matches);
+            };
+        };
+
+        var states = ['Liver Disease', 'Non-alcoholic fatty liver disease', 'Liver Transplant',
+            'Liver Cancer', "Reye's Syndrome", "Jaundice", "Gallstones",
+            "Biopsy", "High Cholestrol", "Lactulose"
+        ];
+        $('.typeahead').typeahead(
+            {
+                hint: true,
+                highlight: true,
+            }, {
+                name: "song",
+                source: substringMatcher(states),
+            });
     if search
         h1 Results for #{searchQuery}
         ul
