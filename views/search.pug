@@ -3,11 +3,12 @@ extends layout
 block content
     form(action='search' method='GET')
         input(name='q' value='', placeholder='Search..')
-    h1 Results for #{searchQuery}
-    ul
-        each result in results
-            li
-                a(href="/") #{result.title}
-            ul
-                li #{result.text}
-            hr
+    if search
+        h1 Results for #{searchQuery}
+        ul
+            each result in results
+                li
+                    a(href="/") #{result.title}
+                ul
+                    li #{result.text}
+                hr
