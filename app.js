@@ -15,8 +15,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // bootstrap setup
-app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')))
-app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')))
+app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')));
+app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')));
+app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery/dist')));
+app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery-typeahead/dist')));
+app.use(express.static(path.join(__dirname, '/public')));
 
 app.use(logger('dev'));
 app.use(express.json());

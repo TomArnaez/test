@@ -13,6 +13,8 @@
     "debug": "*",
     "express": "*",
     "http-errors": "*",
+    "jquery": "^3.5.1",
+    "jquery-typeahead": "^2.11.1",
     "morgan": "*",
     "mysql": "*",
     "nodemon": "^2.0.7",

@@ -1,8 +1,15 @@
 extends layout
 
 block content
-    form(action='search' method='GET')
-        input(name='q' value='', placeholder='Search..')
+    form
+        .typeahead__container
+            .typeahead__field
+                .typeahead__query
+                    input.js-typeahead(name='q' autocomplete='off')
+                .typeahead__button
+                    button(type='submit')
+                        span.typeahead__search-icon
+
     if search
         h1 Results for #{searchQuery}
         ul
