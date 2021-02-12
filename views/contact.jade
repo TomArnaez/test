@@ -5,19 +5,24 @@ di.contact
     h3 Email Us
     form(method='POST' action='send')
         p
-            label Name
-            input(type='text' name='name')
+            label Full Name:
+            div
+            input(type='text' name='name' required=true)
         p
-            label Email Address
-            input(type='email' name='email')
+            label Email Address:
+            div
+            input(type='email' name='email' required=true)
         p
-            label Phone Number
-            input(type='text' name='phone')
+            label Phone Number:
+            div
+            input(type='tel' name='phone')
         p
-            label Title
-            input(type='text' name='title')
+            label Message Title:
+            div
+            input(type='text' name='title' required=true)
         p.full
-            label Message
-            textarea(name='message' rows='5')
+            label Message Body:
+            div
+            textarea(name='message' rows='8' cols='30' required=true)
         p.full
             button(type='submit') Submit
