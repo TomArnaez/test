@@ -14,6 +14,7 @@ var adminLoginRouter = require('./routes/admin_login');
 var adminDashboardRouter = require('./routes/admin_dashboard');
 
 var app = express();
+app.disable("x-powered-by");
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
