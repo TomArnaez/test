@@ -17,7 +17,7 @@ router.get('/', function(req, res, next) {
 
 /* GET Contact page. */
 router.get('/contact', function(req, res) {
-  res.render('test.html');
+  res.render('contact');
 });
 
 
@@ -32,17 +32,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 
-app.post('/send', (req, res) => {
-  const output = `
+router.post('/send', (req, res) => {
+  const message = `
     <p>You have a new contact request</p>
     <h3>Contact Details</h3>
     <ul>  
       <li>Name: ${req.body.name}</li>
-      <li>Company: ${req.body.company}</li>
       <li>Email: ${req.body.email}</li>
       <li>Phone: ${req.body.phone}</li>
     </ul>
     <h3>Message</h3>
+    <h4>${req.body.title}</h4>
     <p>${req.body.message}</p>
   `;
 
@@ -59,11 +59,11 @@ app.post('/send', (req, res) => {
 
   // setup email data with unicode symbols
   let mailOptions = {
-    from: '"Information Hub Contact Centre" <informationhub.kings@gmail.com>', // sender address
-    to: 'test@test.com, informationhub.kings@gmail.com, info@shahrestani.co.uk', // list of receivers
-    subject: 'Contact Form', // Subject
+    from: '"Information Hub" <informationhub.kings@gmail.com>', // sender address
+    to: 'test@test.com, informationhub.kings@gmail.com', // list of receivers
+    subject: `${req.body.title}`, // Subject
     text: 'Nothing for now!', // text body
-    html: output // html body
+    html: message // html body
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
@@ -71,7 +71,8 @@ app.post('/send', (req, res) => {
 
     console.log('Message has been sent: %s', info.messageId);
     console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-    res.render('contact', {msg:'Email has been sent'});
+
+    res.render('index' , {title: 'Your Message Has Been Sent!!!'}); // to be changed
   });
 });
 

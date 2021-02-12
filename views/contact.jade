@@ -1,0 +1,23 @@
+doctype html
+head
+    meta(charset='UTF-8')
+di.contact
+    h3 Email Us
+    form(method='POST' action='send')
+        p
+            label Name
+            input(type='text' name='name')
+        p
+            label Email Address
+            input(type='email' name='email')
+        p
+            label Phone Number
+            input(type='text' name='phone')
+        p
+            label Title
+            input(type='text' name='title')
+        p.full
+            label Message
+            textarea(name='message' rows='5')
+        p.full
+            button(type='submit') Submit
