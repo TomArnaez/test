@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
 
+const maybePluralize = (count, noun, suffix = 's') =>
+    `${count} ${noun}${count !== 1 ? suffix : ''}`;
+
 /* GET search results. */
 router.get('/', function(req, res, next) {
     const searchQuery = req.query.q;
@@ -12,8 +15,10 @@ router.get('/', function(req, res, next) {
             if (err) {
                 console.log(err);
             } else {
-                console.log(result);
-                obj = {search: true, searchQuery: searchQuery, results: JSON.parse(JSON.stringify(result))};
+                const results = JSON.parse(JSON.stringify((result)));
+                const resultsString = "" + maybePluralize(results.length, "result") + " for query: " + searchQuery;
+                console.log(results);
+                const obj = {search: true, searchQuery: searchQuery, resultsString: resultsString, results: results};
                 res.render('search', obj);
             }
         });
@@ -21,7 +26,6 @@ router.get('/', function(req, res, next) {
         obj = {search: false}
         res.render('search', obj);
     }
-
 });
 
 module.exports = router;
