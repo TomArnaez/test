@@ -18,6 +18,7 @@ router.get('/', function(req, res, next) {
                 const results = JSON.parse(JSON.stringify((result)));
                 const resultsString = "" + maybePluralize(results.length, "result") + " for query: " + searchQuery;
                 console.log(results);
+                console.log(resultsString);
                 const obj = {search: true, searchQuery: searchQuery, resultsString: resultsString, results: results};
                 res.render('search', obj);
             }
