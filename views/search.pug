@@ -3,7 +3,8 @@ extends layout
 block content
 
     form(action='search' method='GET')
-        input.typeahead(type='text', name='q', placeholder="Classes I've Taken", autocomplete='off' data-provide='typeahead')
+        input.typeahead(type='text', name='q', placeholder="Classes I've Taken", autocomplete='off')
+        input(type='submit' style='position: absolute; left: -9999px')
 
     script.
         var substringMatcher = function (strs) {
@@ -41,7 +42,7 @@ block content
                 source: substringMatcher(states),
             });
     if search
-        h1 Results for #{searchQuery}
+        h1 #{results.length} results for #{searchQuery}
         ul
             each result in results
                 li
