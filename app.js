@@ -4,7 +4,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
-const content = require('./content')
+const content = require('./content_impl')
 content.setupSync()
 
 const indexRouter = require('./routes/index');

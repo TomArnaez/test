@@ -3,12 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
+    "start": "node -r esm ./bin/www",
     "test": "mocha"
   },
   "dependencies": {
     "cookie-parser": "*",
     "debug": "*",
+    "esm": "*",
     "express": "*",
     "http-errors": "*",
     "morgan": "*",

@@ -1,99 +1,31 @@
 'use strict'
 
-const contentroot = '/content/'
+import * as util from 'util';
+import * as uuid from 'uuid'
+import * as fs from 'fs/promises'
+import * as path from 'path'
 
-const sanitise = require('sanitize-filename')
-const unique = require('unique-filename')
-const express = require('express')
-const config = require('./config/config.js')
-const fs = require('fs')
-const fsp = require('fs/promises')
-const path = require('path')
-const multer = require('multer')
-const uuid = require('uuid')
-const database = require('./database.js')
-const util = require('util');
-
-const queryDatabase = util.promisify(database.query).bind(database)
-
-async function addToDatabase(id, filename, deleted) {
-    return queryDatabase('INSERT INTO files (uuid, filename, deleted) VALUES (UNHEX(?), ?, ?)', [id.replaceAll('-', ''), filename, deleted])
-}
-
-async function addNewFileToDatabase(filename) {
-    const id = uuid.v4()
-    console.log(await addToDatabase(id, filename, false))
-    return id
-}
-
-async function getFileFromDatabase(id) {
-    return queryDatabase('SELECT filename, title_text, alt_text FROM files WHERE uuid = UNHEX(?)', [id.replaceAll('-', '')])
-}
-
-async function listFiles() {
-    return fsp.readdir(config.content.directory)
-}
-
-const storage = multer.diskStorage({
-    destination: config.content.directory,
-    filename: async (req, file, cb) => {
-        var name = sanitise(req.body.filename)
-        if (name === '') name = sanitise(file.originalname)
-        if (name === '') name = unique()
-
-        // TODO: add other details to the database!
-        console.log(file)
-        const id = await addNewFileToDatabase(name)
-
-        const ext = path.extname(name)
-
-        var filename = id
-
-        if (ext !== '.') filename += ext
-
-        cb(null, filename)
-    }
-})
-const upload = multer({storage: storage, limits: {fileSize: config.content.fileSize}})
-
-const uploadRouter = express.Router()
-
-uploadRouter.get('/', async (req, res) => {
-    res.render('upload')
-})
-uploadRouter.post('/', upload.single('file'), async (req, res) => {
-    res.status(200)
-    // TODO: make this give it the "nice" link
-    res.render('upload', {result : {url: contentroot + req.file.filename, name: req.file.filename}})
-})
-
-const contentRouter = express.Router()
-// TODO: Make this cache really well!
-const contentStatic = express.static(config.content.directory)
-contentRouter.use('/', contentStatic)
-contentRouter.get('/', async (req, res) => {
-    let names = []
-    for (const file of await listFiles()) {
-        const idnoext = file.substr(0, file.length - path.extname(file).length)
-        const result = await getFileFromDatabase(idnoext)
-
-        if (result.length !== 0) {
-            names.push([file + '/' + result[0].filename, result[0].filename + " (" + idnoext + ")", file, true, result[0].filename, result[0].alt_text, result[0].title_text])
-        } else {
-            names.push([file, file, file, false, file])
-        }
-    }
-
-    res.render('content', {files : names})
-})
+import config from "./config/config";
+const database = require('./database')
 
 
+/**
+ * Run a query on the database, and return the result as a promise.
+ */
+export const queryDatabase = util.promisify(database.query).bind(database)
+
+/**
+ * Find the ID with extension from an ID without an extension.
+ *
+ * @param id
+ * @returns {Promise<*>}
+ */
 // TODO: make this more strict
-async function findFileID(id) {
+export async function findFileID(id) {
     const idnoext = id.substr(0, id.length - path.extname(id).length)
 
     let target = id
-    for (const file of await listFiles()) {
+    for (const file of await content.listFiles()) {
         if (file.startsWith(id) || file.startsWith(idnoext)) {
             target = contentroot + file
             break
@@ -103,140 +35,86 @@ async function findFileID(id) {
     return target
 }
 
-// This happens if a file is not found... We try to find it!
-contentRouter.get('/:id', async (req, res) => {
-    const id = req.params.id
-    let file = await findFileID(id)
-    if (req.fancyname !== undefined) {
-        file += '/' + req.fancyname
-    }
-    // TODO: Determine when we can safely use a permanent redirect!
-    if (file !== id) res.redirect(302, file)
-    else res.sendStatus(404)
-})
+/**
+ * Get a list of all the files in the content directory. This gets their true filenames, regardless of if they are in the database or not.
+ *
+ * @returns {Promise<string[]>} A list of file names of the files in the content directory.
+ */
+export async function listFiles() {
+    return fs.readdir(config.content.directory)
+}
 
-contentRouter.get('/:id/:name', async (req, res) => {
-    req.url = '/' + req.params.id
-    req.fancyname = req.params.name
-    contentRouter.handle(req, res)
-})
+/**
+ * Run a database query of a file in the database.
+ *
+ * @param id The UUID of the file to look up in the database.
+ * @returns {Promise<*>} A query result. Results are, in order... filename, title text, and alt text.
+ */
+export async function getFileFromDatabase(id) {
+    return queryDatabase('SELECT filename, title_text, alt_text FROM files WHERE uuid = UNHEX(?)', [id.replaceAll('-', '')])
+}
 
-contentRouter.post('/:id', async (req, res)=> {
-    // Get the ID including file extention
-    const id = req.params.id
-    // Get the UUID
-    const idnoext = id.substr(0, id.length - path.extname(id).length)
+/**
+ * Get information of a file in the content folder, regardless of if it is in the database or not. <br>
+ *
+ * The fields of the file object are...
+ *  * database: true if the file has an entry in the database, false if not.
+ *  * id: the UUID of the file. Always present if file is in database, only sometimes present if not in the database.
+ *  * fs_name: the name of the file on the filesystem / within the content folder.
+ *  * filename: The filename of the file
+ *  * title: the title text of the file
+ *  * alt: the alt text of the file
+ *
+ * @param id The ID of the file (with or without extension)
+ * @param skip_check Skip any checks for if it is a real file or not. If true requires the id to have the file extention.
+ * @returns {Promise<*>} An object with details of the file
+ */
+export async function getFileFull(id, skip_check) {
+    const file = skip_check ? id : await findFileID(id)
 
-    // Determine what action we need to take... First we figure out what action so we don't do multiple at once!
-    let action = ""
-    if (req.query.delete !== undefined) {
-        action = "delete"
-    }
-    if (req.query.convert !== undefined) {
-        if (action !== "") action = "conflict"
-        else action = "convert"
-    }
-    if (req.query.update !== undefined) {
-        if (action !== "") action = "conflict"
-        else action = "update"
-    }
-
-    const idhex = idnoext.replaceAll('-', '')
-
-    // TODO: Make it more obvious to the user that something happened?
-    switch (action) {
-        case "":
-        case "conflict":
-            res.sendStatus(400)
-            return;
-        case "delete":
-            // Attempt to delete the file in the DB if it is a UUID!
-            if (uuid.validate(idnoext)) await queryDatabase("UPDATE files SET deleted = True WHERE uuid = UNHEX(?)", [idhex])
-            try {
-                await fsp.rm(path.join(config.content.directory, id))
-            } catch (e) {
-                // TODO: Notify user of error properly?
-                console.error(e)
-                res.sendStatus(503)
-                return
-            }
-            break;
-        case "convert":
-
-            try {
-                const ext = path.extname(id)
-
-                // Generate UUID and add to database
-                const new_id = await addNewFileToDatabase(id)
-
-                try {
-                    // Rename the file to match the IID
-                    const new_filename = new_id + ext
-                    await fsp.rename(path.join(config.content.directory, id), path.join(config.content.directory, new_filename))
-                } catch (e) {
-                    await queryDatabase("DELETE FROM files WHERE uuid = UNHEX(?)", [idhex])
-                    // Throw it again!
-                    throw(e)
-                }
-            } catch (e) {
-                console.error(e)
-                res.sendStatus(503)
-                return
-            }
-            break;
-
-        case "update":
-            if (req.body.name === "") {
-                res.sendStatus(400)
-                console.error("Someone tried to set a filename to empty!", req)
-                return
-            }
-            if (req.body.name !== undefined) {
-                try {
-                    await queryDatabase("UPDATE files SET filename = ? WHERE uuid = UNHEX(?)", [req.body.name, idhex])
-                } catch (e) {
-                    console.error(e)
-                    res.sendStatus(503)
-                    return
-                }
-            }
-            if (req.body.alt !== undefined) {
-                if (req.body.alt === "") req.body.alt = null
-                try {
-                    await queryDatabase("UPDATE files SET alt_text = ? WHERE uuid = UNHEX(?)", [req.body.alt, idhex])
-                } catch (e) {
-                    console.error(e)
-                    res.sendStatus(503)
-                    return
-                }
-            }
-            if (req.body.title !== undefined) {
-                if (req.body.title === "") req.body.title = null
-                try {
-                    await queryDatabase("UPDATE files SET title_text = ? WHERE uuid = UNHEX(?)", [req.body.title, idhex])
-                } catch (e) {
-                    console.error(e)
-                    res.sendStatus(503)
-                    return
-                }
-            }
-            break;
-        default:
+    let entry = {
+        fs_name: file
     }
 
-    res.redirect(contentroot, 303)
-})
+    const idnoext = file.substr(0, file.length - path.extname(file).length)
+    if (uuid.validate(idnoext)) {
+        entry.id = idnoext
 
-module.exports = {
-    setupSync : () => {
-        if (!fs.existsSync(config.content.directory)) {
-            fs.mkdirSync(config.content.directory)
+        const result = await getFileFromDatabase(entry.id)
+        if (result.length !== 0) {
+            entry.database = true
+            entry.filename = result[0].filename
+            entry.title = result[0].title_text
+            entry.alt = result[0].alt_text
+        } else {
+            entry.database = false
         }
-    },
+    } else {
+        entry.database = false
+    }
 
-    // Ends up as "/content".
-    contentRoute : contentRouter,
+    if (!entry.database) entry.filename = entry.fs_name
 
-    // "Ends up as "/upload"
-    uploadRoute: uploadRouter
+    return entry
+}
+
+/**
+ * Get a list of all files in the content folder, and get information from the database about them. <br>
+ *
+ * The fields of the each file object are...
+ *  * database: true if the file has an entry in the database, false if not.
+ *  * id: the UUID of the file. Always present if file is in database, only sometimes present if not in the database.
+ *  * fs_name: the name of the file on the filesystem / within the content folder.
+ *  * filename: The filename of the file
+ *  * title: the title text of the file
+ *  * alt: the alt text of the file
+ *
+ * @returns {Promise<[]>}
+ */
+export async function getFilesFromDatabase () {
+    const files = []
+    for (const file of await listFiles()) {
+        files.push(await getFileFull(file, true))
+    }
+    return files
 }
