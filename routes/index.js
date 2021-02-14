@@ -60,7 +60,7 @@ router.post('/send', (req, res) => {
   // setup email data with unicode symbols
   let mailOptions = {
     from: '"Information Hub" <informationhub.kings@gmail.com>', // sender address
-    to: 'test@test.com, informationhub.kings@gmail.com', // list of receivers
+    to: 'informationhub.kings@gmail.com', // list of receivers
     subject: `${req.body.title}`, // Subject
     text: 'Nothing for now!', // text body
     html: message // html body
