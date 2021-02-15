@@ -1,7 +1,5 @@
 'use strict'
 
-const contentroot = '/content/'
-
 const sanitise = require('sanitize-filename')
 const unique = require('unique-filename')
 const express = require('express')
@@ -22,7 +20,7 @@ async function addToDatabase(id, filename, deleted) {
 
 async function addNewFileToDatabase(filename) {
     const id = uuid.v4()
-    console.log(await addToDatabase(id, filename, false))
+    await addToDatabase(id, filename, false)
     return id
 }
 
@@ -54,8 +52,9 @@ uploadRouter.get('/', async (req, res) => {
 })
 uploadRouter.post('/', upload.single('file'), async (req, res) => {
     res.status(200)
-    // TODO: make this give it the "nice" link
-    res.render('upload', {result : {url: contentroot + req.file.filename, name: req.file.filename}})
+    // Now get all the details from the database...
+    const file = await content.getFileFull(req.file.filename)
+    res.render('upload', {result : {url: content.contentroot + file.fs_name + '/' + file.filename, name: file.filename}})
 })
 
 const contentRouter = express.Router()
@@ -78,12 +77,16 @@ contentRouter.get('/', async (req, res) => {
 // This happens if a file is not found... We try to find it!
 contentRouter.get('/:id', async (req, res) => {
     const id = req.params.id
-    let file = await content.findFileID(id)
+    let file = content.contentroot + await content.findFileID(id)
+
     if (req.fancyname !== undefined) {
         file += '/' + req.fancyname
     }
-    // TODO: Determine when we can safely use a permanent redirect!
-    if (file !== id) res.redirect(302, file)
+
+    // Redirect if the file is found, and if the file is found, only redirect if the file ID is a proper UUID.
+    if (file)
+        if (uuid.validate(content.noExtID(id))) res.redirect(301, file)
+        else res.redirect(302, file)
     else res.sendStatus(404)
 })
 
@@ -134,7 +137,6 @@ contentRouter.post('/:id', async (req, res)=> {
             }
             break;
         case "convert":
-
             try {
                 const ext = path.extname(id)
 
@@ -165,7 +167,7 @@ contentRouter.post('/:id', async (req, res)=> {
             }
             if (req.body.name !== undefined) {
                 try {
-                    await content.queryDatabase("UPDATE files SET filename = ? WHERE uuid = UNHEX(?)", [req.body.name, idhex])
+                    await content.queryDatabase("UPDATE files SET filename = ? WHERE uuid = UNHEX(?)", [sanitise(req.body.name), idhex])
                 } catch (e) {
                     console.error(e)
                     res.sendStatus(503)
@@ -196,7 +198,7 @@ contentRouter.post('/:id', async (req, res)=> {
         default:
     }
 
-    res.redirect(303, contentroot)
+    res.redirect(303, content.contentroot)
 })
 
 module.exports = {

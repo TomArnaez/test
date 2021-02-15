@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node -r esm ./bin/www",
-    "test": "mocha"
+    "test": "mocha -r esm"
   },
   "dependencies": {
     "cookie-parser": "*",

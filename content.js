@@ -8,6 +8,7 @@ import * as path from 'path'
 import config from "./config/config";
 const database = require('./database')
 
+export const contentroot = '/content/'
 
 /**
  * Run a query on the database, and return the result as a promise.
@@ -15,19 +16,29 @@ const database = require('./database')
 export const queryDatabase = util.promisify(database.query).bind(database)
 
 /**
+ * Get an ID without the extension.
+ *
+ * @param id The ID potentially with extension.
+ * @returns {string} The ID without extension.
+ */
+export function noExtID(id) {
+    return id.substr(0, id.length - path.extname(id).length)
+}
+
+/**
  * Find the ID with extension from an ID without an extension.
  *
  * @param id
- * @returns {Promise<*>}
+ * @returns {Promise<*>} A string if the file is found, or a null if the file is not found.
  */
-// TODO: make this more strict
 export async function findFileID(id) {
-    const idnoext = id.substr(0, id.length - path.extname(id).length)
+    const idnoext = noExtID(id)
 
-    let target = id
-    for (const file of await content.listFiles()) {
-        if (file.startsWith(id) || file.startsWith(idnoext)) {
-            target = contentroot + file
+    let target = null
+    for (const file of await listFiles()) {
+        const filenoext = file.substr(0, file.length - path.extname(file).length)
+        if (filenoext === idnoext) {
+            target = file
             break
         }
     }
