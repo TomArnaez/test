@@ -1,9 +1,11 @@
+
 extends layout
-link(rel='stylesheet', href='/stylesheets/typeahead.css')
+
 block content
 
     form(action='search' method='GET')
-        input.typeahead(type='text', name='q', placeholder="Classes I've Taken", autocomplete='off')
+        input.typeahead(type='text', name='q', placeholder="Search for a condition...", autocomplete='off')
+        input(type="hidden" name="page" value="0")
         input(type='submit' style='position: absolute; left: -9999px')
 
     script.
@@ -29,7 +31,7 @@ block content
             };
         };
 
-        var states = ['Liver Disease', 'Non-alcoholic fatty liver disease', 'Liver Transplant',
+        var states = ['Liver', 'Liver Disease', 'Non-alcoholic fatty liver disease', 'Liver Transplant',
             'Liver Cancer', "Reye's Syndrome", "Jaundice", "Gallstones",
             "Biopsy", "High Cholestrol", "Lactulose"
         ];
@@ -38,11 +40,12 @@ block content
                 hint: true,
                 highlight: true,
             }, {
-                name: "song",
+                name: "Post",
                 source: substringMatcher(states),
             });
     if search
         h1 #{resultsString}
+        p Page #{page_number} of #{total_pages}
         ul
             each result in results
                 li
@@ -50,3 +53,11 @@ block content
                 ul
                     li #{result.text}
                 hr
+        nav(aria-label='Page navigation example')
+            ul.pagination
+                if page_number > 1
+                    li.page-item
+                        a.page-link(href=prev_page) Previous
+                if page_number < total_pages
+                    li.page-item
+                        a.page-link(href=next_page) Next

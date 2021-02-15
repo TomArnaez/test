@@ -4,9 +4,13 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+const db = require("./models");
+db.sequelize.sync();
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var searchRouter = require("./routes/search");
+var apiRouter = require("./routes/api")
 
 var app = express();
 
@@ -18,7 +22,6 @@ app.set('view engine', 'pug');
 app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')));
 app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')));
 app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery/dist')));
-app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery-typeahead/dist')));
 app.use(express.static(path.join(__dirname, '/public')));
 
 app.use(logger('dev'));
@@ -30,6 +33,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/search', searchRouter);
+app.use('/api', apiRouter)
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
