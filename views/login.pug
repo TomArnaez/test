@@ -1,0 +1,12 @@
+h1  Login
+include ./partial/msg
+form(action='/admin/login' method='POST')
+    div
+        label(for='username') Email
+        input(id='username' name='username' placeholder='Username')
+    div
+        label(for='password') Password
+        input(type='password' id='password' name='password' placeholder='Password')
+    p
+        a(href='/admin/forgotpassword') Forgot Password
+    button(type='submit') Login

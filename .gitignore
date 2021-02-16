@@ -397,3 +397,9 @@ fabric.properties
 .sonarlint/
 
 # End of https://www.toptal.com/developers/gitignore/api/jetbrains,sonar,sonarqube
+
+
+# Created by https://www.toptal.com/developers/gitignore/api/webstorm
+# Edit at https://www.toptal.com/developers/gitignore?templates=webstorm
+
+.idea/
