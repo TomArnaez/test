@@ -3,12 +3,11 @@ var router = express.Router();
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 const app = express();
-// const path = require('path');
-// const path = require('path');
+const config = require('../config/config.js');
 
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function(req, res) {
   getDatabaseVersion().then(function (result){
     res.render('index', { title: 'Express' , databaseVersion: result });
   });
@@ -19,7 +18,6 @@ router.get('/', function(req, res, next) {
 router.get('/contact', function(req, res) {
   res.render('contact');
 });
-
 
 
 // Body Parser Middleware
@@ -44,8 +42,8 @@ router.post('/send', (req, res) => {
   let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: 'informationhub.kings@gmail.com', //username
-      pass: 'cpointisthebest'  // password
+      user: config.email.username, //username
+      pass: config.email.password  // password
     },
     tls:{
       rejectUnauthorized:false  //bypass the security in localhost

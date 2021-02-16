@@ -1,7 +1,7 @@
 var config = {};
 
 config.mysql = {};
-
+config.email = {};
 
 
 /** MySQL settings */
@@ -16,6 +16,12 @@ config.mysql.user = "cpoint_development";
 config.mysql.pass = "evPOXg0Oa4P9Z4xl";
 
 
+/** Email Settings */
+
+//Email address
+config.email.username = "informationhub.kings@gmail.com";
+//Email password
+config.email.password = "cpointisthebest";
 
 
 
