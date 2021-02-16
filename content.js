@@ -36,7 +36,7 @@ export async function findFileID(id) {
 
     let target = null
     for (const file of await listFiles()) {
-        const filenoext = file.substr(0, file.length - path.extname(file).length)
+        const filenoext = noExtID(file)
         if (filenoext === idnoext) {
             target = file
             break
@@ -87,7 +87,7 @@ export async function getFileFull(id, skip_check) {
         fs_name: file
     }
 
-    const idnoext = file.substr(0, file.length - path.extname(file).length)
+    const idnoext = noExtID(file)
     if (uuid.validate(idnoext)) {
         entry.id = idnoext
 

@@ -14,15 +14,19 @@ block content
 
         h2 Upload another file...
 
+    if fail
+        h2 File Upload Unsuccessful!
+        if fail === "nullfile"
+            p Double check to make sure you have actually selected a file!
+        else
+            p We do not know why this happened. Please try again later.
+
+        h2 Try again...
 
     form(action='/upload', method='POST', enctype="multipart/form-data")
         label(for="filename")="Override file name: "
         input(type="text", id="filename", name="filename")
         br
-
-        //label(for="replace")="Replace Existing File? "
-        //input(type="checkbox", name="replace", id="replace")
-        //br
 
         // This **HAS** to be the last option, so multer can read the file name and stuff...
         label(for="file")="File to upload: "

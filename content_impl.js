@@ -53,8 +53,20 @@ uploadRouter.get('/', async (req, res) => {
 uploadRouter.post('/', upload.single('file'), async (req, res) => {
     res.status(200)
     // Now get all the details from the database...
-    const file = await content.getFileFull(req.file.filename)
-    res.render('upload', {result : {url: content.contentroot + file.fs_name + '/' + file.filename, name: file.filename}})
+    if (req.file !== undefined) {
+        const file = await content.getFileFull(req.file.filename)
+        res.render('upload', {
+            result: {
+                url: content.contentroot + file.fs_name + '/' + file.filename,
+                name: file.filename
+            }
+        })
+    } else {
+        res.status(400)
+        res.render('upload', {
+            fail: "nullfile"
+        })
+    }
 })
 
 const contentRouter = express.Router()
