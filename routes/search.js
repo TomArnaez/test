@@ -21,9 +21,9 @@ router.get('/', function(req, res, next) {
             resp.on("end", () => {
                 const json = JSON.parse(data)
                 console.log(json);
-                const resultsString = "" +  maybePluralize(json.posts.length, "result") + " for query: " + title;
+                const resultsString = "" +  maybePluralize(json.totalItems, "result") + ' for query: "' + title + '"';
                 const obj = {search: true, searchQuery: title, resultsString: resultsString, results: json.posts,
-                    page_number: parseInt(json.currentPage + 1), total_pages: json.totalPages,
+                    page_number: parseInt(json.currentPage + 1), total_pages: json.totalPages, count: json.totalItems,
                     next_page: "search?q=" + title + "&page=" + (parseInt(page) + 1),
                     prev_page: "search?q=" + title + "&page=" + (parseInt(page) - 1)};
                 res.render('search', obj);
