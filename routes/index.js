@@ -1,16 +1,14 @@
 var express = require('express');
 var router = express.Router();
-// const path = require('path');
 const bodyParser = require('body-parser');
-const expressHdl = require('express-handlebars');
-const path = require('path');
 const nodemailer = require('nodemailer');
-
 const app = express();
+// const path = require('path');
+// const path = require('path');
 
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function(req, res) {
   res.render('index', { title: 'Express' });
 });
 
@@ -20,11 +18,6 @@ router.get('/contact', function(req, res) {
   res.render('contact');
 });
 
-
-
-// View engine setup
-app.engine('handlebars', expressHdl());
-app.set('view engine', 'handlebars');
 
 
 // Body Parser Middleware
