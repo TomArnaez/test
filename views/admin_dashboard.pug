@@ -1,5 +1,8 @@
-h1  Admin Dashboard
-p Logged in as USER_ID: #{user_id}
-a(href='/admin/changepassword') Change Password
-= ' '
-a(href='/admin/logout') Logout
+extends layout
+
+block content
+    h1  Admin Dashboard
+    p Logged in as USER_ID: #{user_id}
+    a(href='/admin/changepassword') Change Password
+    = ' '
+    a(href='/admin/logout') Logout
