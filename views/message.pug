@@ -1,0 +1,16 @@
+doctype html
+head
+    meta(charset='UTF-8')
+di.contact
+    h3 Send your message anonymously
+    form(method='POST' action='message/send')
+        p
+            label Email Address: (This field is optional)
+            div
+            input(type='email' name='email' required=false)
+        p.full
+            label Message Body:
+            div
+            textarea(name='message' rows='8' cols='30' required=true)
+        p.full
+            button(type='submit') Submit

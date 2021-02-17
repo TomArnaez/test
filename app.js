@@ -13,6 +13,7 @@ var indexRouter = require('./routes/index');
 var adminLoginRouter = require('./routes/admin_login');
 var adminDashboardRouter = require('./routes/admin_dashboard');
 const contactRouter = require('./routes/email');
+const messageRouter = require('./routes/message');
 
 
 var app = express();
@@ -52,6 +53,8 @@ app.use('/', indexRouter);
 app.use('/admin', adminLoginRouter);
 app.use('/admin/dashboard', adminDashboardRouter);
 app.use('/', contactRouter);
+app.use('/', messageRouter);
+
 
 
 // catch 404 and forward to error handler

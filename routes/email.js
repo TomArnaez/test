@@ -6,7 +6,6 @@ const app = express();
 const config = require('../config/config.js');
 
 
-
 /* GET Contact page. */
 router.get('/contact', function(req, res) {
     res.render('contact');
@@ -17,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 
-router.post('/send', (req, res) => {
+router.post('/contact/send', (req, res) => {
     const message = `
     <p>You have a new contact request</p>
     <h3>Contact Details</h3>
