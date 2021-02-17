@@ -60,3 +60,5 @@ router.post('/send', (req, res) => {
         res.render('index' , {title: 'Your Message Has Been Sent!!!'}); // to be changed
     });
 });
+
+module.exports = router;

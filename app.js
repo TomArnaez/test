@@ -12,9 +12,13 @@ require("./passport")(passport)
 var indexRouter = require('./routes/index');
 var adminLoginRouter = require('./routes/admin_login');
 var adminDashboardRouter = require('./routes/admin_dashboard');
+const contactRouter = require('./routes/email');
+
 
 var app = express();
 app.disable("x-powered-by");
+
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -47,6 +51,8 @@ app.use((req,res,next)=> {
 app.use('/', indexRouter);
 app.use('/admin', adminLoginRouter);
 app.use('/admin/dashboard', adminDashboardRouter);
+app.use('/contact', contactRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
