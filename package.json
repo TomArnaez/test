@@ -15,6 +15,7 @@
     "express": "~4.16.1",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.17.1",
+    "generate-unique-id": "^2.0.1",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "jsonwebtoken": "^8.5.1",
