@@ -10,11 +10,17 @@ router.get('/message', function(req, res) {
 });
 
 router.post('/message/send', function(req,res){
-    res.render('message', { message: 'Your Message Has Been Sent' , refNumber: getUniqueID() });
+    var emailReceipt = '';
+    if(`${req.body.email}` !== '') {
+        emailReceipt = 'your email is: '.concat(`${req.body.email}`);
+    }
+    res.render('message', { message: 'Your Message Has Been Sent' , refNumber: getUniqueID(), refEmail: emailReceipt });
 
-    //store the message in the database
     //store the reference in the database
+    //store the email in the database
+    //store the message in the database
     //store the time in the database
+
 });
 
 function getUniqueID(){
