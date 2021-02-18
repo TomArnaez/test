@@ -11,6 +11,10 @@ router.get('/message', function(req, res) {
 
 router.post('/message/send', function(req,res){
     res.render('message', { message: 'Your Message Has Been Sent' , refNumber: getUniqueID() });
+
+    //store the message in the database
+    //store the reference in the database
+    //store the time in the database
 });
 
 function getUniqueID(){
