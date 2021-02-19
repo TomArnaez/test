@@ -2,6 +2,7 @@ doctype html
 head
     meta(charset='UTF-8')
 di.contact
+    include ./partial/msg
     h3 Send your message anonymously
     form(method='POST' action='/message/send')
         p
@@ -14,6 +15,3 @@ di.contact
             textarea(name='message' rows='8' cols='30' required=true)
         p.full
             button(type='submit') Submit
-        h1= message
-        h1= refNumber
-        h2= refEmail

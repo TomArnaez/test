@@ -56,7 +56,8 @@ router.post('/contact/send', (req, res) => {
         console.log('Message has been sent: %s', info.messageId);
         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
 
-        res.render('index' , {title: 'Your Message Has Been Sent!!!'}); // to be changed
+        req.flash('success_msg', 'Your Message Has Been Sent!!!');
+        res.redirect("/contact");
     });
 });
 

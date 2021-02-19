@@ -14,7 +14,10 @@ router.post('/message/send', function(req,res){
     if(`${req.body.email}` !== '') {
         emailReceipt = 'your email is: '.concat(`${req.body.email}`);
     }
-    res.render('message', { message: 'Your Message Has Been Sent' , refNumber: getUniqueID(), refEmail: emailReceipt });
+    // res.render('message', { message: 'Your Message Has Been Sent' , refNumber: getUniqueID(), refEmail: emailReceipt });
+
+    req.flash('success_msg', 'Message Sent!');
+    res.redirect("/message");
 
     //store the reference in the database
     //store the email in the database
@@ -33,6 +36,10 @@ function getUniqueID(){
     return reference.concat(id);
 }
 
+function getTime() {
+    var date = new Date();
+    return date.getTime();
+}
 
 
 module.exports = router;
