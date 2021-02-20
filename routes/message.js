@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const db = require('../database.js');
 const generateUniqueId = require('generate-unique-id');
 
 
@@ -10,22 +11,29 @@ router.get('/message', function(req, res) {
 });
 
 router.post('/message/send', function(req,res){
-    var emailReceipt = '';
+    const customID = getUniqueID();
+    const currentTime = getTime();
+    var email = null;
     if(`${req.body.email}` !== '') {
-        emailReceipt = 'your email is: '.concat(`${req.body.email}`);
+        email = `${req.body.email}`;
     }
-    // res.render('message', { message: 'Your Message Has Been Sent' , refNumber: getUniqueID(), refEmail: emailReceipt });
 
-    req.flash('success_msg', 'Message Sent!');
-    res.redirect("/message");
+    db.query("INSERT INTO messages VALUE (DEFAULT,? ,? ,? ,?)", [customID, email, `${req.body.message}`, currentTime ], function (err, result){
+        if (err) {
+            console.log(err)
+            req.flash('error_msg', 'No database connection.');
+            res.redirect("/message");
+        }
+        else{
+            req.flash('success_msg', 'Your Message Has Been Sent, Your Unique ID is:  '.concat(customID));
+            res.redirect("/message");
 
-    //store the reference in the database
-    //store the email in the database
-    //store the message in the database
-    //store the time in the database
-
+        }
+    });
 });
 
+
+// generating unique id for the users
 function getUniqueID(){
     const reference = 'RE'
     const id = generateUniqueId({
@@ -36,11 +44,21 @@ function getUniqueID(){
     return reference.concat(id);
 }
 
+// getting the current time and converting it to 'datetime' format for MYSQL
 function getTime() {
-    var date = new Date();
-    return date.getTime();
+    const date = new Date();
+    return date.getFullYear()
+            + '-' +
+            date.getMonth()
+            + '-' +
+            date.getDate()
+            + ' ' +
+            date.getHours()
+            + ':' +
+            date.getMinutes()
+            + ':' +
+            date.getSeconds();
 }
-
 
 module.exports = router;
 
