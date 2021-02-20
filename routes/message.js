@@ -13,12 +13,13 @@ router.get('/message', function(req, res) {
 router.post('/message/send', function(req,res){
     const customID = getUniqueID();
     const currentTime = getTime();
-    var email = null;
+    let email = null;
     if(`${req.body.email}` !== '') {
         email = `${req.body.email}`;
     }
 
-    db.query("INSERT INTO messages VALUE (DEFAULT,? ,? ,? ,?)", [customID, email, `${req.body.message}`, currentTime ], function (err, result){
+    db.query("INSERT INTO messages VALUE (DEFAULT,? ,? ,? ,?)",
+        [customID, email, `${req.body.message}`, currentTime ], function (err, result){
         if (err) {
             console.log(err)
             req.flash('error_msg', 'No database connection.');
