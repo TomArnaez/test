@@ -4,31 +4,27 @@ const db = require('../database.js');
 const generateUniqueId = require('generate-unique-id');
 
 
-
 /* GET Message page. */
 router.get('/message', function(req, res) {
     res.render('message');
 });
 
+
 router.post('/message/send', function(req,res){
     const customID = getUniqueID();
     const currentTime = getTime();
     let email = null;
-    if(`${req.body.email}` !== '') {
-        email = `${req.body.email}`;
-    }
+    if(`${req.body.email}` !== '') { email = `${req.body.email}`; }
 
     db.query("INSERT INTO messages VALUE (DEFAULT,? ,? ,? ,?)",
         [customID, email, `${req.body.message}`, currentTime ], function (err, result){
         if (err) {
-            console.log(err)
             req.flash('error_msg', 'No database connection.');
             res.redirect("/message");
         }
         else{
             req.flash('success_msg', 'Your Message Has Been Sent, Your Unique ID is:  '.concat(customID));
             res.redirect("/message");
-
         }
     });
 });
@@ -61,5 +57,5 @@ function getTime() {
             date.getSeconds();
 }
 
-module.exports = router;
 
+module.exports = router

@@ -5,7 +5,6 @@ const nodemailer = require('nodemailer');
 const app = express();
 const config = require('../config/config.js');
 
-
 /* GET Contact page. */
 router.get('/contact', function(req, res) {
     res.render('contact');
@@ -20,7 +19,7 @@ router.post('/contact/send', (req, res) => {
     const message = `
     <p>You have a new contact request</p>
     <h3>Contact Details</h3>
-    <ul>  
+    <ul>
       <li>Name: ${req.body.name}</li>
       <li>Email: ${req.body.email}</li>
       <li>Phone: ${req.body.phone}</li>
@@ -60,5 +59,6 @@ router.post('/contact/send', (req, res) => {
         res.redirect("/contact");
     });
 });
+
 
 module.exports = router;
