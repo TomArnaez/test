@@ -18,9 +18,9 @@ config.mysql.pass = "evPOXg0Oa4P9Z4xl";
 
 
 
-config.content = {};
-config.content.directory = "./content"
-config.content.fileSize = 1 * 1024 * 1024 * 1024 // 1GB per file
+config.media = {};
+config.media.directory = "./media"
+config.media.fileSize = 1 * 1024 * 1024 * 1024 // 1GB per file
 
 
 

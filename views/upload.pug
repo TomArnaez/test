@@ -6,11 +6,11 @@ block content
     h1=title
 
     p
-        a(href='/content') View all uploaded files
+        a(href='/admin/media') View all uploaded files
 
     include ./partial/msg
 
-    form(action='/upload', method='POST', enctype="multipart/form-data")
+    form(method='POST', enctype="multipart/form-data")
         label(for="filename")="Override file name: "
         input(type="text", id="filename", name="filename")
         br

@@ -12,10 +12,10 @@ const uuid = require('uuid')
 const util = require('util');
 const pug = require('pug')
 
-const content = require('./content.js')
+const media = require('./media.js')
 
 async function getMessage(message_name) {
-    return JSON.parse(await fsp.readFile("strings/content_impl.json", "utf-8"))[message_name]
+    return JSON.parse(await fsp.readFile("strings/media_impl.json", "utf-8"))[message_name]
 }
 
 async function getPugMessage(message_name, locals) {
@@ -24,9 +24,9 @@ async function getPugMessage(message_name, locals) {
 
 async function addToDatabase(id, filename, deleted, user_id) {
     if (user_id)
-        return content.queryDatabase('INSERT INTO files (uuid, filename, deleted, uploader_userid) VALUES (UNHEX(?), ?, ?, ?)', [id.replaceAll('-', ''), filename, deleted, user_id])
+        return media.queryDatabase('INSERT INTO files (uuid, filename, deleted, uploader_userid) VALUES (UNHEX(?), ?, ?, ?)', [id.replaceAll('-', ''), filename, deleted, user_id])
     else
-        return content.queryDatabase('INSERT INTO files (uuid, filename, deleted) VALUES (UNHEX(?), ?, ?)', [id.replaceAll('-', ''), filename, deleted])
+        return media.queryDatabase('INSERT INTO files (uuid, filename, deleted) VALUES (UNHEX(?), ?, ?)', [id.replaceAll('-', ''), filename, deleted])
 }
 
 async function addNewFileToDatabase(filename, user_id) {
@@ -36,7 +36,7 @@ async function addNewFileToDatabase(filename, user_id) {
 }
 
 const storage = multer.diskStorage({
-    destination: config.content.directory,
+    destination: config.media.directory,
     filename: async (req, file, cb) => {
         var name = sanitise(req.body.filename)
         if (name === '') name = sanitise(file.originalname)
@@ -54,7 +54,7 @@ const storage = multer.diskStorage({
         cb(null, filename)
     }
 })
-const upload = multer({storage: storage, limits: {fileSize: config.content.fileSize}})
+const upload = multer({storage: storage, limits: {fileSize: config.media.fileSize}})
 
 const uploadRouter = express.Router()
 
@@ -66,48 +66,36 @@ uploadRouter.post('/', upload.single('file'), async (req, res) => {
 
     if (req.file !== undefined) {
         // Now get all the details from the database...
-        const file = await content.getFileFull(req.file.filename)
+        const file = await media.getFileFull(req.file.filename)
 
-        req.flash('html_success_msg', await getPugMessage('success_pug', {url: content.contentroot + file.fs_name + '/' + file.filename, text: file.filename}))
+        req.flash('html_success_msg', await getPugMessage('success_pug', {url: media.mediaroot + file.fs_name + '/' + file.filename, text: file.filename}))
     } else {
         req.flash('error_msg', await getMessage('nullfile'))
     }
-    res.redirect(303, content.uploadroot)
+    res.redirect(303, media.uploadroot)
 })
 
-const contentRouter = express.Router()
+const mediaRouter = express.Router()
 // TODO: Make this cache really well!
-const contentStatic = express.static(config.content.directory)
-contentRouter.use('/', contentStatic)
-contentRouter.get('/', async (req, res) => {
-    let names = []
-    for (const file of await content.getFilesFromDatabase()) {
-        if (file.database) {
-            names.push([file.fs_name + '/' + file.filename, file.filename + " (" + file.id + ")", file.fs_name, true, file.filename, file.alt, file.title, file.uploader_name, file.modifier_name])
-        } else {
-            names.push([file.fs_name, file.filename, file.fs_name, false, file.filename])
-        }
-    }
-
-    res.render('content', {files : names})
-})
+const mediaStatic = express.static(config.media.directory)
+mediaRouter.use('/', mediaStatic)
 
 // This happens if a file is not found... We try to find it!
-contentRouter.get('/:id', async (req, res) => {
+mediaRouter.get('/:id', async (req, res) => {
     const id = req.params.id
-    const found_id = await content.findFileID(id)
+    const found_id = await media.findFileID(id)
 
     // Redirect if the file is found, and if the file is found, only permanently redirect if the file ID is a proper UUID.
     if (!found_id) {
         res.sendStatus(404)
     } else {
-        let file = content.contentroot + found_id
+        let file = media.mediaroot + found_id
 
         if (req.fancyname !== undefined) {
             file += '/' + req.fancyname
         }
 
-        if (uuid.validate(content.noExtID(id))) {
+        if (uuid.validate(media.noExtID(id))) {
             res.redirect(301, file)
         } else {
             res.redirect(302, file)
@@ -115,13 +103,13 @@ contentRouter.get('/:id', async (req, res) => {
     }
 })
 
-contentRouter.get('/:id/:name', async (req, res) => {
+mediaRouter.get('/:id/:name', async (req, res) => {
     req.url = '/' + req.params.id
     req.fancyname = req.params.name
-    contentRouter.handle(req, res)
+    mediaRouter.handle(req, res)
 })
 
-contentRouter.post('/:id', async (req, res)=> {
+mediaRouter.post('/:id', async (req, res)=> {
     // Get the ID including file extention
     const id = req.params.id
     // Get the UUID
@@ -151,9 +139,9 @@ contentRouter.post('/:id', async (req, res)=> {
             return;
         case "delete":
             // Attempt to delete the file in the DB if it is a UUID!
-            if (uuid.validate(idnoext)) await content.queryDatabase("UPDATE files SET deleted = True WHERE uuid = UNHEX(?)", [idhex])
+            if (uuid.validate(idnoext)) await media.queryDatabase("UPDATE files SET deleted = True WHERE uuid = UNHEX(?)", [idhex])
             try {
-                await fsp.rm(path.join(config.content.directory, id))
+                await fsp.rm(path.join(config.media.directory, id))
             } catch (e) {
                 // TODO: Notify user of error properly?
                 console.error(e)
@@ -171,9 +159,9 @@ contentRouter.post('/:id', async (req, res)=> {
                 try {
                     // Rename the file to match the IID
                     const new_filename = new_id + ext
-                    await fsp.rename(path.join(config.content.directory, id), path.join(config.content.directory, new_filename))
+                    await fsp.rename(path.join(config.media.directory, id), path.join(config.media.directory, new_filename))
                 } catch (e) {
-                    await content.queryDatabase("DELETE FROM files WHERE uuid = UNHEX(?)", [idhex])
+                    await media.queryDatabase("DELETE FROM files WHERE uuid = UNHEX(?)", [idhex])
                     // Throw it again!
                     throw(e)
                 }
@@ -192,7 +180,7 @@ contentRouter.post('/:id', async (req, res)=> {
             }
             if (req.body.name !== undefined) {
                 try {
-                    await content.queryDatabase("UPDATE files SET filename = ? WHERE uuid = UNHEX(?)", [sanitise(req.body.name), idhex])
+                    await media.queryDatabase("UPDATE files SET filename = ? WHERE uuid = UNHEX(?)", [sanitise(req.body.name), idhex])
                 } catch (e) {
                     console.error(e)
                     res.sendStatus(503)
@@ -202,7 +190,7 @@ contentRouter.post('/:id', async (req, res)=> {
             if (req.body.alt !== undefined) {
                 if (req.body.alt === "") req.body.alt = null
                 try {
-                    await content.queryDatabase("UPDATE files SET alt_text = ? WHERE uuid = UNHEX(?)", [req.body.alt, idhex])
+                    await media.queryDatabase("UPDATE files SET alt_text = ? WHERE uuid = UNHEX(?)", [req.body.alt, idhex])
                 } catch (e) {
                     console.error(e)
                     res.sendStatus(503)
@@ -212,31 +200,47 @@ contentRouter.post('/:id', async (req, res)=> {
             if (req.body.title !== undefined) {
                 if (req.body.title === "") req.body.title = null
                 try {
-                    await content.queryDatabase("UPDATE files SET title_text = ? WHERE uuid = UNHEX(?)", [req.body.title, idhex])
+                    await media.queryDatabase("UPDATE files SET title_text = ? WHERE uuid = UNHEX(?)", [req.body.title, idhex])
                 } catch (e) {
                     console.error(e)
                     res.sendStatus(503)
                     return
                 }
             }
-            await content.queryDatabase("UPDATE files SET modifier_userid = ? WHERE uuid = UNHEX(?)", [req.user, idhex])
+            await media.queryDatabase("UPDATE files SET modifier_userid = ? WHERE uuid = UNHEX(?)", [req.user, idhex])
             break;
         default:
     }
 
-    res.redirect(303, content.contentroot)
+    res.redirect(303, media.mediamanager)
 })
+
+async function mediaManager(req, res) {
+    let names = []
+    for (const file of await media.getFilesFromDatabase()) {
+        if (file.database) {
+            names.push([media.mediaroot + file.fs_name + '/' + file.filename, file.filename + " (" + file.id + ")", media.mediaroot + file.fs_name, true, file.filename, file.alt, file.title, file.uploader_name, file.modifier_name])
+        } else {
+            names.push([media.mediaroot + file.fs_name, file.filename, media.mediaroot + file.fs_name, false, file.filename])
+        }
+    }
+
+    res.render('media', {files : names})
+}
 
 module.exports = {
     setupSync : () => {
-        if (!fs.existsSync(config.content.directory)) {
-            fs.mkdirSync(config.content.directory)
+        if (!fs.existsSync(config.media.directory)) {
+            fs.mkdirSync(config.media.directory)
         }
     },
 
-    // Ends up as "/content".
-    contentRoute : contentRouter,
+    // Ends up as "/media".
+    mediaRoute : mediaRouter,
 
-    // "Ends up as "/upload"
-    uploadRoute: uploadRouter
+    // Ends up as "/admin/upload"
+    uploadRoute: uploadRouter,
+
+    // Ends up as "/admin/media"
+    mediaManger: mediaManager
 }

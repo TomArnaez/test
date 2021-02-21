@@ -7,7 +7,7 @@
     "test": "mocha -r esm"
   },
   "dependencies": {
-    "bcrypt": "*",
+    "bcrypt": "^5.0.1",
     "connect-flash": "*",
     "cookie-parser": "*",
     "debug": "*",
@@ -21,14 +21,14 @@
     "mysql": "*",
     "passport": "*",
     "passport-local": "*",
-    "pug": "*",
+    "pug": "^3.0.2",
     "sanitize-filename": "*",
     "unique-filename": "*",
     "uuid": "*"
   },
   "devDependencies": {
-    "chai": "*",
+    "chai": "^4.3.3",
     "chai-http": "*",
-    "mocha": "*"
+    "mocha": "^8.3.1"
   }
 }

@@ -8,8 +8,9 @@ import * as path from 'path'
 import config from "./config/config";
 const database = require('./database')
 
-export const contentroot = '/content/'
-export const uploadroot = '/upload/'
+export const mediaroot = '/media/'
+export const uploadroot = '/admin/upload/'
+export const mediamanager = '/admin/media'
 
 /**
  * Run a query on the database, and return the result as a promise.
@@ -48,12 +49,12 @@ export async function findFileID(id) {
 }
 
 /**
- * Get a list of all the files in the content directory. This gets their true filenames, regardless of if they are in the database or not.
+ * Get a list of all the files in the media directory. This gets their true filenames, regardless of if they are in the database or not.
  *
- * @returns {Promise<string[]>} A list of file names of the files in the content directory.
+ * @returns {Promise<string[]>} A list of file names of the files in the media directory.
  */
 export async function listFiles() {
-    return fs.readdir(config.content.directory)
+    return fs.readdir(config.media.directory)
 }
 
 /**
@@ -67,12 +68,12 @@ export async function getFileFromDatabase(id) {
 }
 
 /**
- * Get information of a file in the content folder, regardless of if it is in the database or not. <br>
+ * Get information of a file in the media folder, regardless of if it is in the database or not. <br>
  *
  * The fields of the file object are...
  *  * database: true if the file has an entry in the database, false if not.
  *  * id: the UUID of the file. Always present if file is in database, only sometimes present if not in the database.
- *  * fs_name: the name of the file on the filesystem / within the content folder.
+ *  * fs_name: the name of the file on the filesystem / within the media folder.
  *  * filename: The filename of the file
  *  * title: the title text of the file
  *  * alt: the alt text of the file
@@ -126,12 +127,12 @@ export async function getFileFull(id, skip_check) {
 }
 
 /**
- * Get a list of all files in the content folder, and get information from the database about them. <br>
+ * Get a list of all files in the media folder, and get information from the database about them. <br>
  *
  * The fields of the each file object are...
  *  * database: true if the file has an entry in the database, false if not.
  *  * id: the UUID of the file. Always present if file is in database, only sometimes present if not in the database.
- *  * fs_name: the name of the file on the filesystem / within the content folder.
+ *  * fs_name: the name of the file on the filesystem / within the media folder.
  *  * filename: The filename of the file
  *  * title: the title text of the file
  *  * alt: the alt text of the file

@@ -4,8 +4,8 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 
-const content = require('./content_impl')
-content.setupSync()
+const media = require('./media_impl')
+media.setupSync()
 const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
@@ -15,8 +15,8 @@ const adminLoginRouter = require('./routes/admin_login');
 const adminDashboardRouter = require('./routes/admin_dashboard');
 
 const indexRouter = require('./routes/index');
-const contentRouter = content.contentRoute
-const uploadRouter = content.uploadRoute
+const mediaRouter = media.mediaRoute
+const uploadRouter = media.uploadRoute
 
 const app = express();
 app.disable("x-powered-by");
@@ -50,11 +50,13 @@ app.use((req,res,next)=> {
   next();
 })
 
+adminLoginRouter.use('/dashboard', adminDashboardRouter)
+adminLoginRouter.get('/media', media.mediaManger)
+adminLoginRouter.use('/upload', uploadRouter)
+
 app.use('/', indexRouter);
-app.use('/admin', adminLoginRouter);
-app.use('/admin/dashboard', adminDashboardRouter);
-app.use('/content', contentRouter)
-app.use('/upload', uploadRouter)
+app.use('/admin', adminLoginRouter)
+app.use('/media', mediaRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
