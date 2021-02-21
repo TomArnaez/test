@@ -403,3 +403,5 @@ fabric.properties
 # Edit at https://www.toptal.com/developers/gitignore?templates=webstorm
 
 .idea/
+
+content/

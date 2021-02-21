@@ -23,6 +23,12 @@ block content
                         input(type='text', name='title', value=file[6])
                         br
                         input(type='submit', value='Update')
+                        if file[7]
+                            br
+                            label Uploaded by #{file[7]}
+                        if file[8]
+                            br
+                            label Last modified by #{file[8]}
                 else
                     form(action=file[2] + '?convert', method='POST')
                         input(type='submit', value='Convert')

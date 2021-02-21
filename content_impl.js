@@ -10,17 +10,28 @@ const path = require('path')
 const multer = require('multer')
 const uuid = require('uuid')
 const util = require('util');
+const pug = require('pug')
 
 const content = require('./content.js')
 
-
-async function addToDatabase(id, filename, deleted) {
-    return content.queryDatabase('INSERT INTO files (uuid, filename, deleted) VALUES (UNHEX(?), ?, ?)', [id.replaceAll('-', ''), filename, deleted])
+async function getMessage(message_name) {
+    return JSON.parse(await fsp.readFile("strings/content_impl.json", "utf-8"))[message_name]
 }
 
-async function addNewFileToDatabase(filename) {
+async function getPugMessage(message_name, locals) {
+    return pug.render(await getMessage(message_name), locals)
+}
+
+async function addToDatabase(id, filename, deleted, user_id) {
+    if (user_id)
+        return content.queryDatabase('INSERT INTO files (uuid, filename, deleted, uploader_userid) VALUES (UNHEX(?), ?, ?, ?)', [id.replaceAll('-', ''), filename, deleted, user_id])
+    else
+        return content.queryDatabase('INSERT INTO files (uuid, filename, deleted) VALUES (UNHEX(?), ?, ?)', [id.replaceAll('-', ''), filename, deleted])
+}
+
+async function addNewFileToDatabase(filename, user_id) {
     const id = uuid.v4()
-    await addToDatabase(id, filename, false)
+    await addToDatabase(id, filename, false, user_id)
     return id
 }
 
@@ -32,7 +43,7 @@ const storage = multer.diskStorage({
         if (name === '') name = unique()
 
         // TODO: add other details to the database!
-        const id = await addNewFileToDatabase(name)
+        const id = await addNewFileToDatabase(name, req.user)
 
         const ext = path.extname(name)
 
@@ -52,21 +63,16 @@ uploadRouter.get('/', async (req, res) => {
 })
 uploadRouter.post('/', upload.single('file'), async (req, res) => {
     res.status(200)
-    // Now get all the details from the database...
+
     if (req.file !== undefined) {
+        // Now get all the details from the database...
         const file = await content.getFileFull(req.file.filename)
-        res.render('upload', {
-            result: {
-                url: content.contentroot + file.fs_name + '/' + file.filename,
-                name: file.filename
-            }
-        })
+
+        req.flash('html_success_msg', await getPugMessage('success_pug', {url: content.contentroot + file.fs_name + '/' + file.filename, text: file.filename}))
     } else {
-        res.status(400)
-        res.render('upload', {
-            fail: "nullfile"
-        })
+        req.flash('error_msg', await getMessage('nullfile'))
     }
+    res.redirect(303, content.uploadroot)
 })
 
 const contentRouter = express.Router()
@@ -77,7 +83,7 @@ contentRouter.get('/', async (req, res) => {
     let names = []
     for (const file of await content.getFilesFromDatabase()) {
         if (file.database) {
-            names.push([file.fs_name + '/' + file.filename, file.filename + " (" + file.id + ")", file.fs_name, true, file.filename, file.alt, file.title])
+            names.push([file.fs_name + '/' + file.filename, file.filename + " (" + file.id + ")", file.fs_name, true, file.filename, file.alt, file.title, file.uploader_name, file.modifier_name])
         } else {
             names.push([file.fs_name, file.filename, file.fs_name, false, file.filename])
         }
@@ -89,17 +95,24 @@ contentRouter.get('/', async (req, res) => {
 // This happens if a file is not found... We try to find it!
 contentRouter.get('/:id', async (req, res) => {
     const id = req.params.id
-    let file = content.contentroot + await content.findFileID(id)
+    const found_id = await content.findFileID(id)
 
-    if (req.fancyname !== undefined) {
-        file += '/' + req.fancyname
+    // Redirect if the file is found, and if the file is found, only permanently redirect if the file ID is a proper UUID.
+    if (!found_id) {
+        res.sendStatus(404)
+    } else {
+        let file = content.contentroot + found_id
+
+        if (req.fancyname !== undefined) {
+            file += '/' + req.fancyname
+        }
+
+        if (uuid.validate(content.noExtID(id))) {
+            res.redirect(301, file)
+        } else {
+            res.redirect(302, file)
+        }
     }
-
-    // Redirect if the file is found, and if the file is found, only redirect if the file ID is a proper UUID.
-    if (file)
-        if (uuid.validate(content.noExtID(id))) res.redirect(301, file)
-        else res.redirect(302, file)
-    else res.sendStatus(404)
 })
 
 contentRouter.get('/:id/:name', async (req, res) => {
@@ -206,6 +219,7 @@ contentRouter.post('/:id', async (req, res)=> {
                     return
                 }
             }
+            await content.queryDatabase("UPDATE files SET modifier_userid = ? WHERE uuid = UNHEX(?)", [req.user, idhex])
             break;
         default:
     }

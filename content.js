@@ -9,6 +9,7 @@ import config from "./config/config";
 const database = require('./database')
 
 export const contentroot = '/content/'
+export const uploadroot = '/upload/'
 
 /**
  * Run a query on the database, and return the result as a promise.
@@ -59,10 +60,10 @@ export async function listFiles() {
  * Run a database query of a file in the database.
  *
  * @param id The UUID of the file to look up in the database.
- * @returns {Promise<*>} A query result. Results are, in order... filename, title text, and alt text.
+ * @returns {Promise<*>} A query result. Results are, in order... filename, title text, alt text, uploader user ID, modifier user ID.
  */
 export async function getFileFromDatabase(id) {
-    return queryDatabase('SELECT filename, title_text, alt_text FROM files WHERE uuid = UNHEX(?)', [id.replaceAll('-', '')])
+    return queryDatabase('SELECT filename, title_text, alt_text, uploader_userid, modifier_userid FROM files WHERE uuid = UNHEX(?)', [id.replaceAll('-', '')])
 }
 
 /**
@@ -75,6 +76,12 @@ export async function getFileFromDatabase(id) {
  *  * filename: The filename of the file
  *  * title: the title text of the file
  *  * alt: the alt text of the file
+ *  * uploader_id: file uploader user ID
+ *  * uploader_name: the name used for the file uploader
+ *  * modifier_id: file modifier user ID
+ *  * modifier_name: name used for the file modifier
+ *
+ *  For the uploader and modifier, the "name" can be either a username or a nickname or full name, or even an email, do not rely on it!
  *
  * @param id The ID of the file (with or without extension)
  * @param skip_check Skip any checks for if it is a real file or not. If true requires the id to have the file extention.
@@ -97,6 +104,15 @@ export async function getFileFull(id, skip_check) {
             entry.filename = result[0].filename
             entry.title = result[0].title_text
             entry.alt = result[0].alt_text
+            // Try to get the user information...
+            if (result[0].uploader_userid != null) {
+                entry.uploader_id = result[0].uploader_userid
+                entry.uploader_name = (await queryDatabase('SELECT user_login FROM users WHERE id = ?', [entry.uploader_id]))[0].user_login
+            }
+            if (result[0].modifier_userid != null) {
+                entry.modifier_id = result[0].modifier_userid
+                entry.modifier_name = (await queryDatabase('SELECT user_login FROM users WHERE id = ?', [entry.modifier_id]))[0].user_login
+            }
         } else {
             entry.database = false
         }

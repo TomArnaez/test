@@ -8,20 +8,7 @@ block content
     p
         a(href='/content') View all uploaded files
 
-    if result
-        h2 File Upload Successful!
-        p Access the file at #[a(href=result.url) #{result.name}]
-
-        h2 Upload another file...
-
-    if fail
-        h2 File Upload Unsuccessful!
-        if fail === "nullfile"
-            p Double check to make sure you have actually selected a file!
-        else
-            p We do not know why this happened. Please try again later.
-
-        h2 Try again...
+    include ./partial/msg
 
     form(action='/upload', method='POST', enctype="multipart/form-data")
         label(for="filename")="Override file name: "
