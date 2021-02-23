@@ -35,7 +35,7 @@ function getUniqueID(){
     const reference = 'RE'
     const id = generateUniqueId({
         excludeSymbols: ['0'],
-        length: 7,
+        length: 8,
         useLetters: false
     }) ;
     return reference.concat(id);
@@ -55,7 +55,7 @@ function getTime() {
             date.getMinutes()
             + ':' +
             date.getSeconds();
-}
 
+}
 
 module.exports = router
