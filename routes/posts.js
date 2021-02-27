@@ -12,7 +12,10 @@ router.get('/:slug/:id', function(req, res, next) {
         });
 
         resp.on("end", () => {
-            const json = JSON.parse(data)
+            let json = JSON.parse(data)
+
+            // Replace the line breaks added (potentially) by tinymce
+            json.html = json.html.replace("/n", "<br>");
             console.log(json);
             const obj = { html: json.html};
             res.render('post', obj);
