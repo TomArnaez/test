@@ -27,7 +27,6 @@ router.get('/', function(req, res, next) {
                     next_page: "search?q=" + title + "&page=" + (parseInt(page) + 1),
                     prev_page: "search?q=" + title + "&page=" + (parseInt(page) - 1)};
                 res.render('search', obj);
-
             })
         });
     } else {

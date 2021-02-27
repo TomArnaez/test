@@ -35,3 +35,16 @@ exports.findAll = (req, res) => {
             });
         });
 };
+
+exports.findOne = (req, res) => {
+    const id = req.params.id
+    Post.findByPk(id)
+        .then(data => {
+            res.send(data);
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Error retrieving Post with id=" + id
+             });
+        });
+}

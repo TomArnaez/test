@@ -13,7 +13,6 @@ router.get('/', function(req, res, next) {
 
 module.exports = router;
 
-
 function getDatabaseVersion() {
   var db = require('../database.js');
   return new Promise(function (resolve, reject){
