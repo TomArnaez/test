@@ -49,7 +49,7 @@ block content
         ul
             each result in results
                 li
-                    a(href="/") #{result.title}
+                    a(href=result.url) #{result.title}
                 ul
                     li #{result.text}
                 hr

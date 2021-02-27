@@ -19,8 +19,15 @@ router.get('/', function(req, res, next) {
                 data += d
             })
             resp.on("end", () => {
-                const json = JSON.parse(data)
+                let json = JSON.parse(data);
+
+                // Add the page url for each search result
+                json.posts.forEach(post => {
+                    post['url'] = "posts/" + post.id;
+                });
+
                 console.log(json);
+
                 const resultsString = "" +  maybePluralize(json.totalItems, "result") + ' for query: "' + title + '"';
                 const obj = {search: true, searchQuery: title, resultsString: resultsString, results: json.posts,
                     page_number: parseInt(json.currentPage + 1), total_pages: json.totalPages, count: json.totalItems,
