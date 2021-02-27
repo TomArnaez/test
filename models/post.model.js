@@ -16,7 +16,14 @@ module.exports = (sequelize, Sequelize) => {
         },
         slug: {
             type: Sequelize.STRING
-        }, },
+        },
+        created_on: {
+            type: Sequelize.DATE
+        },
+        last_modified: {
+            type: Sequelize.DATE
+        },
+        },
     {
         timestamps: false
     });
