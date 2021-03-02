@@ -1,5 +1,6 @@
 const db = require("../models");
 const Post = db.Post;
+const Term = db.Term;
 const Op = db.Sequelize.Op;
 
 const getPagination = (page, size) => {
@@ -23,7 +24,7 @@ exports.findAll = (req, res) => {
 
     const { limit, offset } = getPagination(page, size);
 
-    Post.findAndCountAll({ where: condition, limit, offset })
+    Post.findAndCountAll({ where: condition, limit, offset, include: Term})
         .then(data => {
             const response = getPagingData(data, page, limit);
             res.send(response);
@@ -38,7 +39,8 @@ exports.findAll = (req, res) => {
 
 exports.findOne = (req, res) => {
     const id = req.params.id
-    Post.findByPk(id)
+    //Post.findByPk(id)
+    Post.findOne({where: {id: id}, include: Term})
         .then(data => {
             res.send(data);
         })

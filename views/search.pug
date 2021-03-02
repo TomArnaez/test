@@ -48,6 +48,7 @@ block content
         p Page #{page_number} of #{total_pages}
         ul
             each result in results
+                p Posted on #{result.created_on} by tom
                 li
                     a(href=result.url) #{result.title}
                 ul
