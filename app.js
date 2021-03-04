@@ -10,6 +10,7 @@ const passport = require('passport');
 require("./passport")(passport)
 
 var indexRouter = require('./routes/index');
+var editRouter = require('./routes/edit.js');
 var adminLoginRouter = require('./routes/admin_login');
 var adminDashboardRouter = require('./routes/admin_dashboard');
 
@@ -25,6 +26,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
+
 
 //express session
 app.use(session({
@@ -45,6 +48,7 @@ app.use((req,res,next)=> {
 })
 
 app.use('/', indexRouter);
+app.use('/edit', editRouter);
 app.use('/admin', adminLoginRouter);
 app.use('/admin/dashboard', adminDashboardRouter);
 
