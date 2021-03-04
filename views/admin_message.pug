@@ -10,8 +10,22 @@ di.contact
         li= message[i].title
         li= message[i].message
         li= message[i].time
+        input(type='radio' name='userMessage' value=message[i].custom_id)
         br
     -}
+
+    form(method='POST' action='/admin/message/send')
+        p
+            label Message ID:
+            div
+            input(name='id' minlength=10 maxlength=10 required=true)
+        p.full
+            label Message Body:
+            div
+            textarea(name='message' minlength=20 rows='8' cols='30' required=true)
+        p.full
+            div
+            button(type='submit') Submit
 
 
 

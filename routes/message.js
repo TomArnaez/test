@@ -37,6 +37,26 @@ router.post('/message/send', function(req,res){
     });
 });
 
+
+router.post('/admin/message/send', function(req,res){
+    const currentTime = getTime();
+    let email = null;
+
+    db.query("UPDATE messages SET response = ?, response_time = ? WHERE custom_id = ?",
+        [`${req.body.message}`, currentTime, `${req.body.id}`], function (err, result){
+            if (err) {
+                req.flash('error_msg', 'No database connection.');
+                res.redirect("/admin/message");
+            }
+            else{
+                req.flash('success_msg', 'Your Message Has Been Sent');
+                getMessages();
+                res.redirect("/admin/message");
+            }
+        });
+});
+
+
 async function getMessages(){
 
     await db.query("SELECT * FROM messages WHERE response IS NULL", function(err, result)
