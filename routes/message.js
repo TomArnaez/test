@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../database.js');
 const generateUniqueId = require('generate-unique-id');
-
+let message;
 
 /* GET Message page. */
 router.get('/message', function(req, res) {
@@ -10,10 +10,11 @@ router.get('/message', function(req, res) {
 });
 
 /* GET Message Admin Panel. */
-router.get('/admin/message', function(req,res)
+router.get('/admin/message', async function(req,res)
 {
-   res.render('admin_message');
-   getData();
+    await getMessages().then(()=>{
+        res.render('admin_message', {message: message});
+    }).catch((e)=> console.log(e));
 });
 
 // save messages in the database
@@ -23,7 +24,7 @@ router.post('/message/send', function(req,res){
     let email = null;
     if(`${req.body.email}` !== '') { email = `${req.body.email}`; }
 
-    db.query("INSERT INTO messages VALUE (DEFAULT,? ,? ,? ,? ,?)",
+    db.query("INSERT INTO messages VALUE (DEFAULT,? ,? ,? ,? ,?,NULL,NULL)",
         [customID, email, `${req.body.title}`,`${req.body.message}`, currentTime ], function (err, result){
         if (err) {
             req.flash('error_msg', 'No database connection.');
@@ -36,13 +37,18 @@ router.post('/message/send', function(req,res){
     });
 });
 
-function getData()
-{
-    db.query("SELECT * FROM messages WHERE response IS NULL", function(err, result)
+async function getMessages(){
+
+    await db.query("SELECT * FROM messages WHERE response IS NULL", function(err, result)
     {
-        console.log(result);
+        if(err) throw err
+        if(result.length > 0)
+            message = result;
+        else message = null;
     });
 }
+
+
 
 // generating unique id for the users
 function getUniqueID(){
@@ -72,4 +78,4 @@ function getTime() {
 
 }
 
-module.exports = router
+module.exports = router;
