@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../database.js');
 const generateUniqueId = require('generate-unique-id');
-let message;
+let message = null;
 
 /* GET Message page. */
 router.get('/message', function(req, res) {
@@ -10,12 +10,12 @@ router.get('/message', function(req, res) {
 });
 
 /* GET Message Admin Panel. */
-router.get('/admin/message', async function(req,res)
-{
-    await getMessages().then(()=>{
+getMessages().then(()=>{
+    router.get('/admin/message', async function(req,res)
+    {
         res.render('admin_message', {message: message});
-    }).catch((e)=> console.log(e));
-});
+    });
+})
 
 // save messages in the database
 router.post('/message/send', function(req,res){
