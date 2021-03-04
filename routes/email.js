@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 const app = express();
 const config = require('../config/config.js');
+const fetch = require('node-fetch');
+const { stringify } = require('querystring');
 
 /* GET Contact page. */
 router.get('/contact', function(req, res) {
@@ -13,6 +15,7 @@ router.get('/contact', function(req, res) {
 // Body Parser Middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
 
 
 router.post('/contact/send', (req, res) => {
@@ -59,6 +62,7 @@ router.post('/contact/send', (req, res) => {
         res.redirect("/contact");
     });
 });
+
 
 
 module.exports = router;

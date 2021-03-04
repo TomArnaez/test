@@ -1,6 +1,7 @@
 doctype html
 head
     meta(charset='UTF-8')
+    script(src='https://www.google.com/recaptcha/api.js' async='' defer='')
 di.contact
     include ./partial/msg
     h3 Send your message anonymously
@@ -9,9 +10,15 @@ di.contact
             label Email Address: (This field is optional)
             div
             input(type='email' name='email' required=false)
+
+        p
+            label Message Title:
+            div
+            input(name='title' minlength=5 maxlength=30 required=true)
         p.full
             label Message Body:
             div
             textarea(name='message' minlength=20 rows='8' cols='30' required=true)
         p.full
+            div
             button(type='submit') Submit

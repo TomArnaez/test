@@ -21,11 +21,13 @@
     "jsonwebtoken": "^8.5.1",
     "morgan": "~1.9.1",
     "mysql": "*",
+    "node-fetch": "^2.6.1",
     "nodemailer": "5.1.1",
     "nodemailer-mailgun-transport": "1.4.0",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
-    "pug": "*"
+    "pug": "*",
+    "querystring": "^0.2.1"
   },
   "devDependencies": {
     "chai": "^4.2.0",

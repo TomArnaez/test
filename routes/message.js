@@ -16,8 +16,8 @@ router.post('/message/send', function(req,res){
     let email = null;
     if(`${req.body.email}` !== '') { email = `${req.body.email}`; }
 
-    db.query("INSERT INTO messages VALUE (DEFAULT,? ,? ,? ,?)",
-        [customID, email, `${req.body.message}`, currentTime ], function (err, result){
+    db.query("INSERT INTO messages VALUE (DEFAULT,? ,? ,? ,? ,?)",
+        [customID, email, `${req.body.title}`,`${req.body.message}`, currentTime ], function (err, result){
         if (err) {
             req.flash('error_msg', 'No database connection.');
             res.redirect("/message");

@@ -6,15 +6,14 @@ di.contact
     h2 Email Us
     form(method='POST' action='contact/send')
         h3  * required
-
         p
             label * Full Name:
             div
-            input(type='text' name='name' minlength=5 required=true)
+            input(type='text' id='name' name='name' minlength=5 required=true)
         p
             label * Email Address:
             div
-            input(type='email' name='email' required=true)
+            input(type='email' id= 'email' name='email' required=true)
         p
             label(for='phone') Phone Number: (format: 07xxxxxxxxx or 020xxxxxxxx)
             br
@@ -22,10 +21,10 @@ di.contact
         p
             label * Message Title:
             div
-            input(type='text' name='title' minlength=5 required=true)
+            input(type='text' id='title' name='title' minlength=5 required=true)
         p.full
             label * Message Body:
             div
-            textarea(name='message' minlength=20 rows='8' cols='30' required=true)
+            textarea(name='message' id='message' minlength=20 rows='8' cols='30' required=true)
         p.full
             button(type='submit') Submit
