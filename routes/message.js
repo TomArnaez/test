@@ -9,7 +9,14 @@ router.get('/message', function(req, res) {
     res.render('message');
 });
 
+/* GET Message Admin Panel. */
+router.get('/admin/message', function(req,res)
+{
+   res.render('admin_message');
+   getData();
+});
 
+// save messages in the database
 router.post('/message/send', function(req,res){
     const customID = getUniqueID();
     const currentTime = getTime();
@@ -29,6 +36,13 @@ router.post('/message/send', function(req,res){
     });
 });
 
+function getData()
+{
+    db.query("SELECT * FROM messages WHERE response IS NULL", function(err, result)
+    {
+        console.log(result);
+    });
+}
 
 // generating unique id for the users
 function getUniqueID(){
