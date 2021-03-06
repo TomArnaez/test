@@ -29,6 +29,15 @@ module.exports = (sequelize, DataTypes) => {
         termSlug: {
             type: DataTypes.STRING,
             unique: true
+        },
+        url: {
+            type: DataTypes.VIRTUAL,
+            get() {
+                return `/posts/${this.termSlug}`;
+            },
+            set(value) {
+                throw new Error("Do not try to set the 'fullName' value!'");
+            }
         }
     }, {
         timestamps: false

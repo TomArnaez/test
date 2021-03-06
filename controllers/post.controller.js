@@ -19,12 +19,14 @@ const getPagingData = (data, page, limit) => {
 }
 
 exports.findAll = (req, res) => {
-    const { page, size, title } = req.query
-    var condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+    const { page, size, title, category} = req.query
+    let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+    let categoryCondition = category ? { termSlug: category} : null;
+    console.log(category);
 
     const { limit, offset } = getPagination(page, size);
 
-    Post.findAndCountAll({ where: condition, limit, offset, include: Term})
+    Post.findAndCountAll({ where: condition, limit, offset, include: { model: Term, as: "terms", where: categoryCondition}})
         .then(data => {
             const response = getPagingData(data, page, limit);
             res.send(response);
@@ -42,11 +44,12 @@ exports.findOne = (req, res) => {
     //Post.findByPk(id)
     Post.findOne({where: {id: id}, include: Term})
         .then(data => {
+            console.log(data.url);
             res.send(data);
         })
         .catch(err => {
             res.status(500).send({
-                message: "Error retrieving Post with id=" + id
+                message: "Error retrieving Post with id: " + id
              });
         });
 }

@@ -1,3 +1,5 @@
+const { DataTypes } = require("sequelize");
+
 module.exports = (sequelize, Sequelize) => {
     const Post = sequelize.define('post', {
         id: {
@@ -23,6 +25,15 @@ module.exports = (sequelize, Sequelize) => {
         last_modified: {
             type: Sequelize.DATE
         },
+        url: {
+            type: DataTypes.VIRTUAL,
+            get() {
+                return `/posts/${this.terms[0].termSlug}/${this.id}/${this.slug}`;
+            },
+            set(value) {
+                throw new Error("Do not try to set the 'fullName' value!'");
+            }
+        }
         },
     {
         timestamps: false

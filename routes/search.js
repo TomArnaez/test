@@ -24,7 +24,6 @@ router.get('/', function(req, res, next) {
                 // Add the page url for each search result
                 json.posts.forEach(post => {
                     let category = post["terms"][0]["termSlug"]
-                    post['url'] = category + "/" + post.id + "/" + post.slug;
                 });
 
                 console.log(json);
