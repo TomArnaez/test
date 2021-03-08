@@ -4,12 +4,8 @@ head
 di.contact
     include ./partial/msg
     h3 Send your message anonymously
+    h4 Logged in as USER_ID: #{user_id}
     form(method='POST' action='/message/send')
-        p
-            label Email Address: (This field is optional)
-            div
-            input(type='email' name='email' required=false)
-
         p
             label Message Title:
             div

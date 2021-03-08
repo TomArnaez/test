@@ -4,16 +4,18 @@ head
 di.contact
     include ./partial/msg
     h3 Messages Admin Panel
+    -if(message == null){
+    p No message
+    -}else{
     - for(let i = 0; i < message.length; i++){
-        li= message[i].custom_id
-        li= message[i].email_address
-        li= message[i].title
-        li= message[i].message
-        li= message[i].time
+        li User ID: #{message[i].user_id}
+        li Message ID: #{message[i].custom_id}
+        li Title: #{message[i].title}
+        li Message: #{message[i].message}
+        li Time: #{message[i].time}
         input(type='radio' name='userMessage' value=message[i].custom_id)
         br
-    -}
-
+    -}}
     form(method='POST' action='/admin/message/send')
         p
             label Message ID:
@@ -23,6 +25,9 @@ di.contact
             label Message Body:
             div
             textarea(name='message' minlength=20 rows='8' cols='30' required=true)
+
+        input(type='checkbox' name='post' value='post')
+        p publish in post page
         p.full
             div
             button(type='submit') Submit
