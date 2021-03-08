@@ -68,13 +68,16 @@ router.post('/contact/send', (req, res) => {
  *  in order to use this method, const email = require('./email.js'), then do email.sendEmail(a,b,c)
  *  where a is the list of receivers in a sting, b is the title of the message and c is the actual message
  *  you can use html as the message body
+ * you can also cc someone if you wish
  */
-router.sendEmail = function sendEmail(receiver, title, message){
+router.sendEmail = function sendEmail(receiver, title, message, cc, bcc){
 
     // setup email data with unicode symbols
     let mailOptions = {
         from: '"Information Hub" <informationhub.kings@gmail.com>', // sender address
         to: receiver, // list of receivers
+        cc: cc,
+        bcc: bcc,
         subject: title, // Subject
         text: 'Nothing for now!', // text body
         html: message // html body

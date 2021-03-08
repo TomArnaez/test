@@ -63,7 +63,8 @@ router.post('/admin/message/send', function(req,res){
                 res.redirect("/admin/message");
             }
             else {
-                db.query("SELECT user_email FROM messages JOIN users ON messages.user_id = users.id WHERE custom_id = ?", [`${req.body.id}`], function (err, result) {
+                db.query("SELECT user_email FROM messages JOIN users ON messages.user_id = users.id WHERE custom_id = ?",
+                    [`${req.body.id}`], function (err, result) {
                     if (err) {
                     } else {
                         userEmail = result[0].user_email;
@@ -72,7 +73,8 @@ router.post('/admin/message/send', function(req,res){
                             req.flash('error_msg', `Email Wasn't sent :(`);
                         }else
                         {
-                            email.sendEmail(userEmail, 'Answer to your message: '.concat(`${req.body.id}`), `${req.body.message}`);
+                            email.sendEmail(userEmail, 'Answer to your message: '.concat(`${req.body.id}`),
+                                `${req.body.message}`);
                         }
                     }
                 });
