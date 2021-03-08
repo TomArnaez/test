@@ -25,6 +25,12 @@ module.exports = (sequelize, Sequelize) => {
         last_modified: {
             type: Sequelize.DATE
         },
+        author: {
+            type: DataTypes.VIRTUAL,
+            get() {
+                return "USER_PLACEHOLDER";
+            }
+        },
         url: {
             type: DataTypes.VIRTUAL,
             get() {
