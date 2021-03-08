@@ -3,25 +3,30 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "test": "mocha"
+    "start": "node -r esm ./bin/www",
+    "test": "mocha -r esm"
   },
   "dependencies": {
-    "bcrypt": "^5.0.1",
-    "connect-flash": "^0.1.1",
+    "bcrypt": "*",
+    "connect-flash": "*",
     "cookie-parser": "*",
     "debug": "*",
+    "esm": "*",
     "express": "*",
-    "express-session": "^1.17.1",
+    "express-session": "*",
     "http-errors": "*",
-    "jquery": "^3.5.1",
-    "tinymce": "^5.7.0",
-    "jsonwebtoken": "^8.5.1",
+    "jquery": "*",
+    "jsonwebtoken": "*",
     "morgan": "*",
+    "multer": "*",
     "mysql": "*",
-    "passport": "^0.4.1",
-    "passport-local": "^1.0.0",
-    "pug": "*"
+    "passport": "*",
+    "passport-local": "*",
+    "pug": "*",
+    "sanitize-filename": "*",
+    "tinymce": "*",
+    "unique-filename": "*",
+    "uuid": "*"
   },
   "devDependencies": {
     "chai": "*",
