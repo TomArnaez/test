@@ -3,6 +3,8 @@ const router = express.Router();
 const db = require('../database.js');
 const generateUniqueId = require('generate-unique-id');
 let message = null;
+// const email = require('./email.js');
+
 
 /* GET Message page. */
 router.get('/message', function(req, res) {
@@ -13,7 +15,13 @@ router.get('/message', function(req, res) {
 getMessages().then(()=>{
     router.get('/admin/message', async function(req,res)
     {
-        res.render('admin_message', {message: message});
+        if(req.isAuthenticated()){
+            res.render('admin_message', {message: message});
+        }
+        else
+        {
+            res.render('login');
+        }
     });
 })
 
@@ -50,7 +58,6 @@ router.post('/admin/message/send', function(req,res){
             }
             else{
                 req.flash('success_msg', 'Your Message Has Been Sent');
-                getMessages();
                 res.redirect("/admin/message");
             }
         });
@@ -67,8 +74,6 @@ async function getMessages(){
         else message = null;
     });
 }
-
-
 
 // generating unique id for the users
 function getUniqueID(){

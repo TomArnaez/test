@@ -4,8 +4,17 @@ const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 const app = express();
 const config = require('../config/config.js');
-const fetch = require('node-fetch');
-const { stringify } = require('querystring');
+
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: config.email.username, //username
+        pass: config.email.password  // password
+    },
+    tls:{
+        rejectUnauthorized:false  //bypass the security in localhost
+    }
+});
 
 /* GET Contact page. */
 router.get('/contact', function(req, res) {
@@ -32,17 +41,6 @@ router.post('/contact/send', (req, res) => {
     <p>${req.body.message}</p>
   `;
 
-    let transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: config.email.username, //username
-            pass: config.email.password  // password
-        },
-        tls:{
-            rejectUnauthorized:false  //bypass the security in localhost
-        }
-    });
-
     // setup email data with unicode symbols
     let mailOptions = {
         from: '"Information Hub" <informationhub.kings@gmail.com>', // sender address
@@ -63,6 +61,33 @@ router.post('/contact/send', (req, res) => {
     });
 });
 
+
+
+/*
+ *  Send email
+ *  in order to use this method, const email = require('./email.js'), then do email.sendEmail(a,b,c)
+ *  where a is the list of receivers in a sting, b is the title of the message and c is the actual message
+ *  you can use html as the message body
+ */
+router.sendEmail = function sendEmail(receiver, title, message){
+
+    // setup email data with unicode symbols
+    let mailOptions = {
+        from: '"Information Hub" <informationhub.kings@gmail.com>', // sender address
+        to: receiver, // list of receivers
+        subject: title, // Subject
+        text: 'Nothing for now!', // text body
+        html: message // html body
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) return console.log(error);
+
+        console.log('Message has been sent: %s', info.messageId);
+        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+
+    });
+}
 
 
 module.exports = router;
