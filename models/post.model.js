@@ -31,9 +31,27 @@ module.exports = (sequelize, Sequelize) => {
                 return `/posts/${this.terms[0].termSlug}/${this.id}/${this.slug}`;
             },
             set(value) {
-                throw new Error("Do not try to set the 'fullName' value!'");
+                throw new Error("Do not try to set the a url value!'");
             }
-        }
+        },
+        category: {
+            type: DataTypes.VIRTUAL,
+            get() {
+                return `${this.terms[0].termName}`;
+            },
+            set(value) {
+                throw new Error("Do not try to set a category value!");
+            }
+        },
+        category_url: {
+            type: DataTypes.VIRTUAL,
+            get() {
+                return `${this.terms[0].url}`;
+            },
+            set(value) {
+                throw new Error("Do not try to set a category url value!");
+            }
+        },
         },
     {
         timestamps: false

@@ -52,13 +52,12 @@ router.get('/:category/:id/:slug', function(req, res, next) {
 
         resp.on("end", () => {
             let json = JSON.parse(data)
-            console.log(json['terms'])
+            console.log(json)
 
             // Replace the line breaks added (potentially) by tinymce
             //json.html = json.html.replace("/n", "<br>");
             console.log(json);
-            const obj = { html: json.html, created_on: json.created_on, last_modified: json.last_modified};
-            res.render('post', obj);
+            res.render('post', json);
         });
     });
 });

@@ -36,7 +36,7 @@ module.exports = (sequelize, DataTypes) => {
                 return `/posts/${this.termSlug}`;
             },
             set(value) {
-                throw new Error("Do not try to set the 'fullName' value!'");
+                throw new Error("Do not try to set a url value!'");
             }
         }
     }, {
