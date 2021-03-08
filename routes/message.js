@@ -73,8 +73,16 @@ router.post('/admin/message/send', function(req,res){
                             req.flash('error_msg', `Email Wasn't sent :(`);
                         }else
                         {
-                            email.sendEmail(userEmail, 'Answer to your message: '.concat(`${req.body.id}`),
-                                `${req.body.message}`);
+                            if(`${req.body.id}`== ''){
+                                email.sendEmail(userEmail, 'Answer to your message: '.concat(`${req.body.id}`),
+                                    `${req.body.message}`);
+                            }
+                            else
+                            {
+                                email.sendEmail(userEmail, 'Answer to your message: '.concat(`${req.body.id}`),
+                                    `${req.body.message}`, `${req.body.ccEmail}`);
+                            }
+
                         }
                     }
                 });
