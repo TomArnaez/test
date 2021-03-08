@@ -61,10 +61,10 @@ export async function listFiles() {
  * Run a database query of a file in the database.
  *
  * @param id The UUID of the file to look up in the database.
- * @returns {Promise<*>} A query result. Results are, in order... filename, title text, alt text, uploader user ID, modifier user ID.
+ * @returns {Promise<*>} A query result. Results are, in order... filename, uploader user ID, modifier user ID.
  */
 export async function getFileFromDatabase(id) {
-    return queryDatabase('SELECT filename, title_text, alt_text, uploader_userid, modifier_userid FROM files WHERE uuid = UNHEX(?)', [id.replaceAll('-', '')])
+    return queryDatabase('SELECT filename, uploader_userid, modifier_userid FROM files WHERE uuid = UNHEX(?)', [id.replaceAll('-', '')])
 }
 
 /**
@@ -75,8 +75,6 @@ export async function getFileFromDatabase(id) {
  *  * id: the UUID of the file. Always present if file is in database, only sometimes present if not in the database.
  *  * fs_name: the name of the file on the filesystem / within the media folder.
  *  * filename: The filename of the file
- *  * title: the title text of the file
- *  * alt: the alt text of the file
  *  * uploader_id: file uploader user ID
  *  * uploader_name: the name used for the file uploader
  *  * modifier_id: file modifier user ID
@@ -103,8 +101,6 @@ export async function getFileFull(id, skip_check) {
         if (result.length !== 0) {
             entry.database = true
             entry.filename = result[0].filename
-            entry.title = result[0].title_text
-            entry.alt = result[0].alt_text
             // Try to get the user information...
             if (result[0].uploader_userid != null) {
                 entry.uploader_id = result[0].uploader_userid
@@ -134,8 +130,6 @@ export async function getFileFull(id, skip_check) {
  *  * id: the UUID of the file. Always present if file is in database, only sometimes present if not in the database.
  *  * fs_name: the name of the file on the filesystem / within the media folder.
  *  * filename: The filename of the file
- *  * title: the title text of the file
- *  * alt: the alt text of the file
  *
  * @returns {Promise<[]>}
  */

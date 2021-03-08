@@ -187,26 +187,6 @@ mediaRouter.post('/:id', async (req, res)=> {
                     return
                 }
             }
-            if (req.body.alt !== undefined) {
-                if (req.body.alt === "") req.body.alt = null
-                try {
-                    await media.queryDatabase("UPDATE files SET alt_text = ? WHERE uuid = UNHEX(?)", [req.body.alt, idhex])
-                } catch (e) {
-                    console.error(e)
-                    res.sendStatus(503)
-                    return
-                }
-            }
-            if (req.body.title !== undefined) {
-                if (req.body.title === "") req.body.title = null
-                try {
-                    await media.queryDatabase("UPDATE files SET title_text = ? WHERE uuid = UNHEX(?)", [req.body.title, idhex])
-                } catch (e) {
-                    console.error(e)
-                    res.sendStatus(503)
-                    return
-                }
-            }
             await media.queryDatabase("UPDATE files SET modifier_userid = ? WHERE uuid = UNHEX(?)", [req.user, idhex])
             break;
         default:
@@ -219,7 +199,7 @@ async function mediaManager(req, res) {
     let names = []
     for (const file of await media.getFilesFromDatabase()) {
         if (file.database) {
-            names.push([media.mediaroot + file.fs_name + '/' + file.filename, file.filename + " (" + file.id + ")", media.mediaroot + file.fs_name, true, file.filename, file.alt, file.title, file.uploader_name, file.modifier_name])
+            names.push([media.mediaroot + file.fs_name + '/' + file.filename, file.filename + " (" + file.id + ")", media.mediaroot + file.fs_name, true, file.filename, file.uploader_name, file.modifier_name])
         } else {
             names.push([media.mediaroot + file.fs_name, file.filename, media.mediaroot + file.fs_name, false, file.filename])
         }

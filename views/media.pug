@@ -16,19 +16,13 @@ block content
                         label Name
                         input(type='text', name='name', value=file[4])
                         br
-                        label Alt Text
-                        input(type='text', name='alt', value=file[5])
-                        br
-                        label Title Text
-                        input(type='text', name='title', value=file[6])
-                        br
                         input(type='submit', value='Update')
+                        if file[6]
+                            br
+                            label Uploaded by #{file[6]}
                         if file[7]
                             br
-                            label Uploaded by #{file[7]}
-                        if file[8]
-                            br
-                            label Last modified by #{file[8]}
+                            label Last modified by #{file[7]}
                 else
                     form(action=file[2] + '?convert', method='POST')
                         input(type='submit', value='Convert')
