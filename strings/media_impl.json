@@ -1,5 +1,9 @@
 {
   "nullfile": "File upload unsuccessful! Double check to make sure you have actually selected a file, and try again.",
   "error": "We do not know why this happened. Please try again later.",
-  "success_pug": "File Upload Successful! Access the file at #[a(href=url) #{text}]"
+  "success_pug": "File Upload Successful! Access the file at #[a(href=url) #{text}]",
+  "update_success": "File updated",
+  "delete_success": "File deleted",
+  "convert_success": "File converted",
+  "empty_name": "You cannot set a filename to be blank."
 }

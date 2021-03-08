@@ -1,5 +1,7 @@
 'use strict'
 
+import {queryDatabase} from "./media";
+
 const sanitise = require('sanitize-filename')
 const unique = require('unique-filename')
 const express = require('express')
@@ -9,10 +11,10 @@ const fsp = require('fs/promises')
 const path = require('path')
 const multer = require('multer')
 const uuid = require('uuid')
-const util = require('util');
 const pug = require('pug')
 
 const media = require('./media.js')
+const mysql = require('mysql')
 
 async function getMessage(message_name) {
     return JSON.parse(await fsp.readFile("strings/media_impl.json", "utf-8"))[message_name]
@@ -35,6 +37,22 @@ async function addNewFileToDatabase(filename, user_id) {
     return id
 }
 
+function cleanExtension(toclean) {
+    const sanitised = sanitise(toclean)
+    let extension = path.extname(sanitised)
+    if (extension === '') {
+        if (sanitised.startsWith('.')) {
+            extension = sanitised
+        } else if (sanitised === '') {
+            extension = ''
+        } else {
+            extension = '.' + sanitised
+        }
+    }
+
+    return extension
+}
+
 const storage = multer.diskStorage({
     destination: config.media.directory,
     filename: async (req, file, cb) => {
@@ -45,7 +63,10 @@ const storage = multer.diskStorage({
         // TODO: add other details to the database!
         const id = await addNewFileToDatabase(name, req.user)
 
-        const ext = path.extname(name)
+        let ext = path.extname(name)
+        if (req.body.filetype !== '' && req.body.filetype !== undefined) {
+            ext = cleanExtension(req.body.filetype)
+        }
 
         var filename = id
 
@@ -110,6 +131,11 @@ mediaRouter.get('/:id/:name', async (req, res) => {
 })
 
 mediaRouter.post('/:id', async (req, res)=> {
+    if (!req.isAuthenticated()) {
+        res.sendStatus(401)
+        return
+    }
+
     // Get the ID including file extention
     const id = req.params.id
     // Get the UUID
@@ -148,6 +174,7 @@ mediaRouter.post('/:id', async (req, res)=> {
                 res.sendStatus(503)
                 return
             }
+            req.flash('success_msg', await getMessage('delete_success'))
             break;
         case "convert":
             try {
@@ -157,7 +184,7 @@ mediaRouter.post('/:id', async (req, res)=> {
                 const new_id = await addNewFileToDatabase(id)
 
                 try {
-                    // Rename the file to match the IID
+                    // Rename the file to match the UUID
                     const new_filename = new_id + ext
                     await fsp.rename(path.join(config.media.directory, id), path.join(config.media.directory, new_filename))
                 } catch (e) {
@@ -170,24 +197,80 @@ mediaRouter.post('/:id', async (req, res)=> {
                 res.sendStatus(503)
                 return
             }
+
+            req.flash('success_msg', await getMessage('convert_success'))
             break;
 
         case "update":
             if (req.body.name === "") {
-                res.sendStatus(400)
                 console.error("Someone tried to set a filename to empty!", req)
-                return
+
+                req.flash('error_msg', await getMessage('empty_name'))
+
+                break
             }
+
+            async function updateQuery(data, idhex) {
+                const data_keys = Object.keys(data)
+                const parts = []
+                let str = 'UPDATE files SET '
+                if (data_keys.length > 0) {
+                    let first = true
+                    for (const column of data_keys) {
+                        parts.push(data[column])
+                        if (first) {
+                            first = false
+                        } else {
+                            str += ', '
+                        }
+                        str += mysql.escapeId(column) + ' = ?'
+                    }
+
+                    str += ' WHERE uuid = UNHEX(?)'
+                    parts.push(idhex)
+
+                    return await queryDatabase(str, parts)
+                }
+            }
+
+            let data = {}
             if (req.body.name !== undefined) {
+                const original_name = (await media.getFileFromDatabase(idnoext))[0].filename
+                const new_name = sanitise(req.body.name)
+                if (new_name !== original_name) {
+                    data.filename = new_name
+                }
+            }
+
+            let modified = Object.keys(data).length > 0
+
+            if (req.body.filetype !== undefined) {
+                // Get a reasonable extension from the human-provided input
+                const extension = cleanExtension(req.body.filetype)
+
+                if (path.extname(id) !== extension) {
+                    // Now try to modify the actual filesystem...
+                    await fsp.rename(path.join(config.media.directory, id), path.join(config.media.directory, idnoext + extension))
+                    modified = true
+                }
+            }
+
+            if (modified) {
+                data.modifier_userid = req.user
+
                 try {
-                    await media.queryDatabase("UPDATE files SET filename = ? WHERE uuid = UNHEX(?)", [sanitise(req.body.name), idhex])
+                    // Generate the query and run it...
+                    await updateQuery(data, idhex)
                 } catch (e) {
                     console.error(e)
                     res.sendStatus(503)
                     return
                 }
+
+                // If it works, then we tell the user.
+                req.flash('success_msg', await getMessage('update_success'))
             }
-            await media.queryDatabase("UPDATE files SET modifier_userid = ? WHERE uuid = UNHEX(?)", [req.user, idhex])
+
             break;
         default:
     }
@@ -199,7 +282,7 @@ async function mediaManager(req, res) {
     let names = []
     for (const file of await media.getFilesFromDatabase()) {
         if (file.database) {
-            names.push([media.mediaroot + file.fs_name + '/' + file.filename, file.filename + " (" + file.id + ")", media.mediaroot + file.fs_name, true, file.filename, file.uploader_name, file.modifier_name])
+            names.push([media.mediaroot + file.fs_name + '/' + file.filename, file.filename + " (" + file.id + ")", media.mediaroot + file.fs_name, true, file.filename, file.filetype, file.uploader_name, file.modifier_name])
         } else {
             names.push([media.mediaroot + file.fs_name, file.filename, media.mediaroot + file.fs_name, false, file.filename])
         }

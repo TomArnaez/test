@@ -75,6 +75,7 @@ export async function getFileFromDatabase(id) {
  *  * id: the UUID of the file. Always present if file is in database, only sometimes present if not in the database.
  *  * fs_name: the name of the file on the filesystem / within the media folder.
  *  * filename: The filename of the file
+ *  * filetype: The file type (as the file extension with dot)
  *  * uploader_id: file uploader user ID
  *  * uploader_name: the name used for the file uploader
  *  * modifier_id: file modifier user ID
@@ -90,7 +91,8 @@ export async function getFileFull(id, skip_check) {
     const file = skip_check ? id : await findFileID(id)
 
     let entry = {
-        fs_name: file
+        fs_name: file,
+        filetype: path.extname(file)
     }
 
     const idnoext = noExtID(file)

@@ -5,6 +5,8 @@ block vars
 block content
     h1=title
 
+    include ./partial/msg
+
     a(href='/admin/upload') Upload File
 
     ul
@@ -15,6 +17,9 @@ block content
                     form(action=file[2] + '?update', method='POST')
                         label Name
                         input(type='text', name='name', value=file[4])
+                        br
+                        label File Type
+                        input(type='text', name='filetype', value=file[5])
                         br
                         input(type='submit', value='Update')
                         if file[6]
