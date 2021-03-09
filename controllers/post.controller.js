@@ -21,13 +21,16 @@ const getPagingData = (data, page, limit) => {
 exports.findAll = (req, res) => {
     const { page, size, title, category} = req.query
     let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
-    let categoryCondition = category ? { termSlug: category} : null;
+    let categoryCondition = category ? { [Op.or]: [{termSlug: category}, {termType: 'tag'}] } : null;
     console.log(category);
 
     const { limit, offset } = getPagination(page, size);
 
-    Post.findAndCountAll({ where: condition, limit, offset, include: { model: Term, as: "terms", where: categoryCondition}})
+    Post.findAndCountAll({ where: condition, limit, offset, include: { model: Term, as: "terms"}})
         .then(data => {
+            if (category != null)
+                data.rows = data.rows.filter(post => post.category == category);
+            data.count = data.rows.length;
             const response = getPagingData(data, page, limit);
             res.send(response);
         })

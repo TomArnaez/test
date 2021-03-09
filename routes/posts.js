@@ -19,17 +19,13 @@ router.get('/:category', function(req, res, next) {
                         });
                         resp.on("end", () => {
                             let json = JSON.parse(data);
-                            //console.log(json);
-                            //console.log(json.posts[0].terms)
+                            console.log(json);
                             json.posts = json.posts.filter(post => post.terms[0].termSlug == req.params.category);
                             json.found = true;
                             json.categoryName = token.termName;
                             // Don't zero index
                             json.currentPage = json.currentPage + 1;
-                            json.posts.forEach(post => {
-                                let category = post["terms"][0]["termSlug"];
-                                post['category_url'] = post.terms[0].url;
-                            });
+
                             res.render('category', json);
                         });
                     });
@@ -48,15 +44,14 @@ router.get('/:category/:id/:slug', function(req, res, next) {
             data += d
         });
 
-        console.log(data);
 
         resp.on("end", () => {
             let json = JSON.parse(data)
             console.log(json)
+            console.log("HEEEY");
 
             // Replace the line breaks added (potentially) by tinymce
             //json.html = json.html.replace("/n", "<br>");
-            console.log(json);
             res.render('post', json);
         });
     });

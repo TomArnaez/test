@@ -12,6 +12,9 @@ block content
                 ul
                     li #{post.text}
                 p Category: #[a(href=post.category_url) #{post.terms[0].termName}]
+                p Tags:
+                    each tag in post.tags
+                        Hello #{tag.termName}
                 hr
         nav(aria-label='Page navigation example')
             ul.pagination

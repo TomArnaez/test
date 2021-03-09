@@ -58,6 +58,15 @@ module.exports = (sequelize, Sequelize) => {
                 throw new Error("Do not try to set a category url value!");
             }
         },
+        tags: {
+            type: DataTypes.VIRTUAL,
+            get() {
+                return this.terms.filter(term => term.termType == "tag")
+            },
+            set(value) {
+                throw new Error("Do not try to set a category url value!");
+            }
+        }
         },
     {
         timestamps: false
