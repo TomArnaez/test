@@ -68,6 +68,7 @@ router.post('/admin/message/send', function(req,res){
                     if (err) {
                     } else {
                         userEmail = result[0].user_email;
+
                         if(userEmail == '')
                         {
                             req.flash('error_msg', `Email Wasn't sent :(`);
