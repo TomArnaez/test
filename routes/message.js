@@ -21,7 +21,11 @@ getMessages().then(()=>{
     router.get('/admin/message', async function(req,res)
     {
         if(req.isAuthenticated()){
-            res.render('admin_message', {message: message});
+
+            getMessages().then(()=>{
+                res.render('admin_message', {message: message});
+            })
+            console.log(getMessages(), 'getmessages');
         }
         else
         {
@@ -83,7 +87,6 @@ router.post('/admin/message/send', function(req,res){
                                 email.sendEmail(userEmail, 'Answer to your message: '.concat(`${req.body.id}`),
                                     `${req.body.message}`, `${req.body.ccEmail}`);
                             }
-
                         }
                     }
                 });
@@ -96,7 +99,6 @@ router.post('/admin/message/send', function(req,res){
 
 
 async function getMessages(){
-
     await db.query("SELECT * FROM messages WHERE response IS NULL", function(err, result)
     {
         if(err) throw err
