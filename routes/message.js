@@ -2,37 +2,40 @@ const express = require('express');
 const router = express.Router();
 const db = require('../database.js');
 const generateUniqueId = require('generate-unique-id');
-let message = null;
 const email = require('./email.js');
 
 
 /* GET Message page. */
-router.get('/message', function(req, res) {
+// router.get('/message', function(req, res) {
+//     if(req.isAuthenticated()) {
+//         res.render('message', {user_id: req.user});
+//     }
+//     else{
+//         res.redirect('admin/login')
+//     }
+// });
+
+router.get('/message', async function(req,res)
+{
     if(req.isAuthenticated()) {
-        res.render('message', {user_id: req.user});
+        res.render('user_message', {message: await getUserMessage(req.user)});
     }
     else{
-        res.redirect('admin/login')
+        res.render('login');
     }
 });
 
 /* GET Message Admin Panel. */
-getMessages().then(()=>{
-    router.get('/admin/message', async function(req,res)
-    {
-        if(req.isAuthenticated()){
+router.get('/admin/message', async function(req,res)
+{
+    if(req.isAuthenticated()){
 
-            getMessages().then(()=>{
-                res.render('admin_message', {message: message});
-            })
-            console.log(getMessages(), 'getmessages');
-        }
-        else
-        {
-            res.render('login');
-        }
-    });
-})
+        res.render('admin_message', {message: await getMessages()});
+    }
+    else {
+        res.render('login');
+    }
+});
 
 // save messages in the database
 router.post('/message/send', function(req,res){
@@ -98,15 +101,41 @@ router.post('/admin/message/send', function(req,res){
 });
 
 
-async function getMessages(){
-    await db.query("SELECT * FROM messages WHERE response IS NULL", function(err, result)
-    {
-        if(err) throw err
-        if(result.length > 0)
-            message = result;
-        else message = null;
+router.get('/user/message', async function(req,res)
+{
+    if(req.isAuthenticated()) {
+        res.render('user_message', {message: await getUserMessage(req.user)});
+    }
+    else{
+        res.render('login');
+    }
+});
+
+
+function getMessages(){
+    return new Promise(function (resolve, reject){
+        db.query("SELECT * FROM messages WHERE response IS NULL", function(err, result) {
+            if (err) throw err
+            if (result.length > 0)
+                resolve(result);
+            else resolve(null);
+        });
     });
 }
+
+
+function getUserMessage(userID){
+    return new Promise(function (resolve,reject){
+        db.query("SELECT * FROM messages WHERE user_id = ?",[userID], function(err, result)
+        {
+            if(err) throw err
+            if(result.length > 0)
+            resolve(result);
+            else resolve(null);
+        });
+    });
+}
+
 
 // generating unique id for the users
 function getUniqueID(){
