@@ -5,6 +5,7 @@ const nodemailer = require('nodemailer');
 const app = express();
 const config = require('../config/config.js');
 
+/* Configuring the nodemailer setup */
 let transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -26,7 +27,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 
-
+/* Contact Us page */
 router.post('/contact/send', (req, res) => {
     const message = `
     <p>You have a new contact request</p>
@@ -65,10 +66,9 @@ router.post('/contact/send', (req, res) => {
 
 /*
  *  Send email
- *  in order to use this method, const email = require('./email.js'), then do email.sendEmail(a,b,c)
- *  where a is the list of receivers in a sting, b is the title of the message and c is the actual message
+ *  you can have a list of receivers in a string separated by ','
  *  you can use html as the message body
- * you can also cc someone if you wish
+ *  you can also cc and bcc someone if you wish to
  */
 router.sendEmail = function sendEmail(receiver, title, message, cc, bcc){
 

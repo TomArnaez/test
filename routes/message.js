@@ -6,15 +6,6 @@ const email = require('./email.js');
 
 
 /* GET Message page. */
-// router.get('/message', function(req, res) {
-//     if(req.isAuthenticated()) {
-//         res.render('message', {user_id: req.user});
-//     }
-//     else{
-//         res.redirect('admin/login')
-//     }
-// });
-
 router.get('/message', async function(req,res)
 {
     if(req.isAuthenticated()) {
@@ -37,6 +28,7 @@ router.get('/admin/message', async function(req,res)
     }
 });
 
+/* GET all messages */
 router.get('/admin/message/all', async function(req,res)
 {
     if(req.isAuthenticated()){
@@ -48,7 +40,7 @@ router.get('/admin/message/all', async function(req,res)
     }
 });
 
-// save messages in the database
+/* Save messages in the database */
 router.post('/message/send', function(req,res){
     const customID = getUniqueID();
     const currentTime = getTime();
@@ -66,7 +58,10 @@ router.post('/message/send', function(req,res){
     });
 });
 
-
+/*
+* Update database with new response result
+* and sends email to to author of the message
+*/
 router.post('/admin/message/send', function(req,res){
     const currentTime = getTime();
     let userEmail = '';
@@ -111,18 +106,7 @@ router.post('/admin/message/send', function(req,res){
         });
 });
 
-
-router.get('/user/message', async function(req,res)
-{
-    if(req.isAuthenticated()) {
-        res.render('user_message', {message: await getUserMessage(req.user)});
-    }
-    else{
-        res.render('login');
-    }
-});
-
-
+/* Gets unresponded messages from database */
 function getMessages(){
     return new Promise(function (resolve, reject){
         db.query("SELECT * FROM messages WHERE response IS NULL", function(err, result) {
@@ -134,7 +118,7 @@ function getMessages(){
     });
 }
 
-
+/* Gets all the messages from database */
 function getAllMessages(){
     return new Promise(function (resolve, reject){
         db.query("SELECT * FROM messages", function(err, result) {
@@ -146,7 +130,7 @@ function getAllMessages(){
     });
 }
 
-
+/* Gets the messages for a specific user */
 function getUserMessage(userID){
     return new Promise(function (resolve,reject){
         db.query("SELECT * FROM messages WHERE user_id = ?",[userID], function(err, result)
@@ -160,7 +144,7 @@ function getUserMessage(userID){
 }
 
 
-// generating unique id for the users
+// generating unique id for the messages
 function getUniqueID(){
     const reference = 'RE'
     const id = generateUniqueId({

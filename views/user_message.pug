@@ -3,7 +3,8 @@ head
     meta(charset='UTF-8')
 di.contact
     include ./partial/msg
-    h3 Messages Admin Panel
+    h3 Messages User Panel
+    h3 Your User ID is: #{message[0].user_id}
     -if(message == null){
     p No message
     -}else{
