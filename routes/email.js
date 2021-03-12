@@ -18,7 +18,7 @@ let transporter = nodemailer.createTransport({
 });
 
 /* GET Contact page. */
-router.get('/contact', function(req, res) {
+router.get('/contact', (req, res) =>{
     res.render('contact');
 });
 

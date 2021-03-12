@@ -6,8 +6,7 @@ const email = require('./email.js');
 
 
 /* GET Message page. */
-router.get('/message', async function(req,res)
-{
+router.get('/message', async (req,res) => {
     if(req.isAuthenticated()) {
         res.render('user_message', {message: await getUserMessage(req.user)});
     }
@@ -17,8 +16,7 @@ router.get('/message', async function(req,res)
 });
 
 /* GET Message Admin Panel. */
-router.get('/admin/message', async function(req,res)
-{
+router.get('/admin/message', async (req,res) => {
     if(req.isAuthenticated()){
 
         res.render('admin_message', {message: await getMessages()});
@@ -29,8 +27,7 @@ router.get('/admin/message', async function(req,res)
 });
 
 /* GET all messages */
-router.get('/admin/message/all', async function(req,res)
-{
+router.get('/admin/message/all', async (req,res) => {
     if(req.isAuthenticated()){
 
         res.render('admin_message', {message: await getAllMessages()});
@@ -41,12 +38,12 @@ router.get('/admin/message/all', async function(req,res)
 });
 
 /* Save messages in the database */
-router.post('/message/send', function(req,res){
+router.post('/message/send', (req,res) => {
     const customID = getUniqueID();
     const currentTime = getTime();
 
     db.query("INSERT INTO messages VALUE (DEFAULT,? ,? ,? ,? ,?,NULL,NULL, 0)",
-        [req.user ,customID, `${req.body.title}`,`${req.body.message}`, currentTime ], function (err, result){
+        [req.user ,customID, `${req.body.title}`,`${req.body.message}`, currentTime ], (err, result)=> {
         if (err) {
             req.flash('error_msg', 'No database connection.');
             res.redirect("/message");
@@ -62,7 +59,7 @@ router.post('/message/send', function(req,res){
 * Update database with new response result
 * and sends email to to author of the message
 */
-router.post('/admin/message/send', function(req,res){
+router.post('/admin/message/send', (req,res) => {
     const currentTime = getTime();
     let userEmail = '';
     let post = 0;
@@ -70,14 +67,14 @@ router.post('/admin/message/send', function(req,res){
 
 
     db.query("UPDATE messages SET response = ?, response_time = ?, is_public = ? WHERE custom_id = ?",
-        [`${req.body.message}`, currentTime, post, `${req.body.id}`], function (err, result){
+        [`${req.body.message}`, currentTime, post, `${req.body.id}`], (err, result)=>{
             if (err) {
                 req.flash('error_msg', 'No database connection.');
                 res.redirect("/admin/message");
             }
             else {
                 db.query("SELECT user_email FROM messages JOIN users ON messages.user_id = users.id WHERE custom_id = ?",
-                    [`${req.body.id}`], function (err, result) {
+                    [`${req.body.id}`], (err, result)=> {
                     if (err) {
                     } else {
                         userEmail = result[0].user_email;
@@ -108,8 +105,8 @@ router.post('/admin/message/send', function(req,res){
 
 /* Gets unresponded messages from database */
 function getMessages(){
-    return new Promise(function (resolve, reject){
-        db.query("SELECT * FROM messages WHERE response IS NULL", function(err, result) {
+    return new Promise((resolve, reject)=>{
+        db.query("SELECT * FROM messages WHERE response IS NULL", (err, result)=> {
             if (err) throw err
             if (result.length > 0)
                 resolve(result);
@@ -120,8 +117,8 @@ function getMessages(){
 
 /* Gets all the messages from database */
 function getAllMessages(){
-    return new Promise(function (resolve, reject){
-        db.query("SELECT * FROM messages", function(err, result) {
+    return new Promise((resolve, reject)=>{
+        db.query("SELECT * FROM messages", (err, result)=> {
             if (err) throw err
             if (result.length > 0)
                 resolve(result);
@@ -132,9 +129,8 @@ function getAllMessages(){
 
 /* Gets the messages for a specific user */
 function getUserMessage(userID){
-    return new Promise(function (resolve,reject){
-        db.query("SELECT * FROM messages WHERE user_id = ?",[userID], function(err, result)
-        {
+    return new Promise((resolve,reject)=>{
+        db.query("SELECT * FROM messages WHERE user_id = ?",[userID], (err, result)=> {
             if(err) throw err
             if(result.length > 0)
             resolve(result);
