@@ -37,6 +37,17 @@ router.get('/admin/message', async function(req,res)
     }
 });
 
+router.get('/admin/message/all', async function(req,res)
+{
+    if(req.isAuthenticated()){
+
+        res.render('admin_message', {message: await getAllMessages()});
+    }
+    else {
+        res.render('login');
+    }
+});
+
 // save messages in the database
 router.post('/message/send', function(req,res){
     const customID = getUniqueID();
@@ -115,6 +126,18 @@ router.get('/user/message', async function(req,res)
 function getMessages(){
     return new Promise(function (resolve, reject){
         db.query("SELECT * FROM messages WHERE response IS NULL", function(err, result) {
+            if (err) throw err
+            if (result.length > 0)
+                resolve(result);
+            else resolve(null);
+        });
+    });
+}
+
+
+function getAllMessages(){
+    return new Promise(function (resolve, reject){
+        db.query("SELECT * FROM messages", function(err, result) {
             if (err) throw err
             if (result.length > 0)
                 resolve(result);
