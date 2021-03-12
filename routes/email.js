@@ -26,7 +26,6 @@ router.get('/contact', function(req, res) {
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-
 /* Contact Us page */
 router.post('/contact/send', (req, res) => {
     const message = `
@@ -62,8 +61,6 @@ router.post('/contact/send', (req, res) => {
     });
 });
 
-
-
 /*
  *  Send email
  *  you can have a list of receivers in a string separated by ','
@@ -91,6 +88,5 @@ router.sendEmail = function sendEmail(receiver, title, message, cc, bcc){
 
     });
 }
-
 
 module.exports = router;
