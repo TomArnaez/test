@@ -3,13 +3,16 @@ extends layout
 append head
   script(type="application/javascript" src="/tinymce/tinymce.min.js")
   script(id='config' data-content=doc type="application/javascript" src= "/javascripts/tinymce-config.js")
+  - if (postname == null) {
+  -   var postname = "Enter Title Here"
+  -   var title = "Create New Post"
+  - }
 block content
-    h1(id='try')= postname
+    h1(id='try')= title
     form(name="editor-form", method="post")
         div.input
             span.label Post Name:
-            input(type="text", id='postLbl', name="filename", value="Enter title here")
-        br
+            input(type="text", id='postLbl', name="filename", value=postname)
         div.input
             textarea(name="content", id="my-expressjs-tinymce-app", value="Enter title here")
         br

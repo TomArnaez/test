@@ -17,7 +17,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/new', function (req, res, next) {
   if (req.isAuthenticated()) {
-      res.render('text_editor', {title: 'Content Editor', postname:'', doc: null});
+      res.render('text_editor', {title: 'Content Editor', postname:null, doc: null});
   } else {
       req.flash('error_msg', 'You are not authenticated.');
       res.redirect("/admin/login");
@@ -83,19 +83,33 @@ router.get('/:id', function (req, res, next) {
 
 })
 
-route.post('/:id', function (req, res, next) {
+router.post('/:id', function (req, res, next) {
+  const title = String(req.body.filename);
+  const data = String(req.body.content);
 
+  //inserts file into database if it doesn't already exist
+  db.query("UPDATE posts SET title = ?, html = ? WHERE id = ?;", [title, data, req.params.id], function(err, result) {
+      if (err){
+          console.log(err + ' db error when updating');
+          req.flash('error_msg', 'Error when accessing database');
+          res.redirect('/')
+      } else {
+          console.log('Sucesfully saved file');
+          req.flash('success_msg', 'Post Successfully updated');
+          res.redirect('/');
+      }
+  });
 })
 
-router.get('/:title', function (req, res) {
-  if (req.isAuthenticated()) {
-      res.redirect("/admin/dashboard");
-      //add in code to redirect to correct ID
-  } else {
-      req.flash('error_msg', 'You are not authenticated.');
-      res.redirect("/admin/login");
-  }
-})
+// router.get('/:title', function (req, res) {
+//   if (req.isAuthenticated()) {
+//       res.redirect("/admin/dashboard");
+//       //add in code to redirect to correct ID
+//   } else {
+//       req.flash('error_msg', 'You are not authenticated.');
+//       res.redirect("/admin/login");
+//   }
+// })
 
 
 
