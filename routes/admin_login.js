@@ -17,15 +17,6 @@ router.get('/login', (req, res) => {
 })
 
 /**
- * There is no ability to register in this version of the software. This is by design as only admin users should exist.
- * This may change in a future version
- */
-router.get('/register', (req, res) => {
-    req.flash('error_msg', 'You can not register.');
-    res.redirect('/admin/login');
-})
-
-/**
  * Process a login request. Passport handles the session token & login script (found in passport.js).
  */
 router.post('/login', (req, res, next) => {
@@ -218,14 +209,67 @@ router.post('/forgotpassword', (req, res) => {
     }
 })
 
-/**
- * There is no ability to register in this version of the software. This is by design as only admin users should exist.
- * This may change in a future version
- */
-router.post('/register', (req, res) => {
-    req.flash('error_msg', 'You can not register.');
-    res.redirect('/admin/login');
+router.get('/register', (req, res) => {
+    res.render('register-partA');
 })
+
+router.post('/register', (req, res) => {
+    if(req.body.code != ""){
+        res.redirect('/admin/register/' + req.body.code);
+    } else {
+        req.flash('error_msg', 'Please enter an account creation code.');
+        res.redirect('/admin/register');
+    }
+
+})
+
+router.get('/register/:token', (req, res) => {
+    isValidRegToken(req.params.token).then(function (result) {
+        if(result){
+            res.render('register-partB', { token: req.params.token });
+        } else {
+            req.flash('error_msg', 'Invalid code.');
+            res.redirect('/admin/register');
+        }
+    })
+})
+
+router.post('/register/:token', (req, res) => {
+    isValidRegToken(req.params.token).then(function (result) {
+        if (result) {
+            //create account
+
+
+            //success, redirect to login/homepage & decrement uses remaining
+            decrementRegToken(req.params.token)
+            req.flash('success_msg', 'Account created! Please login:');
+            res.redirect("/admin/login");
+        } else {
+            req.flash('error_msg', 'Invalid code.');
+            res.redirect('/admin/register');
+        }
+    })
+})
+
+function isValidRegToken(token) {
+    return new Promise(function (resolve, reject) {
+        db.query("SELECT * FROM registration_codes WHERE code = ? AND expiry > CURRENT_TIMESTAMP AND uses_remaining > 0 LIMIT 1;", [token], function (err, result) {
+            if (err) {
+                reject("No database connection.");
+            } else {
+                if (result.length > 0) {
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+            }
+        });
+    });
+}
+
+function decrementRegToken(token) {
+    db.query("UPDATE registration_codes SET uses_remaining = uses_remaining - 1 WHERE code = ?;", [token]);
+}
 
 /**
  * Process a user logout. This kills the session.
