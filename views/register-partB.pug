@@ -1,0 +1,28 @@
+extends layout
+
+block content
+    h1  Register for an account
+    include ./partial/msg
+    form(action='/admin/register/' + token method='POST')
+        div
+            label(for='username') Email
+            input(id='username' name='username' placeholder='Username')
+        div
+            label(for='fname') First Name
+            input(id='fname' name='fname' placeholder='First Name')
+        div
+            label(for='lname') Last Name
+            input(id='lname' name='lname' placeholder='Last Name')
+        div
+            label(for='newpass') Password
+            input(type='password' id='newpass' name='newpass')
+        div
+            label(for='newpass2') Confirm Password
+            input(type='password' id='newpass2' name='newpass2')
+        div
+            label(for='tos') I accept the Terms and Condition and Privacy Policy
+            input(type='checkbox' required=true id='tos' name='tos')
+        div
+            label(for='emailpref') Send me occasional updates and announcements.
+            input(type='checkbox' id='emailpref' name='emailpref')
+        button(type='submit') Submit

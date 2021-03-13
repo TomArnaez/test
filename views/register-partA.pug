@@ -1,0 +1,10 @@
+extends layout
+
+block content
+    h1  Register for an account
+    include ./partial/msg
+    form(action='/admin/register' method='POST')
+        div
+            label(for='code') Registration Code
+            input(id='code' name='code')
+        button(type='submit') Continue
