@@ -3,12 +3,19 @@ const db = require('../database.js');
 const passport = require('passport');
 var router = express.Router();
 
-//Add admin login authentication check
-
 //if /edit is used, then user is redirected to create a new edit section
 router.get('/', function(req, res, next) {
   if (req.isAuthenticated()) {
-      res.redirect("/edit/new");
+    db.query("SELECT id, title, html, created_on FROM posts;", [], function(err, result) {
+      if (err){
+          console.log(err + ' db error when updating');
+          req.flash('error_msg', 'Error when accessing database');
+          res.redirect('/')
+      } else {
+          console.log('Sucesful DB Query');
+          res.render('posts_index', {results: result});
+      }
+    });
   } else {
       req.flash('error_msg', 'You are not authenticated.');
       res.redirect("/admin/login");
@@ -48,7 +55,7 @@ router.post('/new', function (req, res) {
                   res.redirect('/')
               } else {
                   console.log('Sucesfully saved file');
-                  res.redirect('/');
+                  res.redirect('/edit');
               }
           });
       }
@@ -92,28 +99,34 @@ router.post('/:id', function (req, res, next) {
       if (err){
           console.log(err + ' db error when updating');
           req.flash('error_msg', 'Error when accessing database');
-          res.redirect('/')
+          res.redirect('/edit');
       } else {
           console.log('Sucesfully saved file');
           req.flash('success_msg', 'Post Successfully updated');
-          res.redirect('/');
+          res.redirect('/edit');
       }
   });
 })
 
-// router.get('/:title', function (req, res) {
-//   if (req.isAuthenticated()) {
-//       res.redirect("/admin/dashboard");
-//       //add in code to redirect to correct ID
-//   } else {
-//       req.flash('error_msg', 'You are not authenticated.');
-//       res.redirect("/admin/login");
-//   }
-// })
+router.post('/delete/:id', function(req, res, next) {
+  var id = req.params.id;
+  console.log("id = " + id);
+  if (id != null) {
+    db.query("DELETE FROM posts WHERE id = ?;", [id], function(err, result) {
+        if (err){
+            console.log(err + ' db error when deleting');
+            req.flash('error_msg', 'Error when accessing database');
+            res.redirect('/edit');
+        } else {
+            console.log('Sucesfully Deleted File');
+            req.flash('success_msg', 'Post Deleted');
+            res.redirect('/edit');
+        }
+    });
+  }
+})
 
 
-
-
-//// TODO: Create edit, create, update, delete functions.
+//edit, create, update, delete functions.
 
 module.exports = router;
