@@ -2,15 +2,6 @@ extends layout
 
 append head
   style(type='text/css').
-    .container {
-      padding: 2rem 0rem;
-    }
-
-    h4 {
-      margin: 2rem 0rem 1rem;
-    }
-    
-    
     .table-image {
       td, th {
         vertical-align: middle;
@@ -22,12 +13,17 @@ append head
   - function goto(html) {}
 
 block content
+
+  div(class='container-fluid')
+    h1= title
   
+  div(class='container-fluid' style='padding:2rem;')
+    a(href='/edit/new')
+      button(type='button', class='btn btn-light') New Post
   
-  
-  div(class='container')
+  div(class='container-fluid')
     div(class='row')
-      table(class='table table-bordered')
+      table(class='table table-striped')
         thead
           tr
             th(scope='col') Id
@@ -41,17 +37,15 @@ block content
               td #{item.title}
               td #{item.created_on}
               td
-                button(type='button', class='btn btn-primary') View
-                  i(class='far fa-eye')
+                a(href='/edit/view/'+item.id)
+                  button(type='button', class='btn') View
                 a(href='/edit/' + item.id)
                   button(type='button' class='btn btn-success') Edit
                 a
                   button(type='button', class='btn btn-danger', onClick='confirmDelete('+item.id+')') Delete
                 
   
-        a(href='/edit/new')
-          button(type='button') New Post
-        br
+      
   
     //- // -
     //- //   each item in results

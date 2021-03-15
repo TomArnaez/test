@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
           res.redirect('/')
       } else {
           console.log('Sucesful DB Query');
-          res.render('posts_index', {results: result});
+          res.render('posts_index', {title: 'Posts', results: result});
       }
     });
   } else {
@@ -21,6 +21,31 @@ router.get('/', function(req, res, next) {
       res.redirect("/admin/login");
   }
 });
+
+router.get('/view/:id', function (req, res, next) {
+  var post_id = req.params.id;
+  if (req.isAuthenticated()) {
+    db.query("SELECT title, html FROM posts WHERE ? IN (id) LIMIT 1;", [post_id], function(err, result) {
+      if (err) {
+        console.log("no post : " + err);
+        req.flash('error_msg', 'Error connecteing with database')
+        res.redirect('/edit/');
+      } else {
+        console.log("result length = " + result.length);
+        if (result.length != 0) {
+          console.log("post exists: " + result[0].title);
+          res.render('Post', {title: 'Post Viewer', id:post_id, postname:result[0].title, doc:result[0].html});
+        } else {
+          req.flash('error_msg', 'No post with id: \'' + post_id + '\' in database');
+          res.redirect('/edit/');
+        }
+      }
+    });
+  } else {
+      req.flash('error_msg', 'You are not authenticated.');
+      res.redirect("/admin/login");
+  }
+})
 
 router.get('/new', function (req, res, next) {
   if (req.isAuthenticated()) {
