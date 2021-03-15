@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "bootstrap": "^3.4.1",
     "connect-flash": "^0.1.1",
     "cookie-parser": "*",
     "debug": "*",
@@ -15,13 +16,13 @@
     "express-session": "^1.17.1",
     "http-errors": "*",
     "jquery": "^3.5.1",
-    "tinymce": "^5.7.0",
     "jsonwebtoken": "^8.5.1",
     "morgan": "*",
     "mysql": "*",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
-    "pug": "*"
+    "pug": "^3.0.2",
+    "tinymce": "^5.7.0"
   },
   "devDependencies": {
     "chai": "*",
