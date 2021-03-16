@@ -88,6 +88,23 @@ router.post('/new', function (req, res) {
 
 })
 
+router.get('/feed', function(req, res, next) {
+  if (req.isAuthenticated()) {
+    db.query("SELECT id, title, html, created_on FROM posts ORDER BY created_on DESC;", [], function(err, result) {
+      if (err){
+          console.log(err + ' db error when updating');
+          req.flash('error_msg', 'Error when accessing database');
+          res.redirect('/')
+      } else {
+          console.log('Sucesful DB Query');
+          res.render('feed', {title: 'Posts', results: result});
+      }
+    });
+  } else {
+      req.flash('error_msg', 'You are not authenticated.');
+      res.redirect("/admin/login");
+  }
+})
 
 //takes you to edit a post given the id
 router.get('/:id', function (req, res, next) {
@@ -150,6 +167,7 @@ router.post('/delete/:id', function(req, res, next) {
     });
   }
 })
+
 
 
 //edit, create, update, delete functions.

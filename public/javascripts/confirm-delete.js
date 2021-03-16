@@ -9,8 +9,3 @@ function confirmDelete(id) {
     // location.reload();
    }
 }
-
-function setContent(doc) {
-   var output = document.getElementById('output');
-   output.innerHTML = doc;
-}
