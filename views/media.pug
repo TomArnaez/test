@@ -1,0 +1,36 @@
+extends layout
+block vars
+    - const title = 'Media Content Manager'
+
+block content
+    h1=title
+
+    include ./partial/msg
+
+    a(href='/admin/upload') Upload File
+
+    ul
+        each file in files
+            li
+                a(href=file[0]) #{file[1]}
+                if file[3]
+                    form(action=file[2] + '?update', method='POST')
+                        label Name
+                        input(type='text', name='name', value=file[4])
+                        br
+                        label File Type
+                        input(type='text', name='filetype', value=file[5])
+                        br
+                        input(type='submit', value='Update')
+                        if file[6]
+                            br
+                            label Uploaded by #{file[6]}
+                        if file[7]
+                            br
+                            label Last modified by #{file[7]}
+                else
+                    form(action=file[2] + '?convert', method='POST')
+                        input(type='submit', value='Convert')
+                form(action=file[2] + '?delete', method='POST')
+                    input(type='submit', value='Delete')
+                br

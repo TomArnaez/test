@@ -1,14 +1,12 @@
 var express = require('express');
 var router = express.Router();
 
-
 /* GET home page. */
-router.get('/', function(req, res) {
+router.get('/', function(req, res, next) {
   getDatabaseVersion().then(function (result){
     res.render('index', { title: 'Express' , databaseVersion: result });
   });
 });
-
 
 module.exports = router;
 

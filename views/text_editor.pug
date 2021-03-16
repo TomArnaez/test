@@ -1,0 +1,15 @@
+extends layout
+
+block content
+    h1= title
+    form(name="editor-form", method="post")
+        div.input
+            span.label Post Name:
+            input(type="text", id='postLbl', name="filename", value="Enter title here")
+        div.input
+            textarea(name="content", id="my-expressjs-tinymce-app", value="Enter title here", content='<h1>gays</h1>') 
+        div.actions
+            input(type="submit", value="Post")
+
+    <script type="application/javascript" src= "/tinymce/tinymce.min.js"></script>
+    <script type="application/javascript" src= "/javascripts/tinymce-config.js"></script>

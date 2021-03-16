@@ -1,0 +1,12 @@
+extends layout
+
+//- Not in use, may be used in future. Need to add lookup function for post id or title
+
+block content
+    h1= 'Post title = '+title
+    h2= 'Post Content:'
+    //p= content
+
+    div.output
+
+    document.getElementById("output").innerHTML !{content}
