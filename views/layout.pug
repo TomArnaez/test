@@ -3,13 +3,24 @@ block vars
 html
   block head
     title= title
+
+    link(rel='stylesheet', href='/css/bootstrap.min.css')
+    script(language='javascript', src = '/js/jquery.js')
+    script(language='javascript', src = '/js/popper.min.js')
+    script(language='javascript', src = '/js/bootstrap.bundle.min.js')
+    script(language='javascript', src='/js/typeahead.bundle.min.js')
+    //script(language='javascript', src='/js/handlebars-v4.7.6.js')
+
+
     link(rel='stylesheet', href='/stylesheets/style.css')
-    link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous")
-    script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous")
-    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
-    script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js")
-  
-  
+    //link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous")
+    //script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous")
+    link(rel='stylesheet', href='/stylesheets/typeahead.css')
+    //link(rel="stylesheet" href="/js/jquery.typeahead.min.css")
+    //script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
+    //script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js")
+
+
   body
     //- NAVBAR below, to add items to navbar, add them as a li tag with class 'nav-item'
     nav(class='navbar-expand-lg bg-light navbar-light' style='padding:10px')
@@ -22,11 +33,20 @@ html
             li(class='nav-item active')
               a(class='nav-link' href='/edit/feed') Feed
             li(class='nav-item dropdown')
-              a(class='nav-link dropdown-toggle' href='/edit/' id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Posts
+              a(class='nav-link dropdown-toggle' href='/edit' id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Posts
               div(class='dropdown-menu' aria-labelledby='navbarDropdown')
-                a(class='dropdown-item' href='/edit/') View Posts
+                a(class='dropdown-item' href='/edit') View Posts
                 div(class='dropdown-divider')
                 a(class='dropdown-item' href='/edit/new') Create New Post
+            li(class='nav-item dropdown')
+              a(class='nav-link dropdown-toggle' id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Categories
+              div(class='dropdown-menu' aria-labelledby='navbarDropdown')
+                for category in categories
+                  a(class='dropdown-item' href=category.url) #{category.dataValues.termName}
+                  div(class='dropdown-divider')
+            li(class='nav-item active')
+              include search_dropdown
+
           //- Todo: add code to only show if admin
           div(class='form-inline my-2 my-lg-0')
             a(href='/admin/dashboard')

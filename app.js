@@ -6,7 +6,13 @@ const logger = require('morgan');
 
 const passport = require('passport');
 require("./passport")(passport)
+const db = require("./models");
+db.sequelize.sync();
 
+//var usersRouter = require('./routes/users');
+const searchRouter = require("./routes/search");
+const apiRouter = require("./routes/api");
+const postRouter = require("./routes/posts");
 const contactRouter = require('./routes/email');
 const messageRouter = require('./routes/message');
 
@@ -31,6 +37,13 @@ app.disable("x-powered-by");
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+// bootstrap setup
+app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')));
+app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')));
+app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery/dist')));
+app.use('/js', express.static(path.join(__dirname, 'node_modules/popper.js/dist')));
+app.use(express.static(path.join(__dirname, '/public')));
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -85,16 +98,26 @@ app.use((req,res,next)=> {
   next();
 })
 
+app.use(async (req, res, next) => {
+  const db = require("./models");
+  const Term = db.Term;
+  res.locals.categories = await Term.findAll({ where: {termType: 'category'} });
+  next();
+});
+
 app.use('/', indexRouter);
+
 app.use('/admin', adminLoginRouter);
 app.use('/admin/dashboard', adminDashboardRouter);
 app.use('/', contactRouter);
 app.use('/', messageRouter);
-
-
 app.use('/edit', editRouter);
 app.use('/admin', adminLoginRouter);
 app.use('/media', mediaRouter);
+//app.use('/users', usersRouter);
+app.use('/search', searchRouter);
+app.use('/api', apiRouter);
+app.use('/posts', postRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -111,5 +134,6 @@ app.use(function(err, req, res) {
   res.status(err.status || 500);
   res.render('error');
 });
+
 
 module.exports = app;

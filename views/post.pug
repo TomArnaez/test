@@ -1,0 +1,9 @@
+extends layout
+
+block content
+    p Posted on #{created_on} by #{author}, last modified on #{last_modified}
+    p Category: #[a(href=category_url) #{category}]
+    p Tags:
+        each tag in tags
+            Hello #{tag.termName}
+    #post!= html
