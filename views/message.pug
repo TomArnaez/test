@@ -1,0 +1,19 @@
+doctype html
+head
+    meta(charset='UTF-8')
+di.contact
+    include ./partial/msg
+    h3 Send your message anonymously
+    h4 Logged in as USER_ID: #{user_id}
+    form(method='POST' action='/message/send')
+        p
+            label Message Title:
+            div
+            input(name='title' minlength=5 maxlength=30)
+        p.full
+            label Message Body:
+            div
+            textarea(name='message' minlength=20 rows='8' cols='30' required=true)
+        p.full
+            div
+            button(type='submit') Submit

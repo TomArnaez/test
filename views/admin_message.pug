@@ -1,0 +1,40 @@
+doctype html
+head
+    meta(charset='UTF-8')
+di.contact
+    include ./partial/msg
+    h3 Messages Admin Panel
+    form(method='POST' action='/admin/message/send')
+        -if(message == null){
+        p No message
+        -}else{
+        - for(let i = 0; i < message.length; i++){
+            li User ID: #{message[i].user_id}
+            li Message ID: #{message[i].custom_id}
+            li Title: #{message[i].title}
+            li Message: #{message[i].message}
+            li Time: #{message[i].time}
+            li Response: #{message[i].response}
+            li Response Time: #{message[i].response_time}
+            input(type='radio' name='id' value= message[i].custom_id required='required')
+            br
+            br
+        -}}
+
+        p.full
+            label Message Body:
+            div
+            textarea(name='message' minlength=20 rows='8' cols='30' required=true)
+
+        input(type='checkbox' name='post' value='post')
+        p publish in post page
+        p
+            label CC Email:
+            div
+            input(name='ccEmail' minlength=5)
+        p.full
+        div
+        button(type='submit') Submit
+
+
+
