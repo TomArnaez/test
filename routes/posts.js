@@ -40,20 +40,39 @@ router.get('/:category', function(req, res, next) {
         );
 });
 
-router.get("/tag/:tag", function(req, res, next){
+router.get("/tags/:tag", function(req, res, next) {
     const db = require("../models");
     const Term = db.Term;
+    let page = req.query.page;
+
+    if (page == null)
+        page = 0;
     Term.findOne({where: {termSlug: req.params.tag, termType: "tag"}})
         .then(token => {
             if (token === null) {
                 console.log("Tag not found.");
                 res.render('category', {found: false});
             } else {
-                console.log("Found");
-                res.render('category', {found: false});
+                const http = require('http')
+                http.get("http://localhost:3000/api/posts?tag=" + req.params.tag + "&page=" + page, (resp) => {
+                    let data = "";
+                    resp.on("data", d => {
+                        data += d
+                    });
+                    resp.on("end", () => {
+                        let json = JSON.parse(data);
+                        json.found = true;
+                        json.categoryName = token.termName;
+                        // Don't zero index
+                        json.currentPage = json.currentPage + 1;
+                        json.next_page = "/posts/tags/" + req.params.tag + "?page=" + (parseInt(page) + 1);
+                        json.prev_page = "/posts/tags/" + req.params.tag + "?page=" + (parseInt(page) - 1);
+                        res.render('category', json);
+                    });
+                });
             }
         })
-})
+});
 /* GET post */
 router.get('/:category/:id/:slug', function(req, res, next) {
     const http = require('http')

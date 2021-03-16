@@ -33,7 +33,10 @@ module.exports = (sequelize, DataTypes) => {
         url: {
             type: DataTypes.VIRTUAL,
             get() {
-                return `/posts/${this.termSlug}`;
+                if (this.termType == 'category')
+                    return `/posts/${this.termSlug}`;
+                else
+                    return `/posts/tags/${this.termSlug}`;
             },
             set(value) {
                 throw new Error("Do not try to set a url value!'");

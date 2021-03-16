@@ -39,8 +39,14 @@ block content
                         div(class='social-body')
                             | !{item.text}
                         br
+                        - var x = "#[a(href=item.category_url) #{item.category}]"
+                        - console.log(x);
                         small(class='text-muted')
-                            p #[ Posted in] #[a(href=item.category_url) #{item.category}]
+                            span Posted in #[a(href=item.category_url) #{item.category}] | Tagged
+                            each tag in item.tags
+                                span  #[a(href=tag.url) #{tag.termName}],
+
+
 
                 p Displaying page #{currentPage} of #{totalPages}
                 nav(aria-label='Page navigation example')
