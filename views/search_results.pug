@@ -22,17 +22,20 @@ block content
                 div(class='media-body')
                     h2
                         a(href=item.url) #{item.title}
-                    small.caps(class='text-muted') #{item.created_on}, #{item.category}
+                    small(class='text-muted') Posted on #{item.created_on} by #{item.author}
                 hr
                 //- Container for post body ( '|' tells pug to use accept raw HTML which the posts are saved as)
                 div(class='social-body')
                     | !{item.text}
+                br
+                small(class='text-muted')
+                    p #[ Posted in] #[a(href=item.category_url) #{item.category}]
         p Displaying page #{page_number} of #{total_pages}
-    nav(aria-label='Page navigation example')
-        ul.pagination
-            if page_number > 1
-                li.page-item
-                    a.page-link(href=prev_page) Previous
-            if page_number < total_pages
-                li.page-item
-                    a.page-link(href=next_page) Next
+        nav(aria-label='Page navigation example')
+            ul.pagination
+                if page_number > 1
+                    li.page-item
+                        a.page-link(href=prev_page) Previous
+                if page_number < total_pages
+                    li.page-item
+                        a.page-link(href=next_page) Next

@@ -23,7 +23,6 @@ const getPagingData = (data, page, offset, limit) => {
 exports.findAll = (req, res) => {
     const { page, size, title, category, tag} = req.query
     let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
-
     const { limit, offset } = getPagination(page, size);
 
     Post.findAndCountAll({ where: condition, include: { model: Term, as: "terms"}, order: [['created_on', 'DESC']]})
@@ -52,7 +51,6 @@ exports.findOne = (req, res) => {
     //Post.findByPk(id)
     Post.findOne({where: {id: id}, include: Term})
         .then(data => {
-            console.log(data.url);
             res.send(data);
         })
         .catch(err => {
