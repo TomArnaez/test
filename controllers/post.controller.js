@@ -10,28 +10,35 @@ const getPagination = (page, size) => {
     return { limit, offset };
 }
 
-const getPagingData = (data, page, limit) => {
-    const { count: totalItems, rows: posts } = data;
+const getPagingData = (data, page, offset, limit) => {
+    const { count: totalItems } = data;
+    console.log("Offset: " + offset + " limit: " + limit + " page: " + page);
+    const posts = data.rows.slice(offset, offset + limit);
+    const pageItems = posts.length;
     const currentPage = page ? + page: 0;
     const totalPages = Math.ceil(totalItems / limit);
-
-    return { totalItems, posts, totalPages, currentPage};
+    return { totalItems, pageItems, totalPages, currentPage, posts};
 }
 
 exports.findAll = (req, res) => {
-    const { page, size, title, category} = req.query
+    const { page, size, title, category, tag} = req.query
     let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
-    let categoryCondition = category ? { [Op.or]: [{termSlug: category}, {termType: 'tag'}] } : null;
-    console.log(category);
 
     const { limit, offset } = getPagination(page, size);
 
-    Post.findAndCountAll({ where: condition, limit, offset, include: { model: Term, as: "terms"}})
+    Post.findAndCountAll({ where: condition, include: { model: Term, as: "terms"}, order: [['created_on', 'DESC']]})
         .then(data => {
-            if (category != null)
+            if (category)
                 data.rows = data.rows.filter(post => post.category == category);
+            if (tag)
+                data.rows = data.rows.filter(post => post.tags.filter(function (e) {
+
+                    console.log(e.termSlug);
+                    return e.termSlug === tag;
+                }).length > 0)
             data.count = data.rows.length;
-            const response = getPagingData(data, page, limit);
+            const response = getPagingData(data, page, offset, limit);
+
             res.send(response);
         })
         .catch(err => {

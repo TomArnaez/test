@@ -34,6 +34,20 @@ router.get('/:category', function(req, res, next) {
         );
 });
 
+router.get("/tag/:tag", function(req, res, next){
+    const db = require("../models");
+    const Term = db.Term;
+    Term.findOne({where: {termSlug: req.params.tag, termType: "tag"}})
+        .then(token => {
+            if (token === null) {
+                console.log("Tag not found.");
+                res.render('category', {found: false});
+            } else {
+                console.log("Found");
+                res.render('category', {found: false});
+            }
+        })
+})
 /* GET post */
 router.get('/:category/:id/:slug', function(req, res, next) {
     const http = require('http')
@@ -43,7 +57,6 @@ router.get('/:category/:id/:slug', function(req, res, next) {
         resp.on("data", d => {
             data += d
         });
-
 
         resp.on("end", () => {
             let json = JSON.parse(data)

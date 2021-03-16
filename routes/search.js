@@ -21,11 +21,6 @@ router.get('/', function(req, res, next) {
             resp.on("end", () => {
                 let json = JSON.parse(data);
 
-                // Add the page url for each search result
-                json.posts.forEach(post => {
-                    let category = post["terms"][0]["termSlug"]
-                });
-
                 console.log(json);
 
                 const resultsString = "" +  maybePluralize(json.totalItems, "result") + ' for query: "' + title + '"';
