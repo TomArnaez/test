@@ -1,0 +1,38 @@
+extends layout
+
+append head
+    style(type='text/css').
+        .social-feed-box {
+            padding: 15px;
+            border: 1px solid #e7eaec;
+            background: #fff;
+            margin-bottom: 15px;
+
+        }
+
+block content
+    br
+    h2(style="text-align:center") #{resultsString}
+    //- Creates large Div container
+    div(class='container-xl')
+        each item in results
+            //- container for single post
+            div(class='social-feed-box')
+                //- container for title and publish time
+                div(class='media-body')
+                    h2
+                        a(href=item.url) #{item.title}
+                    small.caps(class='text-muted') #{item.created_on}, #{item.category}
+                hr
+                //- Container for post body ( '|' tells pug to use accept raw HTML which the posts are saved as)
+                div(class='social-body')
+                    | !{item.text}
+        p Displaying page #{page_number} of #{total_pages}
+    nav(aria-label='Page navigation example')
+        ul.pagination
+            if page_number > 1
+                li.page-item
+                    a.page-link(href=prev_page) Previous
+            if page_number < total_pages
+                li.page-item
+                    a.page-link(href=next_page) Next

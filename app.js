@@ -102,6 +102,8 @@ app.use(async (req, res, next) => {
   const db = require("./models");
   const Term = db.Term;
   res.locals.categories = await Term.findAll({ where: {termType: 'category'} });
+  res.locals.tags = await Term.findAll({where: {termType: 'tag'}});
+  console.log(res.locals.tags);
   next();
 });
 

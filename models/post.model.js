@@ -43,7 +43,7 @@ module.exports = (sequelize, Sequelize) => {
         category: {
             type: DataTypes.VIRTUAL,
             get() {
-                return `${this.terms[0].termName}`;
+                return `${this.terms[0].termSlug}`;
             },
             set(value) {
                 throw new Error("Do not try to set a category value!");

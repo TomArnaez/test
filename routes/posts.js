@@ -4,6 +4,8 @@ var router = express.Router();
 router.get('/:category', function(req, res, next) {
     const db = require("../models");
     const Term = db.Term;
+    const Post = db.Post;
+
     Term.findOne({where: {termSlug: req.params.category, termType: "category"}})
             .then(token => {
                 if (token === null) {

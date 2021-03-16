@@ -1,0 +1,41 @@
+form(action='/search' method='GET')
+    input.typeahead(type='text', name='q', placeholder="Search for a condition...", autocomplete='off')
+    input(type="hidden" name="page" value="0")
+    input(type='submit' style='position: absolute; left: -9999px')
+
+script.
+
+    var substringMatcher = function (strs) {
+        return function findMatches(q, cb) {
+            var matches, substringRegex;
+
+            // an array that will be populated with substring matches
+            matches = [];
+
+            // regex used to determine if a string contains the substring `q`
+            substrRegex = new RegExp(q, 'i');
+
+            // iterate through the pool of strings and for any string that
+            // contains the substring `q`, add it to the `matches` array
+            $.each(strs, function (i, str) {
+                if (substrRegex.test(str)) {
+                    matches.push(str);
+                }
+            });
+
+            cb(matches);
+        };
+    };
+    var categories = !{JSON.stringify(categories)};
+    let tags = !{JSON.stringify(tags)};
+    var states = [];
+    categories.forEach(cat => states.push(cat.termName));
+    tags.forEach(tag => states.push(tag.termName));
+    $('.typeahead').typeahead(
+        {
+            hint: true,
+            highlight: true,
+        }, {
+            name: "Post",
+            source: substringMatcher(states),
+        });

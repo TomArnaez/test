@@ -42,7 +42,7 @@ html
               a(class='nav-link dropdown-toggle' id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Categories
               div(class='dropdown-menu' aria-labelledby='navbarDropdown')
                 for category in categories
-                  a(class='dropdown-item' href=category.url) #{category.dataValues.termName}
+                  a(class='dropdown-item' href=category.url) #{category.termName}
                   div(class='dropdown-divider')
             li(class='nav-item active')
               include search_dropdown
@@ -51,7 +51,8 @@ html
           div(class='form-inline my-2 my-lg-0')
             a(href='/admin/dashboard')
               button(class='btn btn-outline-primary my-2 my-sm-0') Account / Login
-            
+
+
     
     block content
     

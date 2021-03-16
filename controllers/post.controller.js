@@ -29,11 +29,9 @@ exports.findAll = (req, res) => {
     Post.findAndCountAll({ where: condition, include: { model: Term, as: "terms"}, order: [['created_on', 'DESC']]})
         .then(data => {
             if (category)
-                data.rows = data.rows.filter(post => post.category == category);
+                data.rows = data.rows.filter(post => post.category === category);
             if (tag)
                 data.rows = data.rows.filter(post => post.tags.filter(function (e) {
-
-                    console.log(e.termSlug);
                     return e.termSlug === tag;
                 }).length > 0)
             data.count = data.rows.length;
