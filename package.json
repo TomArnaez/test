@@ -3,10 +3,17 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www",
-    "test": "mocha"
+    "start": "node -r esm ./bin/www",
+    "test": "mocha -r esm"
   },
   "dependencies": {
+    "esm": "*",
+    "jquery": "*",
+    "multer": "*",
+    "sanitize-filename": "*",
+    "tinymce": "*",
+    "unique-filename": "*",
+    "uuid": "*",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.17.2",
     "connect-flash": "^0.1.1",
@@ -30,6 +37,7 @@
     "querystring": "^0.2.1"
   },
   "devDependencies": {
+    "mocha": "*",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "mocha": "^8.2.1"

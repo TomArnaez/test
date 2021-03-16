@@ -6,19 +6,7 @@ const db = require('../database.js');
 const bcrypt = require('bcrypt');
 
 /**
- * If a user navigates to /admin, if they are logged in redirect to /admin/dashboard, else redirect to login page with error message.
- */
-router.get('/', function(req, res, next) {
-    if (req.isAuthenticated()) {
-        res.redirect("/admin/dashboard");
-    } else {
-        req.flash('error_msg', 'You are not authenticated.');
-        res.redirect("/admin/login");
-    }
-});
-
-/**
- * Display the login page. If they are already logged in they are redirected to /admin/dashboard.
+ * Display the login page. If they are already logged in they are redirected to /admin/dashboard OR the path in the query URL.
  */
 router.get('/login', (req, res) => {
     if (req.isAuthenticated()) {
@@ -206,7 +194,7 @@ router.post('/forgotpassword', (req, res) => {
                 let jwt = require('jsonwebtoken');
                 /**
                  * Create and sign a json web token with data of user_id (the requested user id), signed with their current password hash & salt.
-                 * This token automatically expires after 24 hours or when the password is finally changed. 
+                 * This token automatically expires after 24 hours or when the password is finally changed.
                  * (as this will change the password hash & salt used a secret)
                  */
 
@@ -247,5 +235,26 @@ router.get('/logout', (req, res) => {
     req.flash('success_msg', 'You have been logged out.');
     res.redirect('/admin/login');
 })
+
+
+// Everything after this middleware will REQUIRE a login!
+/**
+ * Middleware to enforce that the user is logged in.
+ */
+router.use('/', async (req, res, next) => {
+    if (req.isAuthenticated()) {
+        next()
+    } else {
+        req.flash('error_msg', 'You are not authenticated.');
+        res.redirect("/admin/login");
+    }
+})
+
+/**
+ * If a user navigates to /admin, and is already logged in, redirect to the dashboard.
+ */
+router.get('/', function(req, res, next) {
+    res.redirect("/admin/dashboard");
+});
 
 module.exports = router;
