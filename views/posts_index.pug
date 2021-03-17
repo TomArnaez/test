@@ -7,13 +7,11 @@ append head
         vertical-align: middle;
       }
     }
-  link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous")
   script(type='application/javascript' src='javascripts/confirm-delete.js')
-  script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous")
-  - function goto(html) {}
 
 block content
-
+  
+  //- container-fluid sets div to largest size for bootstrap
   div(class='container-fluid')
     h1= title
   
@@ -21,7 +19,9 @@ block content
     a(href='/edit/new')
       button(type='button', class='btn btn-light') New Post
   
+  //- Creates large Div container 
   div(class='container-fluid')
+    //- Creating Table with Bootstrap
     div(class='row')
       table(class='table table-striped')
         thead
@@ -31,11 +31,14 @@ block content
             th(scope='col') Created
             th(scope='col') Actions
         tbody
+          //- creates all of the below tags for each item in the results array
+          //- results array is a select query for all posts in the posts table
           each item in results
             tr
               th(scope='row') #{item.id}
               td #{item.title}
               td #{item.created_on}
+              //- Action Buttons for below table data tag. Each route request appropriatley.
               td
                 a(href='/edit/view/'+item.id)
                   button(type='button', class='btn') View
@@ -44,13 +47,3 @@ block content
                 a
                   button(type='button', class='btn btn-danger', onClick='confirmDelete('+item.id+')') Delete
                 
-  
-      
-  
-    //- // -
-    //- //   each item in results
-    //- //     tr
-    //- //       td= item.id
-    //- //       td= item.title
-    //- //       td= item.created_on
-      

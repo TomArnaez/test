@@ -1,13 +1,9 @@
 extends layout
 
-//- Not in use, may be used in future. Need to add lookup function for post id or title
+
 append head
-  link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous")
-  script(type='application/javascript' src='javascripts/confirm-delete.js')
-  script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous")
-  - var content = doc;
-  -function prettyDate(dateString){
-    //if it's already a date object and not a string you don't need this line:
+  //- Converts date from SQL format to something easier to read and more aesthatic
+  -function formatDate(dateString){
     -var date = new Date(dateString);
     -var d = date.getDate();
     -var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
@@ -26,18 +22,22 @@ append head
 
 block content
     
-  div(class='container-fluid' style='aligh:center')
+  //- Container for page title
+  div(class='container-fluid')
     br
     h1 Feed
     br
     
+  //- Container for feed posts.
   div(class='container-xl')
     each item in results
+      //- container for single post
       div(class='social-feed-box')
-        
+        //- container for title and publish time
         div(class='media-body')
           h2= item.title
-          small(class='text-muted') #{prettyDate(item.created_on)}
+          small(class='text-muted') #{formatDate(item.created_on)}
         hr
+        //- Container for post body ( '|' tells pug to use accept raw HTML which the posts are saved as)
         div(class='social-body')
           | !{item.html}

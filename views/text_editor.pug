@@ -3,27 +3,24 @@ extends layout
 append head
   script(type="application/javascript" src="/tinymce/tinymce.min.js")
   script(id='config' data-content=doc type="application/javascript" src= "/javascripts/tinymce-config.js")
-  link(rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous")
-  script(src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous")
-    
+  
+  //- If this is a new post, sets default values for titles
   - if (postname == null) {
   -   var postname = "Enter Title Here"
   -   var title = "Create New Post"
-  -   var button_txt = 'Post'
-  - } else {
-  -   var button_txt = 'Edit'
   - }
   
 block content
   div(class='container-fluid')
     h1= title
     
+  //- container for back button
   div(class='container-fluid' style='padding:2rem;')
     a(href='/edit/')
       button(class='btn btn-dark') Back To List
       
     
-    
+  //- container for post form
   div(class='container-xl')
     form(name="editor-form", method="post")
         div(id='input' style='padding:10px')
@@ -33,6 +30,6 @@ block content
             textarea(name="content", id="my-expressjs-tinymce-app", value="Enter title here")
         br
         div.actions
-            input(type="submit", value='Save')
+            input(type="submit", value='Save' class='btn btn-success')
               
       
