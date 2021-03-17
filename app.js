@@ -39,6 +39,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/tinymce', express.static(path.join(__dirname, 'node_modules', 'tinymce')));
 
+// using bootstrap
+app.use(express.static(path.join(__dirname, "public")));
+app.use("/stylesheets/css", express.static(path.join(__dirname, "node_modules/bootstrap/dist/css")));
+// app.use('/css', express.static(__dirname + 'node_modules/bootstrap/dist/css'));
 
 //express session
 app.use(session({

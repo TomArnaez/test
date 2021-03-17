@@ -1,0 +1,43 @@
+extends layout
+
+
+append head
+  //- Converts date from SQL format to something easier to read and more aesthatic
+  -function formatDate(dateString){
+    -var date = new Date(dateString);
+    -var d = date.getDate();
+    -var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+    -var m = monthNames[date.getMonth()];
+    -var y = date.getFullYear();
+    -return d+' '+m+' '+y;
+    -}
+  style(type='text/css').
+    .social-feed-box {
+      padding: 15px;
+      border: 1px solid #e7eaec;
+      background: #fff;
+      margin-bottom: 15px;
+      
+    }
+
+block content
+    
+  //- Container for page title
+  div(class='container-fluid')
+    br
+    h1 Feed
+    br
+    
+  //- Container for feed posts.
+  div(class='container-xl')
+    each item in results
+      //- container for single post
+      div(class='social-feed-box')
+        //- container for title and publish time
+        div(class='media-body')
+          h2= item.title
+          small(class='text-muted') #{formatDate(item.created_on)}
+        hr
+        //- Container for post body ( '|' tells pug to use accept raw HTML which the posts are saved as)
+        div(class='social-body')
+          | !{item.html}

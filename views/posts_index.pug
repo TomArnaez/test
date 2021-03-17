@@ -1,0 +1,49 @@
+extends layout
+
+append head
+  style(type='text/css').
+    .table-image {
+      td, th {
+        vertical-align: middle;
+      }
+    }
+  script(type='application/javascript' src='javascripts/confirm-delete.js')
+
+block content
+  
+  //- container-fluid sets div to largest size for bootstrap
+  div(class='container-fluid')
+    h1= title
+  
+  div(class='container-fluid' style='padding:2rem;')
+    a(href='/edit/new')
+      button(type='button', class='btn btn-light') New Post
+  
+  //- Creates large Div container 
+  div(class='container-fluid')
+    //- Creating Table with Bootstrap
+    div(class='row')
+      table(class='table table-striped')
+        thead
+          tr
+            th(scope='col') Id
+            th(scope='col') Name
+            th(scope='col') Created
+            th(scope='col') Actions
+        tbody
+          //- creates all of the below tags for each item in the results array
+          //- results array is a select query for all posts in the posts table
+          each item in results
+            tr
+              th(scope='row') #{item.id}
+              td #{item.title}
+              td #{item.created_on}
+              //- Action Buttons for below table data tag. Each route request appropriatley.
+              td
+                a(href='/edit/view/'+item.id)
+                  button(type='button', class='btn') View
+                a(href='/edit/' + item.id)
+                  button(type='button' class='btn btn-success') Edit
+                a
+                  button(type='button', class='btn btn-danger', onClick='confirmDelete('+item.id+')') Delete
+                
