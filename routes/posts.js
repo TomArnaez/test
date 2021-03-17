@@ -5,7 +5,6 @@ router.get('/:category', function(req, res, next) {
     const db = require("../models");
     const Term = db.Term;
     let page = req.query.page;
-
     if (page == null)
         page = 0;
 
@@ -13,7 +12,6 @@ router.get('/:category', function(req, res, next) {
     Term.findOne({where: {termSlug: req.params.category, termType: "category"}})
             .then(token => {
                 if (token === null) {
-                    console.log("Category not found.");
                     res.render('category', {found: false});
                 } else {
                     console.log("Found");
@@ -50,7 +48,6 @@ router.get("/tags/:tag", function(req, res, next) {
     Term.findOne({where: {termSlug: req.params.tag, termType: "tag"}})
         .then(token => {
             if (token === null) {
-                console.log("Tag not found.");
                 res.render('category', {found: false});
             } else {
                 const http = require('http')
@@ -85,9 +82,6 @@ router.get('/:category/:id/:slug', function(req, res, next) {
 
         resp.on("end", () => {
             let json = JSON.parse(data)
-            console.log(json)
-            console.log("HEEEY");
-
             // Replace the line breaks added (potentially) by tinymce
             //json.html = json.html.replace("/n", "<br>");
             res.render('post', json);
