@@ -1,0 +1,35 @@
+doctype html
+head
+    meta(charset='UTF-8')
+di.contact
+    include ./partial/msg
+    h3 Messages User Panel
+    h3 Your User ID is: #{message[0].user_id}
+    -if(message == null){
+    p No message
+    -}else{
+    - for(let i = 0; i < message.length; i++){
+        li Message ID: #{message[i].custom_id}
+        li Title: #{message[i].title}
+        li Message: #{message[i].message}
+        li Time: #{message[i].time}
+        li Response: #{message[i].response}
+        li Response Time: #{message[i].response_time}
+        br
+        br
+    -}}
+
+    form(method='POST' action='/message/send')
+        p
+            label Message Title:
+            div
+            input(name='title' minlength=5 maxlength=30)
+        p.full
+            label Message Body:
+            div
+            textarea(name='message' minlength=20 rows='8' cols='30' required=true)
+        p.full
+            div
+            button(type='submit') Submit
+
+

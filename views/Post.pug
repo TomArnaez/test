@@ -1,12 +1,23 @@
 extends layout
 
-//- Not in use, may be used in future. Need to add lookup function for post id or title
+append head
+  - var content = doc;
 
 block content
-    h1= 'Post title = '+title
-    h2= 'Post Content:'
-    //p= content
-
-    div.output
-
-    document.getElementById("output").innerHTML !{content}
+    
+  div(class='container-fluid')
+    h1= title
+    
+  div(class='container-fluid' style='padding:2rem;')
+    a(href='/edit/')
+      button(class='btn btn-dark') Back To List
+      
+  div(class='container-xl')
+    h2(style='float:left')= postname
+    div(id='buttons', style='float:right')
+      a(href='/edit/' + id)
+        button(type='button' class='btn btn-success') Edit
+    br
+    br
+    div(id='output' class='border')
+      | !{doc}
