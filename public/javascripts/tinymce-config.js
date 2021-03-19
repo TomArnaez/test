@@ -21,8 +21,10 @@ tinymce.init({
     toolbar: ['undo redo | formatselect | ' +
         'bold italic backcolor | alignleft aligncenter ' +
         'alignright alignjustify | bullist numlist outdent indent | ' +
-        'removeformat | help' +
+        'removeformat | image | help' +
         ' | save'],
+    a11y_advanced_options: true,
+    image_list: '/media?json',
     setup: function (editor) {
       editor.on('init', function (e) {
         var script_tag = document.getElementById('config')

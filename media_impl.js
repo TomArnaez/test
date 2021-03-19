@@ -1,7 +1,5 @@
 'use strict'
 
-import {queryDatabase} from "./media";
-
 const sanitise = require('sanitize-filename')
 const unique = require('unique-filename')
 const express = require('express')
@@ -100,6 +98,32 @@ const mediaRouter = express.Router()
 // TODO: Make this cache really well!
 const mediaStatic = express.static(config.media.directory)
 mediaRouter.use('/', mediaStatic)
+
+// Get a JSON list of the media
+mediaRouter.get('/', async (req, res) => {
+    if (req.isAuthenticated()) {
+        if (req.query.json !== undefined) {
+            // TODO: cache this somehow
+            const files = await media.getFilesFromDatabase()
+            const result = files.map((file) => {
+                let title = file.filename
+                if (file.filetype !== undefined) {
+                    let filetype = file.filetype
+                    if (filetype === '') filetype = 'unknown'
+                    title += ' (' + filetype + ' file)'
+                }
+                if (file.id !== undefined) title += ' (' + file.id + ')'
+                return {title: title, value: media.mediaroot + file.fs_name}
+            })
+            res.send(result)
+        } else {
+            res.redirect(media.mediamanager)
+        }
+    } else {
+        // You have to be logged in to use this...
+        res.sendStatus(401)
+    }
+})
 
 // This happens if a file is not found... We try to find it!
 mediaRouter.get('/:id', async (req, res) => {
@@ -229,7 +253,7 @@ mediaRouter.post('/:id', async (req, res)=> {
                     str += ' WHERE uuid = UNHEX(?)'
                     parts.push(idhex)
 
-                    return await queryDatabase(str, parts)
+                    return await media.queryDatabase(str, parts)
                 }
             }
 
