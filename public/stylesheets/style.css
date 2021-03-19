@@ -3,6 +3,10 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
+.caps {
+  text-transform: capitalize;
+}
+
 a {
   color: #00B7FF;
 }

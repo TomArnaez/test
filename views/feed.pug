@@ -1,6 +1,5 @@
 extends layout
 
-
 append head
   //- Converts date from SQL format to something easier to read and more aesthatic
   -function formatDate(dateString){
@@ -17,17 +16,17 @@ append head
       border: 1px solid #e7eaec;
       background: #fff;
       margin-bottom: 15px;
-      
+
     }
 
 block content
-    
+
   //- Container for page title
   div(class='container-fluid')
     br
     h1 Feed
     br
-    
+
   //- Container for feed posts.
   div(class='container-xl')
     each item in results

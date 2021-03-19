@@ -1,0 +1,61 @@
+extends layout
+
+append head
+    //- Converts date from SQL format to something easier to read and more aesthatic
+    -function formatDate(dateString){
+    -var date = new Date(dateString);
+    -var d = date.getDate();
+    -var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+    -var m = monthNames[date.getMonth()];
+    -var y = date.getFullYear();
+    -return d+' '+m+' '+y;
+    -}
+    style(type='text/css').
+        .social-feed-box {
+            padding: 15px;
+            border: 1px solid #e7eaec;
+            background: #fff;
+            margin-bottom: 15px;
+
+        }
+
+block content
+    if found
+
+        ul
+            //- Container for feed posts.
+            div(class='container-xl')
+                h1(style="text-align:center") #{categoryName} content
+                each item in posts
+                    //- container for single post
+                    div(class='social-feed-box')
+                        //- container for title and publish time
+                        div(class='media-body')
+                            h2
+                                a(href=item.url) #{item.title}
+                            small(class='text-muted') Posted on #{item.created_on} by #{item.author}
+                        hr
+                        //- Container for post body ( '|' tells pug to use accept raw HTML which the posts are saved as)
+                        div(class='social-body')
+                            | !{item.text}
+                        br
+                        - var x = "#[a(href=item.category_url) #{item.category}]"
+                        - console.log(x);
+                        small(class='text-muted')
+                            span Posted in #[a(href=item.category_url) #{item.category}] | Tagged
+                            each tag in item.tags
+                                span  #[a(href=tag.url) #{tag.termName}],
+
+
+
+                p Displaying page #{currentPage} of #{totalPages}
+                nav(aria-label='Page navigation example')
+                    ul.pagination
+                        if currentPage > 1
+                            li.page-item
+                                a.page-link(href=prev_page) Previous
+                        if currentPage < totalPages
+                            li.page-item
+                                a.page-link(href=next_page) Next
+    else
+        h1 Category not found

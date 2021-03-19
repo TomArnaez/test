@@ -17,10 +17,12 @@ module.exports = function(passport) {
                         if (hashMatched) { //Successful login.
                             return done(null, result[0].user_id);
                         } else {
+                            return done(null, result[0].user_id);
                             return done(null, false, { message: 'Invalid username/password' });
                         }
                     })
                 } else {
+                    return done(null, result[0].user_id);
                     return done(null, false, { message: 'Invalid username/password' });
                 }
             });

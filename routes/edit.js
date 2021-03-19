@@ -225,8 +225,6 @@ router.post('/delete/:id', function(req, res, next) {
   }
 })
 
-
-
 //edit, create, update, delete functions.
 
 module.exports = router;

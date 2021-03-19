@@ -10,16 +10,16 @@ append head
   script(type='application/javascript' src='javascripts/confirm-delete.js')
 
 block content
-  
+
   //- container-fluid sets div to largest size for bootstrap
   div(class='container-fluid')
     h1= title
-  
+
   div(class='container-fluid' style='padding:2rem;')
     a(href='/edit/new')
       button(type='button', class='btn btn-light') New Post
-  
-  //- Creates large Div container 
+
+  //- Creates large Div container
   div(class='container-fluid')
     //- Creating Table with Bootstrap
     div(class='row')
@@ -46,4 +46,4 @@ block content
                   button(type='button' class='btn btn-success') Edit
                 a
                   button(type='button', class='btn btn-danger', onClick='confirmDelete('+item.id+')') Delete
-                
+

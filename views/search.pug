@@ -1,0 +1,65 @@
+
+extends layout
+
+block content
+
+    form(action='search' method='GET')
+        input.typeahead(type='text', name='q', placeholder="Search for a condition...", autocomplete='off')
+        input(type="hidden" name="page" value="0")
+        input(type='submit' style='position: absolute; left: -9999px')
+
+    script.
+        var substringMatcher = function (strs) {
+            return function findMatches(q, cb) {
+                var matches, substringRegex;
+
+                // an array that will be populated with substring matches
+                matches = [];
+
+                // regex used to determine if a string contains the substring `q`
+                substrRegex = new RegExp(q, 'i');
+
+                // iterate through the pool of strings and for any string that
+                // contains the substring `q`, add it to the `matches` array
+                $.each(strs, function (i, str) {
+                    if (substrRegex.test(str)) {
+                        matches.push(str);
+                    }
+                });
+
+                cb(matches);
+            };
+        };
+
+        var states = ['Liver', 'Liver Disease', 'Non-alcoholic fatty liver disease', 'Liver Transplant',
+            'Liver Cancer', "Reye's Syndrome", "Jaundice", "Gallstones",
+            "Biopsy", "High Cholestrol", "Lactulose"
+        ];
+        $('.typeahead').typeahead(
+            {
+                hint: true,
+                highlight: true,
+            }, {
+                name: "Post",
+                source: substringMatcher(states),
+            });
+    if search
+        h1 #{resultsString}
+        p Page #{page_number} of #{total_pages}
+        ul
+            each post in results
+                p Posted on #{post.created_on} by tom
+                li
+                    a(href=post.url) #{post.title}
+                ul
+                    li #{post.text}
+                p Category: #[a(href=post.category_url) #{post.category}]
+                hr
+        nav(aria-label='Page navigation example')
+            ul.pagination
+                if page_number > 1
+                    li.page-item
+                        a.page-link(href=prev_page) Previous
+                if page_number < total_pages
+                    li.page-item
+                        a.page-link(href=next_page) Next

@@ -1,6 +1,8 @@
 extends layout
 
 block content
+  if categories
+    h1=HiThere
   h1= title
   p Welcome to #{title}
   p Database version: #{databaseVersion}

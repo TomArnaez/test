@@ -14,6 +14,13 @@ config.mysql.name = "cpoint_development";
 config.mysql.user = "cpoint_development";
 //MySQL database password
 config.mysql.pass = "evPOXg0Oa4P9Z4xl";
+config.mysql.dialect = 'mysql';
+config.mysql.pool=  {
+    max: 10,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+}
 
 
 /** Email Settings */
