@@ -67,8 +67,11 @@ block content
                             a(class='dropdown-item' href='/edit/new') Create New Post
                     //- Todo: add code to only show if admin
                 div(class='d-flex justify-content-end' )
+                    form(class='d-flex')
+                        input(class="form-control me-2" style='margin-left:10px' type="search" placeholder="Search" aria-label="Search")
+                        button(class="btn btn-outline-success gap-2" type="submit" style='margin-left:10px') Search
                     a(href='/admin/dashboard')
-                      button(class='btn btn-outline-primary my-2 my-sm-0') Account / Login
+                      button(class='btn btn-outline-primary my-2 my-sm-0' style='margin-left:10px') Account / Login
                     
     .sidepanel
         block sidepanel
