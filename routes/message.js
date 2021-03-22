@@ -107,7 +107,7 @@ router.post('/admin/post_response/:message_id', async (req,res) => {
                         if(userEmail == '') {
                             req.flash('error_msg', `Email Wasn't sent :(`);
                         } else {
-                            email.sendEmail(userEmail, 'Answer to your message: '.concat(result[0].custom_id),
+                            email.sendEmail(userEmail, 'Answer to your message: ' + result[0].cusstom_id,
                                 content.replace( /(<([^>]+)>)/ig, ''));
 
                         }
@@ -175,7 +175,7 @@ router.post('/admin/respond/:custom_id', (req,res) => {
                 res.redirect("/admin/message");
             }
             else {
-                db.query("SELECT user_email FROM messages JOIN users ON messages.user_id = users.id WHERE custom_id = ?",
+                db.query("SELECT user_email, custom_id FROM messages JOIN users ON messages.user_id = users.id WHERE custom_id = ?",
                     [req.params.custom_id], (err, result)=> {
                     if (err) {
                     } else {
@@ -187,12 +187,12 @@ router.post('/admin/respond/:custom_id', (req,res) => {
                         }else
                         {
                             if(req.body.id== ''){
-                                email.sendEmail(userEmail, 'Answer to your message: '.concat(req.params.custom_id),
+                                email.sendEmail(userEmail, 'Answer to your message: ' + result[0].cusstom_id,
                                     req.body.message);
                             }
                             else
                             {
-                                email.sendEmail(userEmail, 'Answer to your message: '.concat(req.body.id),
+                                email.sendEmail(userEmail, 'Answer to your message: ' + result[0].cusstom_id,
                                     req.body.message, req.body.ccEmail);
                             }
                         }

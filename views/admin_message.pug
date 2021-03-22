@@ -59,18 +59,19 @@ block primary
           tbody
             //- creates all of the below tags for each item in the results array
             //- results array is a select query for all posts in the posts table
-            each item in message
-              tr
-                th(scope='row') #{item.user_id}
-                td #{item.custom_id}
-                td #{item.title}
-                td #{item.message}
-                td #{item.time}
-                //- Action Buttons for below table data tag. Each route request appropriatley.
-                td
-                  a(href='/admin/post_response/'+item.custom_id)
-                    button(type='button', class='btn') Post Response
-                  a(href='/admin/respond/' + item.custom_id)
-                    button(type='button' class='btn btn-success') Private Response
-                  a
-                    button(type='button', class='btn btn-danger', onClick='confirmDelete('+item.id+')') Delete
+            if (message != null) 
+                each item in message
+                  tr
+                    th(scope='row') #{item.user_id}
+                    td #{item.custom_id}
+                    td #{item.title}
+                    td #{item.message}
+                    td #{item.time}
+                    //- Action Buttons for below table data tag. Each route request appropriatley.
+                    td
+                      a(href='/admin/post_response/'+item.custom_id)
+                        button(type='button', class='btn') Post Response
+                      a(href='/admin/respond/' + item.custom_id)
+                        button(type='button' class='btn btn-success') Private Response
+                      a
+                        button(type='button', class='btn btn-danger', onClick='confirmDelete('+item.id+')') Delete
