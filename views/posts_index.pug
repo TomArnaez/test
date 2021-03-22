@@ -1,4 +1,4 @@
-extends layout
+extends side-nav-sublayout
 
 append head
   style(type='text/css').
@@ -9,7 +9,7 @@ append head
     }
   script(type='application/javascript' src='javascripts/confirm-delete.js')
 
-block content
+block primary
   
   //- container-fluid sets div to largest size for bootstrap
   div(class='container-fluid')
