@@ -32,8 +32,6 @@ const app = express();
 app.disable("x-powered-by");
 app.disable("x-powered-by");
 
-
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -103,7 +101,6 @@ app.use(async (req, res, next) => {
   const Term = db.Term;
   res.locals.categories = await Term.findAll({ where: {termType: 'category'} });
   res.locals.tags = await Term.findAll({where: {termType: 'tag'}});
-  console.log(res.locals.tags);
   next();
 });
 

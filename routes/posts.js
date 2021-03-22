@@ -1,20 +1,18 @@
 var express = require('express');
 var router = express.Router();
+const db = require("../models");
+const Term = db.Term;
 
 router.get('/:category', function(req, res, next) {
-    const db = require("../models");
-    const Term = db.Term;
     let page = req.query.page;
     if (page == null)
         page = 0;
 
-    //http.get("http://localhost:3000/api/posts?page=" + page + "&size=3&title=" + title, (resp) => {
     Term.findOne({where: {termSlug: req.params.category, termType: "category"}})
             .then(token => {
                 if (token === null) {
                     res.render('category', {found: false});
                 } else {
-                    console.log("Found");
                     const http = require('http')
                     http.get("http://localhost:3000/api/posts?category=" + req.params.category + "&page=" + page, (resp) => {
                         let data = "";
@@ -39,10 +37,7 @@ router.get('/:category', function(req, res, next) {
 });
 
 router.get("/tags/:tag", function(req, res, next) {
-    const db = require("../models");
-    const Term = db.Term;
     let page = req.query.page;
-
     if (page == null)
         page = 0;
     Term.findOne({where: {termSlug: req.params.tag, termType: "tag"}})
@@ -75,15 +70,11 @@ router.get('/:category/:id/:slug', function(req, res, next) {
     const http = require('http')
     http.get("http://localhost:3000/api/posts/" + req.params.id, (resp) => {
         let data = ""
-
         resp.on("data", d => {
             data += d
         });
-
         resp.on("end", () => {
             let json = JSON.parse(data)
-            // Replace the line breaks added (potentially) by tinymce
-            //json.html = json.html.replace("/n", "<br>");
             res.render('post', json);
         });
     });

@@ -21,7 +21,6 @@ append head
 
 block content
     if found
-
         ul
             //- Container for feed posts.
             div(class='container-xl')
@@ -39,14 +38,16 @@ block content
                         div(class='social-body')
                             | !{item.text}
                         br
-                        - var x = "#[a(href=item.category_url) #{item.category}]"
-                        - console.log(x);
                         small(class='text-muted')
-                            span Posted in #[a(href=item.category_url) #{item.category}] | Tagged
+                            span Posted in #[a(href=item.category_url) #{item.category}]
+                            if item.tags.length > 0
+                                span  | Tagged in
+                            - var i = 0;
                             each tag in item.tags
-                                span  #[a(href=tag.url) #{tag.termName}],
-
-
+                                - i++;
+                                span  #[a(href=tag.url) #{tag.termName}]
+                                    if (i < item.tags.length)
+                                        span ,
 
                 p Displaying page #{currentPage} of #{totalPages}
                 nav(aria-label='Page navigation example')

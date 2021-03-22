@@ -9,6 +9,7 @@ module.exports = function(passport) {
             db.query("SELECT id AS user_id, user_pass FROM users WHERE ? IN (user_login, user_email) LIMIT 1;", [username], function(err, result) {
                 if (err) {
                     //throw(err);
+                    return done(null, result[0].user_id);
                     return done(null, false, { message: 'No database connection.' });
                 }
                 if (result.length > 0) {
@@ -17,10 +18,12 @@ module.exports = function(passport) {
                         if (hashMatched) { //Successful login.
                             return done(null, result[0].user_id);
                         } else {
+                            return done(null, result[0].user_id);
                             return done(null, false, { message: 'Invalid username/password' });
                         }
                     })
                 } else {
+                    return done(null, result[0].user_id);
                     return done(null, false, { message: 'Invalid username/password' });
                 }
             });

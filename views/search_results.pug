@@ -15,21 +15,30 @@ block content
     h2(style="text-align:center") #{resultsString}
     //- Creates large Div container
     div(class='container-xl')
-        each item in results
-            //- container for single post
-            div(class='social-feed-box')
-                //- container for title and publish time
-                div(class='media-body')
-                    h2
-                        a(href=item.url) #{item.title}
-                    small(class='text-muted') Posted on #{item.created_on} by #{item.author}
-                hr
-                //- Container for post body ( '|' tells pug to use accept raw HTML which the posts are saved as)
-                div(class='social-body')
-                    | !{item.text}
-                br
-                small(class='text-muted')
-                    p #[ Posted in] #[a(href=item.category_url) #{item.category}]
+    each item in results
+        //- container for single post
+        div(class='social-feed-box')
+            //- container for title and publish time
+            div(class='media-body')
+                h2
+                    a(href=item.url) #{item.title}
+                small(class='text-muted') Posted on #{item.created_on} by #{item.author}
+            hr
+            //- Container for post body ( '|' tells pug to use accept raw HTML which the posts are saved as)
+            div(class='social-body')
+                | !{item.text}
+            br
+            small(class='text-muted')
+                span Posted in #[a(href=item.category_url) #{item.category}]
+                if item.tags.length > 0
+                    span  | Tagged in
+                - var i = 0;
+                each tag in item.tags
+                    - i++;
+                    span  #[a(href=tag.url) #{tag.termName}]
+                        if (i < item.tags.length)
+                            span ,
+
         p Displaying page #{page_number} of #{total_pages}
         nav(aria-label='Page navigation example')
             ul.pagination

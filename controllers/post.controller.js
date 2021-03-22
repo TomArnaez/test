@@ -12,7 +12,6 @@ const getPagination = (page, size) => {
 
 const getPagingData = (data, page, offset, limit) => {
     const { count: totalItems } = data;
-    console.log("Offset: " + offset + " limit: " + limit + " page: " + page);
     const posts = data.rows.slice(offset, offset + limit);
     const pageItems = posts.length;
     const currentPage = page ? + page: 0;
@@ -49,13 +48,13 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
     const id = req.params.id
     //Post.findByPk(id)
-    Post.findOne({where: {id: id}, include: Term})
+    Post.findOne({where: {id: id}, include: { model: Term, as: "terms"}})
         .then(data => {
             res.send(data);
         })
         .catch(err => {
             res.status(500).send({
                 message: "Error retrieving Post with id: " + id
-             });
+            });
         });
 }

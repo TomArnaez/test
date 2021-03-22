@@ -14,3 +14,7 @@ to access it once it's started, open a browser to `http://localhost:3000`. To st
 |Carlos Navarro Diazgranados|[k19016418](https://github.com/k19016418)|
 |Mohammad Reza Shahrestani|[smrshahrestani](https://github.com/smrshahrestani)|
 |Joshua Williams|[kingslax](https://github.com/kingslax)|
+
+
+### Project Report
+https://docs.google.com/document/d/146EhdyfnU0AL5yR6pqZCbaW2jS_W-JJkXT9Ac2c2nUI/edit#

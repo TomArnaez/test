@@ -1,23 +1,27 @@
-extends layout
+//- Page allow user to view a post outside of the feed environment
+extends side-nav-sublayout
 
 append head
-  - var content = doc;
+    - var content = doc;
 
-block content
-    
-  div(class='container-fluid')
+block primary
 
+    //- container for pgae title
+    div(class='container-fluid')
+        h1= title
+        br
 
-  div(class='container-fluid' style='padding:2rem;')
-    a(href='/edit/')
-      button(class='btn btn-dark') Back To List
+    div(class='container-xl')
+        h2(style='float:left')= postname
+        div(id='buttons', style='float:right')
+            a(href='/edit/' + id)
+                button(type='button' class='btn btn-success') Edit
+        br
+        br
+        br
+        div(id='output' class='border' style='padding:20px')
+            | !{doc}
 
-  div(class='container-xl')
-    h2(style='float:left')= postname
-    div(id='buttons', style='float:right')
-      a(href='/edit/' + id)
-        button(type='button' class='btn btn-success') Edit
-    br
-    br
-    div(id='output' class='border')
-      | !{doc}
+    div(class='container-fluid' style='padding:2rem;')
+        a(href='/edit/')
+            button(class='btn btn-dark') Back To List
