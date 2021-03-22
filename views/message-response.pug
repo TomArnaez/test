@@ -1,0 +1,16 @@
+extends side-nav-sublayout
+
+block primary
+    
+    div(class='container-fluid')
+      h1= title
+      
+    div(class='container-xl')
+        form(method='post' action='/admin/message/send')
+            h3 Question: #{question}
+            p= custom_id
+            label Reply to Message:
+            textarea(name='message' minlength=20 rows='8' cols='30' required=true)
+            button(type='submit' class='btn btn-sucess') Submit
+                
+        

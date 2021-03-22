@@ -70,7 +70,7 @@ block primary
                 td
                   a(href='/admin/post_response/'+item.custom_id)
                     button(type='button', class='btn') Post Response
-                  a(href='/edit/' + item.id)
-                    button(type='button' class='btn btn-success') Edit
+                  a(href='/admin/respond/' + item.custom_id)
+                    button(type='button' class='btn btn-success') Private Response
                   a
                     button(type='button', class='btn btn-danger', onClick='confirmDelete('+item.id+')') Delete
