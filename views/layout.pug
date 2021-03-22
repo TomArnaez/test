@@ -9,29 +9,6 @@ html
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js")
   
-  
   body
-    //- NAVBAR below, to add items to navbar, add them as a li tag with class 'nav-item'
-    nav(class='navbar-expand-lg bg-light navbar-light' style='padding:10px')
-      a(class='navbar-brand' href='/' style='float:left; padding-left:10px') Info Hub
-      button(class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation")
-        span(class='navbar-toggler-icon')
-      
-      div(class='collapse navbar-collapse' id='navbarSupportedContent')
-          ul(class='navbar-nav mr-auto')
-            li(class='nav-item active')
-              a(class='nav-link' href='/edit/feed') Feed
-            li(class='nav-item dropdown')
-              a(class='nav-link dropdown-toggle' href='/edit/' id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Posts
-              div(class='dropdown-menu' aria-labelledby='navbarDropdown')
-                a(class='dropdown-item' href='/edit/') View Posts
-                div(class='dropdown-divider')
-                a(class='dropdown-item' href='/edit/new') Create New Post
-          //- Todo: add code to only show if admin
-          div(class='form-inline my-2 my-lg-0')
-            a(href='/admin/dashboard')
-              button(class='btn btn-outline-primary my-2 my-sm-0') Account / Login
-            
-    
     block content
     
