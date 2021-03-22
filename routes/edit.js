@@ -64,7 +64,7 @@ router.get('/new', function (req, res, next) {
 
   //Checks user is an admin. Only admins can access editing router
   if (req.isAuthenticated()) {
-      res.render('text_editor', {title: 'Content Editor', postname:null, doc: null});
+      res.render('text_editor', {title: 'Content Editor', postname:null, doc: null, back: '/edit/'});
 
   //Redirects user to login page if they are not authenticated
   } else {
@@ -161,7 +161,7 @@ router.get('/:id', function (req, res, next) {
 
         //Checks if post with provided ID exists in the database. If true, then renders edit page
         if (result.length != 0) {
-          res.render('text_editor', {title: 'Content Editor', postname:result[0].title, doc:result[0].html});
+          res.render('text_editor', {title: 'Content Editor', postname:result[0].title, doc:result[0].html, back: '/edit/'});
 
         //Redirects user to posts index if no post exists
         } else {

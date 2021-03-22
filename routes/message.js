@@ -19,12 +19,40 @@ router.get('/message', async (req,res) => {
 router.get('/admin/message', async (req,res) => {
     if(req.isAuthenticated()){
 
-        res.render('admin_message', {message: await getMessages()});
+        res.render('admin_message', {title:'User Questions', message: await getMessages()});
     }
     else {
         res.render('login');
     }
 });
+
+router.get('/admin/post_response/:message_id', async (req, res) => {
+    if (req.isAuthenticated()) {
+
+        db.query("SELECT title, message FROM messages WHERE ? IN (custom_id) LIMIT 1;", [req.params.message_id], function(err, result) {
+            //Error handling for database connection. Reroutes user to posts index (most likely the origin)
+            if (err) {
+              console.log('Error connecteing with database');
+              res.redirect('/edit');
+            } else {
+
+              //Checks if post with provided ID exists in the database. If true, then renders edit page
+              if (result.length != 0) {
+                const doc = '<h2> Question: ' + result[0].message + '</h2> \n <br>';
+                res.render('text_editor', {title: 'Post Response', postname:'User Question', doc: doc, back: '/admin/message'});
+
+              //Redirects user to posts index if no post exists
+              } else {
+                console.log('No message with id: \'' + req.params.message_id + '\' in database');
+                res.redirect('/admin/message');
+              }
+            }
+        })
+    } else {
+        res.redirect('admin/login');
+    }
+});
+
 
 /* GET all messages */
 router.get('/admin/message/all', async (req,res) => {
@@ -53,6 +81,67 @@ router.post('/message/send', (req,res) => {
             res.redirect("/message");
         }
     });
+});
+
+
+router.post('/admin/post_response/:message_id', (req,res) => {
+    const currentTime = getTime();
+    let userEmail = '';
+    const content = req.body.content;
+    const postname = req.body.filename;
+    console.log('content = ' + content);
+    console.log('stripped content = ' + content.replace( /(<([^>]+)>)/ig, ''));
+    console.log('title = ' + postname);
+
+    db.query("UPDATE messages SET response = ?, response_time = ?, is_public = ? WHERE custom_id = ?",
+        [content.replace( /(<([^>]+)>)/ig, ''), currentTime, 1, req.params.message_id], (err, result)=> {
+            if (err) {
+                console.log('db error 1 : ' + err);
+                req.flash('error_msg', 'No database connection.');
+                res.redirect("/admin/message");
+            } else {
+                console.log('past update query');
+                db.query("SELECT user_email, custom_id FROM messages JOIN users ON messages.user_id = users.id WHERE custom_id = ?",
+                    [req.params.message_id], (err, result)=> {
+                    if (err) {
+                        console.log('db error 2 : ' + err);
+                        req.flash('error_msg', 'No database connection.');
+                        res.redirect("/admin/message");
+                    } else {
+                        console.log('Passed Select Query\n User email : ' + result[0].user_email);
+                        userEmail = result[0].user_email;
+
+                        if(userEmail == '') {
+                            req.flash('error_msg', `Email Wasn't sent :(`);
+                        } else {
+                            email.sendEmail(userEmail, 'Answer to your message: '.concat(result[0].custom_id),
+                                content.replace( /(<([^>]+)>)/ig, ''));
+
+                        }
+                    }
+                });
+            }
+        });
+
+        console.log('passed email and message updates');
+        db.query("INSERT INTO posts (title, text, html) VALUES (?, ?, ?);", [postname, content, content], function(err, result) {
+
+            //Error handling for database connection
+            if (err){
+              console.log('db error 3 : ' + err)
+              req.flash('error_msg', 'Error connecting to database: ' + err);
+              res.render('text_editor', {title: 'Post Response', postname: postname, doc: content});
+
+            //Redirects user to posts index if upload was successful
+            } else {
+                console.log('success');
+                req.flash('success_msg', 'Successfully saved post to database');
+                res.redirect('/admin/message');
+            }
+        });
+
+
+
 });
 
 /*
