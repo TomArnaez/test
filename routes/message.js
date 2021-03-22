@@ -163,7 +163,7 @@ router.get('/admin/respond/:custom_id', (req, res) => {
 
 
 //for posting private response to a message
-router.post('/admin/responsd/:custom_id', (req,res) => {
+router.post('/admin/respond/:custom_id', (req,res) => {
     const currentTime = getTime();
     let userEmail = '';
 
