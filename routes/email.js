@@ -19,7 +19,12 @@ let transporter = nodemailer.createTransport({
 
 /* GET Contact page. */
 router.get('/contact', (req, res) =>{
-    res.render('contact');
+    if(req.isAuthenticated()) {
+        res.render('contact', {title: 'E-mail us'});
+    }
+    else{
+        res.render('login');
+    }
 });
 
 // Body Parser Middleware
@@ -34,7 +39,6 @@ router.post('/contact/send', (req, res) => {
     <ul>
       <li>Name: ${req.body.name}</li>
       <li>Email: ${req.body.email}</li>
-      <li>Phone: ${req.body.phone}</li>
     </ul>
     <h3>Message</h3>
     <h4>${req.body.title}</h4>

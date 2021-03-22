@@ -84,7 +84,7 @@ router.post('/message/send', (req,res) => {
 });
 
 // posts a response to a question. from the content_editor page
-router.post('/admin/post_response/:message_id', (req,res) => {
+router.post('/admin/post_response/:message_id', async (req,res) => {
     const currentTime = getTime();
     let userEmail = '';
     const content = req.body.content;
@@ -135,7 +135,7 @@ router.post('/admin/post_response/:message_id', (req,res) => {
 });
 
 //Views message and page to send private response back to user.
-router.get('admin/respond/:custom_id', (req, res) => {
+router.get('/admin/respond/:custom_id', (req, res) => {
     if (req.isAuthenticated()) {
         db.query("SELECT title, message FROM messages WHERE ? IN (custom_id) LIMIT 1;", [req.params.custom_id], function(err, result) {
             //Error handling for database connection. Reroutes user to posts index (most likely the origin)
@@ -150,7 +150,7 @@ router.get('admin/respond/:custom_id', (req, res) => {
 
               //Redirects user to posts index if no post exists
               } else {
-                console.log('No message with id: \'' + req.params.message_id + '\' in database');
+                console.log('No message with id: \'' + req.params.custom_id + '\' in database');
                 res.redirect('/admin/message');
               }
             }
