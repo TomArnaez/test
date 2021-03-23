@@ -98,7 +98,7 @@ router.get('/new', function (req, res, next) {
 
   //Checks user is an admin. Only admins can access editing router
   if (req.isAuthenticated()) {
-      res.render('text_editor', {title: 'Content Editor', postname:null, doc: null, back: '/edit/', messages: req.flash(error_msg)});
+      res.render('text_editor', {title: 'Content Editor', postname:null, doc: null, back: '/edit/'});
 
   //Redirects user to login page if they are not authenticated
   } else {
