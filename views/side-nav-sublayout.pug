@@ -54,8 +54,11 @@ block content
                 div(class='collapse navbar-collapse' id='navbarSupportedContent')
                     ul(class='navbar-nav me-auto mb-2 mb-lg-0')
                       li(class='nav-item')
-                        a(class='nav-link' href='/edit/feed') Feed
-                        
+                        a(class='nav-link' href='/feed') Feed
+                      
+                      li(class='nav-item')
+                        a(class='nav-link' href='/contact') Contact Us
+                      
                       li(class='nav-item dropdown')
                         a(class='nav-link dropdown-toggle' href='/edit/' id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false") Posts
                         ul(class='dropdown-menu' aria-labelledby='navbarDropdown')
@@ -71,16 +74,16 @@ block content
                         input(class="form-control me-2" style='margin-left:10px' type="search" placeholder="Search" aria-label="Search")
                         button(class="btn btn-outline-success gap-2" type="submit" style='margin-left:10px') Search
                     a(href='/admin/dashboard')
-                      button(class='btn btn-outline-primary my-2 my-sm-0' style='margin-left:10px') Account / Login
+                      button(class='btn btn-outline-primary my-2 my-sm-0' style='margin-left:10px') Account
                     
     .sidepanel
         block sidepanel
             div(class='side-panel')
               //- Button to view user questions
-              a(href='#') 
+              a(href='/message') 
                 button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') View Your Questions
               //- button to ask a question of the staff  
-              a(href='/contact')
+              a(href='/message/new')
                 button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Ask a Question
               //- should put in divider to separate admin tools and non
               hr
@@ -100,7 +103,32 @@ block content
               //-   a(href=val.link)
               //-     button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') #{val.text}
             
-            
+    .alert
+      //- div(class='primary' )
+        block alert
+          include ./partial/msg
+          div(class='container-xl')
+            - if (error_msg)
+              div(class='alert alert-danger' role='alert')
+                p #{messages}
+                button(type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close") Close
+            if (error)
+              div(class='alert alert-danger' role='alert')
+                p #{error}
+                button(type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close") Close
+            if (success_msg)
+              div(class='alert alert-success' role='alert')
+                p #{success_msg}
+                button(type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close") Close
+            if (html_success_msg)
+              div(class='alert alert-success' role='alert')
+                p #{html_success_msg}
+                button(type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close") Close
+            - if (messages)
+              div(class='alert alert-success' role='alert')
+                p #{messages}
+                button(type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close") Close
+              
     .primary
         div(class='primary')
             block primary

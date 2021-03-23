@@ -8,7 +8,16 @@ const email = require('./email.js');
 /* GET Message page. */
 router.get('/message', async (req,res) => {
     if(req.isAuthenticated()) {
-        res.render('user_message', {message: await getUserMessage(req.user)});
+        res.render('user_message', {title: 'Your Questions', message: await getUserMessage(req.user)});
+    }
+    else{
+        res.render('login');
+    }
+});
+
+router.get('/message/new', async (req,res) => {
+    if(req.isAuthenticated()) {
+        res.render('message', {title: 'Send in a Question for Staff', message: await getUserMessage(req.user)});
     }
     else{
         res.render('login');
@@ -39,7 +48,7 @@ router.get('/admin/post_response/:message_id', async (req, res) => {
               //Checks if post with provided ID exists in the database. If true, then renders edit page
               if (result.length != 0) {
                 const doc = '<h2> Question: ' + result[0].message + '</h2> \n <br>';
-                res.render('text_editor', {title: 'Post Response', postname:'User Question', doc: doc, back: '/admin/message'});
+                res.render('text_editor', {title: 'Post Response', postname: req.params.message_id, doc: doc, back: '/admin/message'});
 
               //Redirects user to posts index if no post exists
               } else {
