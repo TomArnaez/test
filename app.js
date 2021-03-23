@@ -67,33 +67,12 @@ adminLoginRouter.use('/dashboard', adminDashboardRouter)
 adminLoginRouter.get('/media', media.mediaManger)
 adminLoginRouter.use('/upload', uploadRouter)
 
-//express session
-app.use(session({
-  secret : 'secret',
-  resave : true,
-  saveUninitialized : true
-}));
-app.use(passport.initialize());
-app.use(passport.session());
-
-//use flash
-app.use(flash());
-app.use((req,res,next)=> {
-  res.locals.success_msg = req.flash('success_msg');
-  res.locals.error_msg = req.flash('error_msg');
-  res.locals.error  = req.flash('error');
-  next();
-})
-
 app.use('/', indexRouter);
 app.use('/admin', adminLoginRouter);
-app.use('/admin/dashboard', adminDashboardRouter);
 app.use('/', contactRouter);
 app.use('/', messageRouter);
 
-
 app.use('/edit', editRouter);
-app.use('/admin', adminLoginRouter);
 app.use('/media', mediaRouter);
 
 // catch 404 and forward to error handler
