@@ -1,30 +1,25 @@
-doctype html
-head
-    meta(charset='UTF-8')
-di.contact
-    include ./partial/msg
-    h2 Email Us
-    form(method='POST' action='contact/send')
-        h3  * required
-        p
-            label * Full Name:
-            div
-            input(type='text' id='name' name='name' minlength=5 required=true)
-        p
-            label * Email Address:
-            div
-            input(type='email' id= 'email' name='email' required=true)
-        p
-            label(for='phone') Phone Number: (format: 07xxxxxxxxx or 020xxxxxxxx)
-            br
-            input#phone(type='tel' name='phone' pattern='[0-9]{11}' required= true)
-        p
-            label * Message Title:
-            div
-            input(type='text' id='title' name='title' minlength=5 required=true)
-        p.full
-            label * Message Body:
-            div
-            textarea(name='message' id='message' minlength=20 rows='8' cols='30' required=true)
-        p.full
-            button(type='submit') Submit
+extends layout
+
+block content 
+
+    h1(style="text-align:center") Contact Us 
+    div(class="col-xl-3 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form-group p-4 border rounded-lg")
+        h5 * Required Fields
+        br
+        form(method="POST" action="contact/send")    
+        div(class="form-group w-100")
+            label(class="w-25" class="h6" for="name") * Full Name: 
+            input(class="w-75" id="name" name="name" placeholder="Full Name" minlength=5 required=true)
+        div(class="form-group w-100")
+            label(class="w-25" class="h6" for="email") * Email:
+            input(class="w-75" type="email" id="email" name="email" placeholder="Email Address" required=true)
+        div(class="form-group w-100")
+            label(class="w-25" class="h6" for="phone") Phone: 
+            input#phone(class="w-75" name="phone" placeholder="07xxxxxxxxx" minlength=5 required=false)
+        div(class="form-group w-100")
+            label(class="w-25" class="h6" for="title") * Title:
+            input(class="w-75" type="text" id="title" name="title" placeholder="Message Title" minlength="5" required="true")
+        div(class="form-group w-100")
+            label(class="w-25" class="h6" for="body" style="float:left") * Body:
+            textarea(class="w-75" name="message" id="message" placeholder="Message Body" minlength=20 cols="30", rows="10" required=true)
+        button(type='submit' class='btn btn-primary btn-block active') Submit
