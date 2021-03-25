@@ -2,18 +2,19 @@ extends layout
 
 block content
   div(class='container-fluid')
-    h1  Login
+    h1(style="text-align:center")  Login
+    include ./partial/msg 
+
     
-    
-    div(class="col-xl-3 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4 border")
-      include ./partial/msg 
+    div(class="col-xl-3 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form-group p-4 border rounded-lg")
       form(action='/admin/login' method='POST')
-          div
-              label(for='username') Username: 
-              input(id='username' name='username' placeholder='Username')
-          div
-              label(for='password') Password:
-              input(type='password' id='password' name='password' placeholder='Password')
+          div(class="form-group w-100")
+              label(class="w-25" class="h6" for='username') Username:
+              input(class="w-75" id='username' name='username' placeholder='Username')
+          div(class="form-group")
+              label(class="w-25" class="h6" for='password') Password:
+              input(class="w-75" type='password' id='password' name='password' placeholder='Password' class)
           p
+            u 
               a(href='/admin/forgotpassword') Forgot Password
-          button(type='submit' class='btn btn-success') Login
+          button(type='submit' class='btn btn-primary btn-block active') Login
