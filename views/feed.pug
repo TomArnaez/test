@@ -1,16 +1,6 @@
 extends side-nav-sublayout
 
-
 append head
-  //- Converts date from SQL format to something easier to read and more aesthatic
-  -function formatDate(dateString){
-    -var date = new Date(dateString);
-    -var d = date.getDate();
-    -var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
-    -var m = monthNames[date.getMonth()];
-    -var y = date.getFullYear();
-    -return d+' '+m+' '+y;
-    -}
   style(type='text/css').
     .social-feed-box {
       padding: 15px;

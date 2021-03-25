@@ -2,8 +2,10 @@ extends side-nav-sublayout
 
 block primary
     
-    div(class='container-fluid')
-      h1= title
+  div(class='container-fluid')
+    br
+    h1= title
+    br
     
     //- Creates large Div container 
     div(class='container-fluid')
@@ -24,16 +26,24 @@ block primary
             if (message != null) 
                 each item in message
                   tr
-                    th(scope='row') #{item.user_id}
-                    td #{item.custom_id}
+                    th(scope='row' class='col-md-1') #{item.user_id}
+                    td(class='col-md-1') #{item.custom_id}
                     td #{item.title}
-                    td #{item.message}
-                    td #{item.time}
+                    td(class='col-md-1') #{item.message}
+                    td(class='col-md-1') #{formatDate(item.time)}
                     //- Action Buttons for below table data tag. Each route request appropriatley.
-                    td
-                      a(href='/admin/post_response/'+item.custom_id)
-                        button(type='button', class='btn btn-primary') Post Response
-                      a(href='/admin/respond/' + item.custom_id)
-                        button(type='button' class='btn btn-success') Private Response
-                      a
-                        button(type='button', class='btn btn-danger', onClick='confirmDelete('+item.id+')') Delete
+                    if (item.response == null)
+                      td
+                        a(href='/admin/post_response/'+item.custom_id)
+                          button(type='button', class='btn btn-primary w-100 gap-2') Post Response
+                        a(href='/admin/respond/' + item.custom_id)
+                          button(type='button' class='btn btn-success w-100 gap-2') Private Response
+                    else 
+                      if (item.is_public == 1)
+                        td
+                          a(href='/edit/view/title/' + item.custom_id)
+                            button(class='btn btn-primary w-100 gap-2 ') View Post Response
+                      else
+                        td 
+                          a(href='/message/response/' + item.custom_id)
+                            button(class='btn btn-info w-100 gap-2') View Response
