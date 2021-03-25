@@ -4,7 +4,10 @@ append head
     -function formatDate(dateString){
       -var date = new Date(dateString);
       -var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
-      -return date.getDate() +' '+ monthNames[date.getMonth()] +' '+ date.getFullYear();
+      -var days = date.getDate(); var month = monthNames[date.getMonth()]; var year = date.getFullYear();
+      -var hours = date.getHours(); if(hours < 10){hours = "0" + hours;}
+      -var mins = date.getMinutes(); if(mins < 10){mins = "0" + mins;}
+      -return days +' '+ month +' '+ year +' | '+ hours +':'+ mins;
       -}
   
     
