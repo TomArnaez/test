@@ -27,7 +27,13 @@ block primary
     br
     h1 Feed
     br
-    
+      
+  div(class="dropdown")
+    button(type='button' class='btn btn-primary dropdown-toggle' id='dropdownButton' data-toggle='dropdown') Dropdown Button
+    div(class='dropdown-menu')
+      a(class='dropdown-item' href='#') Edit
+      a(class='dropdown-item' href='#') Hide
+
   //- Container for feed posts.
   div(class='container-xl')
     each item in results
@@ -37,6 +43,11 @@ block primary
         div(class='media-body')
           h2= item.title
           small(class='text-muted') #{formatDate(item.created_on)}
+          //- div(class="dropdown")
+          //-   button(class='btn btn-link dropdown-toggle' id='dropdownButton' type='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false') Dropdown Button
+          //-   div(class='dropdown-menu' aria-lebelledby='drowdownButton')
+          //-     a(class='dropdown-item') Edit
+          //-     a(class='dropdown-item') Hide
         hr
         //- Container for post body ( '|' tells pug to use accept raw HTML which the posts are saved as)
         div(class='social-body')

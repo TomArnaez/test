@@ -15,6 +15,32 @@ router.get('/message', async (req,res) => {
     }
 });
 
+router.get('/message/response/:custom_id', async (req, res) => {
+  if(req.isAuthenticated()) {
+    db.query("SELECT * FROM messages WHERE ? IN (custom_id) LIMIT 1;", [req.params.custom_id], function(err, result) {
+        //Error handling for database connection. Reroutes user to posts index (most likely the origin)
+        if (err) {
+          console.log('Error connecteing with database');
+          req.flash('error_msg', 'Failed to connect to database: ' + err);
+          res.redirect('/admin/message');
+        } else {
+          //Checks if post with provided ID exists in the database. If true, then renders edit page
+          if (result.length != 0) {
+            res.render('question_response', {title: 'View Response', question: result});
+
+          //Redirects user to posts index if no post exists
+          } else {
+            console.log('No message with id: \'' + req.params.custom_id + '\' in database');
+            res.redirect('/admin/message');
+          }
+        }
+    })
+  } else {
+    res.redirect('admin/login');
+  }
+})
+
+
 router.get('/message/new', async (req,res) => {
     if(req.isAuthenticated()) {
         res.render('message', {title: 'Send in a Question for Staff', message: await getUserMessage(req.user)});
@@ -35,6 +61,7 @@ router.get('/admin/message', async (req,res) => {
     }
 });
 
+// Renders page to allow private response to question
 router.get('/admin/post_response/:message_id', async (req, res) => {
     if (req.isAuthenticated()) {
 
