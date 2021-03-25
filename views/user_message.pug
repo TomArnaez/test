@@ -31,12 +31,12 @@ block primary
                     if (item.is_public == 1)
                       td
                         a(href='/edit/view/title/' + item.custom_id)
-                          button(class='btn btn-primary') View Post
+                          button(class='btn btn-primary w-75 p-1 gap-2') View Post
                     else
                       if (item.response != null)
                         td 
                           a(href='/message/response/' + item.custom_id)
-                            button(class='btn btn-info') View Response
+                            button(class='btn btn-info w-75 p-1 gap-2') View Response
                       else 
                         td No Response yet, Keep checking back!
                     //- Action Buttons for below table data tag. Each route request appropriatley.

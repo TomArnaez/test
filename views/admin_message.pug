@@ -33,17 +33,17 @@ block primary
                     td(class='col-md-1') #{formatDate(item.time)}
                     //- Action Buttons for below table data tag. Each route request appropriatley.
                     if (item.response == null)
-                      td
+                      td(class='col-sm-2')
                         a(href='/admin/post_response/'+item.custom_id)
-                          button(type='button', class='btn btn-primary w-100 gap-2') Post Response
+                          button(type='button', class='btn btn-primary w-75 p-1 gap-2') Post Response
                         a(href='/admin/respond/' + item.custom_id)
-                          button(type='button' class='btn btn-success w-100 gap-2') Private Response
+                          button(type='button' class='btn btn-success w-75 p-1 gap-2') Private Response
                     else 
                       if (item.is_public == 1)
                         td
                           a(href='/edit/view/title/' + item.custom_id)
-                            button(class='btn btn-primary w-100 gap-2 ') View Post Response
+                            button(class='btn btn-primary w-75 p-1 gap-2 ') View Post
                       else
                         td 
                           a(href='/message/response/' + item.custom_id)
-                            button(class='btn btn-info w-100 gap-2') View Response
+                            button(class='btn btn-info w-75 p-1 gap-2') View Response
