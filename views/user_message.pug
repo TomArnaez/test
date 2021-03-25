@@ -27,7 +27,7 @@ block primary
                     th(scope='row') #{item.custom_id}
                     td #{item.title}
                     td #{item.message}
-                    td #{item.time}
+                    td #{formatDate(item.time)}
                     if (item.is_public == 1)
                       td
                         a(href='/edit/view/title/' + item.custom_id)

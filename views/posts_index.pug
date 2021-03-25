@@ -28,18 +28,22 @@ block primary
           tr
             th(scope='col') Id
             th(scope='col') Name
+            th(scope='col') Text
             th(scope='col') Created
+            th(scope='col') Visible
             th(scope='col') Actions
         tbody
           //- creates all of the below tags for each item in the results array
           //- results array is a select query for all posts in the posts table
           each item in results
             tr
-              th(scope='row') #{item.id}
-              td #{item.title}
-              td #{item.created_on}
+              th(scope='row' class='col-lg-1') #{item.id}
+              td(class='col-lg-2') #{item.title}
+              td(class='col-lg-4') #{item.text}
+              td(class='col-lg-2') #{formatDate(item.created_on)}
+              td(class='col-lg-1')
               //- Action Buttons for below table data tag. Each route request appropriatley.
-              td
+              td(class='col-lg-2')
                 a(href='/edit/view/'+item.id)
                   button(type='button', class='btn') View
                 a(href='/edit/' + item.id)
