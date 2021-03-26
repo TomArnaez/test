@@ -2,7 +2,7 @@ extends layout
 
 block content
   div(class='container-fluid')
-    h1(style="text-align:center")  Login
+    h1(style="text-align:center") Login
     div(class="col-xl-3 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form-group p-4 border rounded-lg")
       include ./partial/msg
       form(action='/admin/login' method='POST')
@@ -13,6 +13,8 @@ block content
               label(class="w-25" class="h6" for='password') Password:
               input(class="w-75" type='password' id='password' name='password' placeholder='Password' class)
           p
-            u 
+            u
+              a(href='/admin/register') Register an account
+                br
               a(href='/admin/forgotpassword') Forgot Password
           button(type='submit' class='btn btn-primary btn-block active') Login
