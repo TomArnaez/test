@@ -5,6 +5,11 @@ block primary
   div(class='container-fluid')
     br
     h1= title
+    -if (message != null) {
+      p Total Number of Messages: #{message.length}
+    -  } else {
+      p Total Number of Messages: 0
+    -  }
     br
 
     //- Creates large Div container 
@@ -14,7 +19,6 @@ block primary
         table(class='table table-striped')
           thead
             tr
-              th(scope='col') User ID
               th(scope='col') Message ID
               th(scope='col') Title
               th(scope='col') Message
@@ -26,7 +30,6 @@ block primary
             if (message != null) 
                 each item in message
                   tr
-                    th(scope='row' class='col-md-1') #{item.user_id}
                     td(class='col-md-1') #{item.custom_id}
                     td #{item.title}
                     td(class='col-md-1') #{item.message}
