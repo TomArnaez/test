@@ -185,6 +185,35 @@ router.get('/:id', function (req, res, next) {
 
 })
 
+router.post('/hide/:post_id', function(req, res, next) {
+  db.query("UPDATE posts SET visible = ? WHERE id = ?;", [0, req.params.post_id], function(err, result) {
+    if (err){
+      req.flash('error_msg', 'Error when accessing database');
+      console.log('failed: ' + err);
+      res.redirect(req.get('referer'));
+    //If update successful, redirects user to posts index
+    } else {
+      console.log('success');
+      req.flash('success_msg', 'Successfully updated post');
+      res.redirect(req.get('referer'));
+    }
+  });
+})
+
+router.post('/show/:post_id', function(req, res, next) {
+  db.query("UPDATE posts SET visible = ? WHERE id = ?;", [1, req.params.post_id], function(err, result) {
+    if (err){
+      req.flash('error_msg', 'Error when accessing database');
+      console.log('failed: ' + err);
+      res.redirect(req.get('referer'));
+    //If update successful, redirects user to posts index
+    } else {
+      console.log('success');
+      req.flash('success_msg', 'Successfully updated post');
+      res.redirect(req.get('referer'));
+    }
+  });
+})
 
 //UPDATE function
 router.post('/:id', function (req, res, next) {

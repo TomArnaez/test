@@ -13,18 +13,12 @@ append head
 block primary
   div(class='container-fluid')
     h1= title
-    
-  //- container for back button
-  div(class='container-fluid' style='padding:2rem;')
-    a(href= back)
-      button(class='btn btn-dark') Back To List
-      
-    
+
   //- container for post form
   div(class='container-xl')
     form(name="editor-form", method="post")
-        div(id='input' style='padding:10px')
-            span.label Post Name:
+        div(id='input' style='padding:10px; padding-left:0;')
+            label(for='filename' class='col-sm-2 col-form-label') Post Name:
             input(type="text", id='postLbl', name="filename", value=postname)
         div.input
             textarea(name="content", id="my-expressjs-tinymce-app", value="Enter title here")
@@ -32,4 +26,7 @@ block primary
         div.actions
             input(type="submit", value='Save' class='btn btn-success')
               
-      
+    //- container for back button
+  div(class='container-fluid' style='padding:2rem;')
+    a(href= back)
+      button(class='btn btn-dark') Back To List
