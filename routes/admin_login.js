@@ -246,62 +246,64 @@ router.post('/register/:token', (req, res) => {
                 req.body.newpass2 == "") { //Check that fields are not empty.
                 req.flash('error_msg', 'Missing field(s).');
                 res.redirect("/admin/register/" + req.params.token);
-            }
-            //check passwords match
-            let passmatch = req.body.newpass == req.body.newpass2
-            if (!passmatch) {
-                req.flash('error_msg', 'Passwords do not match.');
-                res.redirect("/admin/register/" + req.params.token);
-            }
-            //check tos accepted
-            if(!req.body.tos) {
-                req.flash('error_msg', 'You must accept the Terms and Condition and Privacy Policy.');
-                res.redirect("/admin/register/" + req.params.token);
-            }
-
-            //check if email/username in use.
-            db.query("SELECT id AS user_id FROM users WHERE ? = user_email LIMIT 1;", [req.body.email], function(err, result) {
-                if (err) {
-                    req.flash('error_msg', 'No database connection.');
-                    res.redirect("/admin/register/" + req.params.token);
-                }
-                if (result.length > 0){
-                    req.flash('error_msg', 'This email is already in use.');
+            } else {
+                //check passwords match
+                let passmatch = req.body.newpass == req.body.newpass2
+                if (!passmatch) {
+                    req.flash('error_msg', 'Passwords do not match.');
                     res.redirect("/admin/register/" + req.params.token);
                 } else {
-                    db.query("SELECT id AS user_id FROM users WHERE ? = user_login LIMIT 1;", [req.body.username], function(err, result) {
-                        if (err) {
-                            req.flash('error_msg', 'No database connection.');
-                            res.redirect("/admin/register/" + req.params.token);
-                        }
-                        if (result.length > 0){
-                            req.flash('error_msg', 'This username is already in use.');
-                            res.redirect("/admin/register/" + req.params.token);
-                        } else {
-
-                            //add user to database
-                            bcrypt.hash(newpass, 10, function(err, newhash) { //Hash new password and update database.
-                                db.query("INSERT INTO `users` (`id`, `user_login`, `user_email`, `user_pass`, `user_fname`, `user_lname`) VALUES (NULL, '?', '?', '?', '?', '?')", [req.body.username, req.body.email, newhash, req.body.fname, req.body.lname], function(err, result) {
+                    //check tos accepted
+                    if(!req.body.tos) {
+                        req.flash('error_msg', 'You must accept the Terms and Condition and Privacy Policy.');
+                        res.redirect("/admin/register/" + req.params.token);
+                    } else {
+                        //check if email/username in use.
+                        db.query("SELECT id AS user_id FROM users WHERE ? = user_email LIMIT 1;", [req.body.email], function(err, result) {
+                            if (err) {
+                                req.flash('error_msg', 'No database connection.');
+                                res.redirect("/admin/register/" + req.params.token);
+                            }
+                            if (result.length > 0){
+                                req.flash('error_msg', 'This email is already in use.');
+                                res.redirect("/admin/register/" + req.params.token);
+                            } else {
+                                db.query("SELECT id AS user_id FROM users WHERE ? = user_login LIMIT 1;", [req.body.username], function(err, result) {
                                     if (err) {
                                         req.flash('error_msg', 'No database connection.');
                                         res.redirect("/admin/register/" + req.params.token);
                                     }
+                                    if (result.length > 0){
+                                        req.flash('error_msg', 'This username is already in use.');
+                                        res.redirect("/admin/register/" + req.params.token);
+                                    } else {
 
-                                    //TODO: user activation/must confirm email to continue?
+                                        //add user to database
+                                        bcrypt.hash(newpass, 10, function(err, newhash) { //Hash new password and update database.
+                                            db.query("INSERT INTO `users` (`id`, `user_login`, `user_email`, `user_pass`, `user_fname`, `user_lname`) VALUES (NULL, '?', '?', '?', '?', '?')", [req.body.username, req.body.email, newhash, req.body.fname, req.body.lname], function(err, result) {
+                                                if (err) {
+                                                    req.flash('error_msg', 'No database connection.');
+                                                    res.redirect("/admin/register/" + req.params.token);
+                                                }
 
-                                    //MISSING: Email preferences ignored/not stored
+                                                //TODO: user activation/must confirm email to continue?
 
-                                    //success, redirect to login/homepage & decrement uses remaining
-                                    decrementRegToken(req.params.token)
-                                    req.flash('success_msg', 'Account created! Please login:');
-                                    res.redirect("/admin/login");
+                                                //MISSING: Email preferences ignored/not stored
 
+                                                //success, redirect to login/homepage & decrement uses remaining
+                                                decrementRegToken(req.params.token)
+                                                req.flash('success_msg', 'Account created! Please login:');
+                                                res.redirect("/admin/login");
+
+                                            });
+                                        });
+                                    }
                                 });
-                            });
-                        }
-                    });
+                            }
+                        });
+                    }
                 }
-            });
+            }
         } else {
             req.flash('error_msg', 'Invalid code.');
             res.redirect('/admin/register');
