@@ -15,6 +15,7 @@ router.get('/message', async (req,res) => {
     }
 });
 
+// Gets page to display response to a message
 router.get('/message/response/:custom_id', async (req, res) => {
   if(req.isAuthenticated()) {
     db.query("SELECT * FROM messages WHERE ? IN (custom_id) LIMIT 1;", [req.params.custom_id], function(err, result) {
@@ -40,6 +41,7 @@ router.get('/message/response/:custom_id', async (req, res) => {
   }
 })
 
+// Gets page for admin to forward question
 router.get('/admin/respond/forward/:custom_id', async (req, res) => {
   if(req.isAuthenticated()) {
     db.query("SELECT * FROM messages WHERE ? IN (custom_id) LIMIT 1;", [req.params.custom_id], function(err, result) {
@@ -65,6 +67,7 @@ router.get('/admin/respond/forward/:custom_id', async (req, res) => {
   }
 })
 
+// Gets page to create a new Questions
 router.get('/message/new', async (req,res) => {
     if(req.isAuthenticated()) {
         res.render('message', {title: 'Send in a Question for Staff', message: await getUserMessage(req.user), post: null});
@@ -74,6 +77,7 @@ router.get('/message/new', async (req,res) => {
     }
 });
 
+// Gets message response page, for admins to create a public post
 router.get('/message/new/:post_id', async (req, res) => {
   if(req.isAuthenticated()) {
       db.query("SELECT * FROM posts WHERE ? IN (id) LIMIT 1;", [req.params.post_id], function(err, result) {

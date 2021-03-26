@@ -5,6 +5,7 @@ block primary
   div(class='container-fluid')
     br
     h1= title
+    //- Shows NUmber of messages listed
     -if (message != null) {
       p Total Number of Messages: #{message.length}
     -  } else {
@@ -35,6 +36,7 @@ block primary
                     td(class='col-md-1') #{item.message}
                     td(class='col-md-1') #{formatDate(item.time)}
                     //- Action Buttons for below table data tag. Each route request appropriatley.
+                    //- These actions only show if the question has no response
                     if (item.response == null)
                       td(class='col-sm-2')
                         a(href='/admin/post_response/'+item.custom_id)
@@ -43,11 +45,14 @@ block primary
                           button(type='button' class='btn btn-success w-75 p-1 gap-2') Private Response
                         a(href='/admin/respond/forward/'+item.custom_id)
                           button(type='button' class='btn btn-info w-75 p-1 gap-2') Forward
+                    //- Actions id the message has a response
                     else 
+                      //-  Actions if the response is public 
                       if (item.is_public == 1)
                         td
                           a(href='/edit/view/title/' + item.custom_id)
                             button(class='btn btn-primary w-75 p-1 gap-2 ') View Post
+                      //- Actions if the response is private
                       else
                         td 
                           a(href='/message/response/' + item.custom_id)

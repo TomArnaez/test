@@ -2,25 +2,29 @@ extends side-nav-sublayout
 
 block primary
     
+    //- Container for page title
     div(class='container-fluid')
       h1= title
       
+    //- Container for email forwarding form
     div(class='container-xl')
         form(method='post')
+          //- Question sent by user
           div(class='form-group row')
             label(for='message' class='col-sm-2 col-form-label') Question:
             div(class='col-sm-10')
               input(name='message' readonly class="form-control-plaintext" value=question[0].message)
-            
+          //- Text box for e-mail to be forwarded to
           div(class='form-group row')
             label(for='ccEmail' class='col-sm-2 col-form-label') Forward to:
             div(class='col-sm-10')
               input(type='text' name='ccEmail' minlength=20 required=true placeholder='email@example.com')
+          //- Message to be sent with question
           div(class='form-group row')
             label(for='text' class='col-sm-2 col-form-label') Message* :
             div(class='col-sm-10')
               textarea(name='text' required=true class="form-control")
-              
+          //- submit button
           button(type='submit' class='btn btn-success') Submit
                 
                 

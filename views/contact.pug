@@ -1,12 +1,14 @@
 extends side-nav-sublayout
 
 block primary
-  
+
+  //- Title container
   div(class='container-fluid')
     br
     h1= title
     br
     
+  //- Container for contact form
   div(class='container-xl')
     form(method='post' action='contact/send')
       p(style='font-weight: bold') * Required
