@@ -1,5 +1,8 @@
 extends side-nav-sublayout
 
+append head
+  
+
 block primary
   
   div(class='container-fluid')
@@ -14,8 +17,11 @@ block primary
       div(class='form-group row')
         label(for='title' class='col-sm-2 col-form-label') Subject*
         div(class='col-sm-10')
-          input(type='text' name='title' required=true minlength=5 class='form-control')
-            //- Message Body
+          if (post != null)
+            input(type='text' name='title' required=true minlength=5 class='form-control' value='Question about post '+post[0].id+ ' ('+post[0].title+')')
+          else 
+            input(type='text' name='title' required=true minlength=5 class='form-control')
+      //- Message Body
       div(class='form-group row')
         label(for='message' class='col-sm-2 col-form-label') Message*
         div(class='col-sm-10')

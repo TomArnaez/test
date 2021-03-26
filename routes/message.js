@@ -43,11 +43,28 @@ router.get('/message/response/:custom_id', async (req, res) => {
 
 router.get('/message/new', async (req,res) => {
     if(req.isAuthenticated()) {
-        res.render('message', {title: 'Send in a Question for Staff', message: await getUserMessage(req.user)});
+        res.render('message', {title: 'Send in a Question for Staff', message: await getUserMessage(req.user), post: null});
     }
     else{
         res.render('login');
     }
+});
+
+router.get('/message/new/:post_id', async (req, res) => {
+  if(req.isAuthenticated()) {
+      db.query("SELECT * FROM posts WHERE ? IN (id) LIMIT 1;", [req.params.post_id], function(err, result) {
+        if (err) {
+          req.flash('error_msg', 'Error connecteing with database')
+          res.redirect('/feed');
+        } else {
+          res.render('message', {title: 'Ask Staff about this post', post: result});
+        }
+      });
+  }
+  else{
+      req.flash('error_msg', 'You are not Authenticated');
+      res.render('login');
+  }
 });
 
 /* GET Message Admin Panel. */

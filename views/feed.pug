@@ -63,3 +63,7 @@ block primary
         //- Container for post body ( '|' tells pug to use accept raw HTML which the posts are saved as)
         div(class='social-body')
           | !{item.html}
+        hr
+        div(class='footer')
+          a(href='/message/new/'+item.id)
+            button(class='btn btn-info') Ask Question about Post
