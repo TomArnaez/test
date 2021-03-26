@@ -1,31 +1,33 @@
 extends layout
 
 block content
-    h1  Register for an account
-    include ./partial/msg
-    form(action='/admin/register/' + token method='POST')
-        div
-            label(for='email') Email
-            input(id='email' name='email' placeholder='Email')
-        div
-            label(for='username') Username
-            input(id='username' name='username' placeholder='Username')
-        div
-            label(for='fname') First Name
-            input(id='fname' name='fname' placeholder='First Name')
-        div
-            label(for='lname') Last Name
-            input(id='lname' name='lname' placeholder='Last Name')
-        div
-            label(for='newpass') Password
-            input(type='password' id='newpass' name='newpass')
-        div
-            label(for='newpass2') Confirm Password
-            input(type='password' id='newpass2' name='newpass2')
-        div
-            label(for='tos') I accept the Terms and Condition and Privacy Policy
-            input(type='checkbox' required=true id='tos' name='tos')
-        div
-            label(for='emailpref') Send me occasional updates and announcements.
-            input(type='checkbox' id='emailpref' name='emailpref')
-        button(type='submit') Submit
+    div(class='container-fluid')
+    h1(style="text-align:center") Register for an account
+    div(class="col-xl-3 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form-group p-4 border rounded-lg")
+        include ./partial/msg
+        form(action='/admin/register/' + token method='POST')
+            div(class="form-group w-100")
+                label(for='email' class="w-25" class="h6") Email
+                input(id='email' name='email' placeholder='Email' class="w-75")
+            div(class="form-group w-100")
+                label(for='username' class="w-25" class="h6") Username
+                input(id='username' name='username' placeholder='Username' class="w-75")
+            div(class="form-group w-100")
+                label(for='fname' class="w-25" class="h6") First Name
+                input(id='fname' name='fname' placeholder='First Name' class="w-75")
+            div(class="form-group w-100")
+                label(for='lname' class="w-25" class="h6") Last Name
+                input(id='lname' name='lname' placeholder='Last Name' class="w-75")
+            div(class="form-group w-100")
+                label(for='newpass' class="w-25" class="h6") Password
+                input(type='password' id='newpass' name='newpass' class="w-75")
+            div(class="form-group w-100")
+                label(for='newpass2' class="w-25" class="h6") Confirm Password
+                input(type='password' id='newpass2' name='newpass2' class="w-75")
+            div(class="form-group w-100")
+                label(for='tos' class="w-75" class="h6") I accept the Terms and Condition and Privacy Policy
+                input(type='checkbox' required=true id='tos' name='tos' class="w-25")
+            div(class="form-group w-100")
+                label(for='emailpref' class="w-75" class="h6") Send me occasional updates and announcements.
+                input(type='checkbox' id='emailpref' name='emailpref' class="w-25")
+            button(type='submit' class='btn btn-primary btn-block active') Create Account
