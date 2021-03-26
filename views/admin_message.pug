@@ -1,51 +1,41 @@
 extends side-nav-sublayout
 
-block primary
-    
-  div(class='container-fluid')
-    br
-    h1= title
-    br
-    
-    //- Creates large Div container 
-    div(class='container-fluid')
-      //- Creating Table with Bootstrap
-      div(class='row')
-        table(class='table table-striped')
-          thead
-            tr
-              th(scope='col') User ID
-              th(scope='col') Message ID
-              th(scope='col') Title
-              th(scope='col') Message
-              th(scope='col') Time
-              th(scope='col') Actions
-          tbody
-            //- creates all of the below tags for each item in the results array
-            //- results array is a select query for all posts in the posts table
-            if (message != null) 
-                each item in message
-                  tr
-                    th(scope='row' class='col-md-1') #{item.user_id}
-                    td(class='col-md-1') #{item.custom_id}
-                    td #{item.title}
-                    td(class='col-md-1') #{item.message}
-                    td(class='col-md-1') #{formatDate(item.time)}
-                    //- Action Buttons for below table data tag. Each route request appropriatley.
-                    if (item.response == null)
-                      td(class='col-sm-2')
-                        a(href='/admin/post_response/'+item.custom_id)
-                          button(type='button', class='btn btn-primary w-75 p-1 gap-2') Post Response
-                        a(href='/admin/respond/' + item.custom_id)
-                          button(type='button' class='btn btn-success w-75 p-1 gap-2') Private Response
-                        a(href='/admin/respond/forward/'+item.custom_id)
-                          button(type='button' class='btn btn-info w-75 p-1 gap-2') Forward
-                    else 
-                      if (item.is_public == 1)
-                        td
-                          a(href='/edit/view/title/' + item.custom_id)
-                            button(class='btn btn-primary w-75 p-1 gap-2 ') View Post
-                      else
-                        td 
-                          a(href='/message/response/' + item.custom_id)
-                            button(class='btn btn-info w-75 p-1 gap-2') View Response
+block content
+
+    h1(style="text-align:center") Messages Admin Panel 
+    include ./partial/msg
+    div(class="col-xl-3 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form-group p-4 border rounded-lg")
+        form(method='POST' action='/admin/message/send')
+            -if(message == null){
+                p
+                    u
+                        strong No message
+            -}else{
+            - for(let i = 0; i < message.length; i++){
+                li User ID: #{message[i].user_id}
+                li Message ID: #{message[i].custom_id}
+                li Title: #{message[i].title}
+                li Message: #{message[i].message}
+                li Time: #{message[i].time}
+                li Response: #{message[i].response}
+                li Response Time: #{message[i].response_time}
+                input(type='radio' name='id' value= message[i].custom_id required='required')
+                br
+                br
+            -}}
+            div(class="form-group w-100")
+                label(class="w-25" class="h6" for="body" style="float:left") * Body:
+                textarea(class="w-75" name="message" placeholder="Message Body" minlength=20 cols="30", rows="10" required=true)
+            div(class="form-group w-100")
+                label(class="w-25" class="h6") cc Email:
+                input(class="w-75" type="email" name="ccEmail" minlength=5)
+            div(class="form-group w-100")
+                input(type="checkbox" name="post" value="post")
+                label(class="w-50" class="h6") Publish In Posts Page   
+            button(type='submit' class='btn btn-primary btn-block active') Submit
+
+
+
+
+
+

@@ -1,27 +1,25 @@
 extends layout
-block vars
-    - const title = 'Upload Media Content'
 
 block content
-    h1=title
 
-    p
-        a(href='/admin/media') View all uploaded files
-
+    h1(style="text-align:center") Upload Media Content
     include ./partial/msg
-
-    form(method='POST', enctype="multipart/form-data")
-        label(for="filename")="Override file name: "
-        input(type="text", id="filename", name="filename")
-        br
-        label(for="filetype")="Override file type (extension): "
-        input(type="text", id="filetype", name="filetype")
-        br
-
-        // This **HAS** to be the last option, so multer can read the file name and stuff...
-        label(for="file")="File to upload: "
-        input(type="file", name="file", id="file")
-        br
-
-        input(type="submit", value="Upload")
+    p(style="text-align:center")
+        u 
+            a(href='/admin/media') View all uploaded files
+    div(class="col-xl-3 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form-group p-4 border rounded-lg")
+        form(method='POST', enctype="multipart/form-data")
+            div(class="form-group w-100")
+                label(class="w-25" class="h6" for="filename") File name: 
+                input(class="w-75" type="text", id="filename", name="filename" placeholder="Override File Name")
+            div(class="form-group w-100")   
+                label(class="w-25" class="h6" for="filetype") File Type: 
+                input(class="w-75" type="text", id="filetype", name="filetype" placeholder="Override file type (extension)")
+            
+            // This **HAS** to be the last option, so multer can read the file name
+            div(class="form-group w-100")
+                label(class="w-25" class="h6" for="file") File to upload: 
+                input(class="w-75" class="btn btn-warning" type="file", name="file", id="file")
+            div(class="w-100")
+                button(type="submit" class='btn btn-primary btn-block active') Upload
 

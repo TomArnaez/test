@@ -1,14 +1,12 @@
 extends layout
-block vars
-    - const title = 'Media Content Manager'
 
 block content
-    h1=title
-
-    include ./partial/msg
+    div(class='container-fluid')
+    h1(style="text-align:center") Media Content Manager
+    include ./partial/msg 
 
     a(href='/admin/upload') Upload File
-
+    
     ul
         each file in files
             li
