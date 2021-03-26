@@ -1,3 +1,5 @@
+const { DataTypes } = require("sequelize");
+
 /**
  * Terms are used for categorising posts. They belong to many posts and can
  * have many labels. Need to create a post with tags? Then you might create a post
@@ -33,15 +35,12 @@ module.exports = (sequelize, DataTypes) => {
         url: {
             type: DataTypes.VIRTUAL,
             get() {
-                if (this.termType == 'category')
-                    return `/posts/${this.termSlug}`;
-                else
-                    return `/posts/tags/${this.termSlug}`;
+                return `/posts/${this.termType.toLowerCase()}/${this.termSlug}`;
             },
             set(value) {
-                throw new Error("Do not try to set a url value!'");
+                throw new Error("Do not try to set the a url value!'");
             }
-        }
+        },
     }, {
         timestamps: false
     });

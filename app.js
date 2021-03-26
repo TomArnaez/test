@@ -72,34 +72,22 @@ app.use((req,res,next)=> {
   res.locals.error  = req.flash('error');
   res.locals.html_success_msg = req.flash('html_success_msg')
   next();
-})
+});
 
 adminLoginRouter.use('/dashboard', adminDashboardRouter)
 adminLoginRouter.get('/media', media.mediaManger)
 adminLoginRouter.use('/upload', uploadRouter)
 
-app.use(session({
-  secret : 'secret',
-  resave : true,
-  saveUninitialized : true
-}));
-app.use(passport.initialize());
-app.use(passport.session());
-
-//use flash
-app.use(flash());
-app.use((req,res,next)=> {
-  res.locals.success_msg = req.flash('success_msg');
-  res.locals.error_msg = req.flash('error_msg');
-  res.locals.error  = req.flash('error');
-  next();
-})
-
 app.use(async (req, res, next) => {
   const db = require("./models");
+  const Op = require("sequelize").Op;
   const Term = db.Term;
+  const Post = db.Post;
+  const Message = db.Message;
   res.locals.categories = await Term.findAll({ where: {termType: 'category'} });
   res.locals.tags = await Term.findAll({where: {termType: 'tag'}});
+  res.locals.posts = await Post.findAll({include: { model: Term, as: "terms"}});
+  res.locals.messages = await Message.findAll({where: {is_public: 0, response: {[Op.ne]: null}}, attributes: ['title', 'custom_id', 'url']});
   next();
 });
 

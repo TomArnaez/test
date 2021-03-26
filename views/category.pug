@@ -1,4 +1,5 @@
-extends layout
+extends side-nav-sublayout
+
 
 append head
     //- Converts date from SQL format to something easier to read and more aesthatic
@@ -19,7 +20,7 @@ append head
 
         }
 
-block content
+block primary
     if found
         ul
             //- Container for feed posts.

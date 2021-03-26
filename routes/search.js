@@ -24,7 +24,7 @@ router.get('/', function(req, res, next) {
                 page_number: parseInt(json.currentPage + 1), total_pages: json.totalPages, count: json.totalItems,
                 next_page: "search?q=" + title + "&page=" + (parseInt(page) + 1),
                 prev_page: "search?q=" + title + "&page=" + (parseInt(page) - 1)};
-            res.render('search_results', obj);
+            res.render('search', obj);
         })
     });
 });

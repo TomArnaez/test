@@ -10,9 +10,18 @@ block primary
     div(class='container-fluid')
         h1= title
         br
-
     div(class='container-xl')
-        h2(style='float:left')= postname
+        h2(style='aligned:left') #{postname}
+        small(class='text-muted')
+            span Posted in #[a(href=category_url) #{category}]
+            if tags.length > 0
+                span  | Tagged as
+            - var i = 0;
+            each tag in tags
+                - i++;
+                span  #[a(href=tag.url) #{tag.url}]
+                    if (i < tags.length)
+                        span ,
         div(id='buttons', style='float:right')
             a(href='/edit/' + id)
                 button(type='button' class='btn btn-success') Edit

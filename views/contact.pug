@@ -1,25 +1,41 @@
-extends layout
+extends side-nav-sublayout
 
-block content 
+block primary
 
-    h1(style="text-align:center") Contact Us 
-    div(class="col-xl-3 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form-group p-4 border rounded-lg")
-        h5 * Required Fields
-        br
-        form(method="POST" action="contact/send")    
-        div(class="form-group w-100")
-            label(class="w-25" class="h6" for="name") * Full Name: 
-            input(class="w-75" id="name" name="name" placeholder="Full Name" minlength=5 required=true)
-        div(class="form-group w-100")
-            label(class="w-25" class="h6" for="email") * Email:
-            input(class="w-75" type="email" id="email" name="email" placeholder="Email Address" required=true)
-        div(class="form-group w-100")
-            label(class="w-25" class="h6" for="phone") Phone: 
-            input#phone(class="w-75" name="phone" placeholder="07xxxxxxxxx" minlength=5 required=false)
-        div(class="form-group w-100")
-            label(class="w-25" class="h6" for="title") * Title:
-            input(class="w-75" type="text" id="title" name="title" placeholder="Message Title" minlength="5" required="true")
-        div(class="form-group w-100")
-            label(class="w-25" class="h6" for="body" style="float:left") * Body:
-            textarea(class="w-75" name="message" id="message" placeholder="Message Body" minlength=20 cols="30", rows="10" required=true)
-        button(type='submit' class='btn btn-primary btn-block active') Submit
+  //- Title container
+  div(class='container-fluid')
+    br
+    h1= title
+    br
+    
+  //- Container for contact form
+  div(class='container-xl')
+    form(method='post' action='contact/send')
+      p(style='font-weight: bold') * Required
+      //- Name
+      div(class='form-group row')
+        label(for='name' class='col-sm-2 col-form-label') Full Name*
+        div(class='col-sm-10')
+          input(type='text' name='name' required=true minlength=5 placeholder='John Example' class='form-control')
+      //- Email
+      div(class='form-group row')
+        label(for='email' class='col-sm-2 col-form-label') Email*
+        div(class='col-sm-10')
+          input(type='text' name='email' required=true placeholder='email@example.com' class='form-control')
+      //- Phone
+      div(class='form-group row')
+        label(for='phone' class='col-sm-2 col-form-label') Phone Number*
+        div(class='col-sm-10')
+          input(type='text' name='phone' required=true minlength=10 class='form-control')
+      //- Message Title
+      div(class='form-group row')
+        label(for='title' class='col-sm-2 col-form-label') Subject*
+        div(class='col-sm-10')
+          input(type='text' name='title' required=true minlength=5 class='form-control')
+      //- Message Body
+      div(class='form-group row')
+        label(for='message' class='col-sm-2 col-form-label') Message*
+        div(class='col-sm-10')
+          textarea(name='message' required=true minlength=20 placeholder='Type your message here' class='form-control')
+      //- submit Button
+      button(class='btn btn-success' type='submit') Send

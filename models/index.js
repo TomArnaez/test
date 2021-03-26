@@ -16,6 +16,7 @@ db.sequelize = sequelize;
 
 db.Post = require('./post.model.js')(sequelize, Sequelize);
 db.Term = require('./term.model.js')(sequelize, Sequelize);
+db.Message = require('./message.model.js')(sequelize, Sequelize);
 
 const postTerms = sequelize.define('postTerms', {
 }, { timestamps: false});

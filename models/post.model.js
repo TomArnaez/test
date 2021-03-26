@@ -31,15 +31,6 @@ module.exports = (sequelize, Sequelize) => {
                 return "USER_PLACEHOLDER";
             }
         },
-        url: {
-            type: DataTypes.VIRTUAL,
-            get() {
-                return `/posts/${this.terms[0].termSlug}/${this.id}/${this.slug}`;
-            },
-            set(value) {
-                throw new Error("Do not try to set the a url value!'");
-            }
-        },
         category: {
             type: DataTypes.VIRTUAL,
             get() {
@@ -47,6 +38,15 @@ module.exports = (sequelize, Sequelize) => {
             },
             set(value) {
                 throw new Error("Do not try to set a category value!");
+            }
+        },
+        url: {
+            type: DataTypes.VIRTUAL,
+            get() {
+                return `/posts/${this.category}/${this.id}/${this.slug}`;
+            },
+            set(value) {
+                throw new Error("Do not try to set the a url value!'");
             }
         },
         category_url: {

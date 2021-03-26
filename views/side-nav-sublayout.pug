@@ -1,0 +1,134 @@
+//- Layout for navigation bar and the side panel. This should be extended by all pages that wish to include it
+extends layout
+
+append head
+    -function formatDate(dateString){
+      -var date = new Date(dateString);
+      -var monthNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+      -var days = date.getDate(); var month = monthNames[date.getMonth()]; var year = date.getFullYear();
+      -var hours = date.getHours(); if(hours < 10){hours = "0" + hours;}
+      -var mins = date.getMinutes(); if(mins < 10){mins = "0" + mins;}
+      -return days +' '+ month +' '+ year +' | '+ hours +':'+ mins;
+      -}
+  
+    
+    style(type='text/css').
+      .navbar {
+        height: 75px;
+        width: 100%;
+        position: fixed;
+        z-index: 2;
+        top: 0;
+        left: 0;
+        background-color: #f0f2f5;
+        padding-top: 10px;
+        padding-bottom: 10px;
+      }
+      
+      .side-panel{
+        height: 100%;
+        width: 250px;
+        position: fixed;
+        z-index: 1;
+        top: 50px;
+        left: 0;
+        background-color: #f0f2f5;
+        overflow-x: hidden;
+        transition: 0.1s;
+        padding-top: 50px;
+      }
+      
+      .side-panel a {
+        font-size: 30px;
+      }
+      
+      /* .side-panel a:hover {
+        color: #f1f1f1;
+        text-decoration: none;
+      } */
+      
+      .primary {
+        margin-left: 150px;
+        background-color: #ffffff;
+        padding-top: 15px;
+      }
+      
+block content 
+    .navbar
+        block navbar
+            nav(class='navbar navbar-expand-lg navbar-light') 
+              div(class='container-fluid')
+                a(class='navbar-brand' href='/') Info Hub
+                button(class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation")
+                  span(class='navbar-toggler-icon')
+              
+                div(class='collapse navbar-collapse' id='navbarSupportedContent')
+                    ul(class='navbar-nav me-auto mb-2 mb-lg-0')
+                      li(class='nav-item')
+                        a(class='nav-link' href='/feed') Feed
+                      
+                      li(class='nav-item')
+                        a(class='nav-link' href='/contact') Contact Us
+                      
+                      li(class='nav-item dropdown' id='navbar-big')
+                        a(class='nav-link dropdown-toggle' href='/edit/' id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false") Posts
+                        ul(class='dropdown-menu' aria-labelledby='navbarDropdown')
+                          li
+                            a(class='dropdown-item' href='/edit/') View Posts
+                          li
+                            hr(class='dropdown-divider')
+                          li
+                            a(class='dropdown-item' href='/edit/new') Create New Post
+
+                      li(class='nav-item dropdown')
+                        a(class='nav-link dropdown-toggle' id="navbarCategoryDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Categories
+                        ul(class='dropdown-menu' aria-labelledby='navbarDropdown')
+                          - var i = 0;
+                          for category in categories
+                            - i++;
+                            li
+                              a(class='dropdown-item' href=category.url) #{category.termName}
+                              if i < categories.length
+                                div(class='dropdown-divider')
+                    //- Todo: add code to only show if admin
+                div(class='d-flex justify-content-end' )
+                  include search_dropdown
+                  a(href='/admin/dashboard')
+                      button(class='btn btn-outline-primary my-2 my-sm-0' style='margin-left:10px') Account
+                    
+    .sidepanel
+        block sidepanel
+            div(class='side-panel')
+              //- Button to view user questions
+              a(href='/message') 
+                button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') View Your Questions
+              //- button to ask a question of the staff  
+              a(href='/message/new')
+                button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Ask a Question
+              //- should put in divider to separate admin tools and non
+              hr
+              a(href='/admin/message')
+                button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Respond to Questions
+              //- view ALL user questions
+              a(href='/admin/message/all')
+                button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') All User Questions
+              //- button to create new post (ADMIN ONLY) add an if to produce this
+              a(href='/edit/new')
+                button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Create a New Post
+              //- button to view posts index (ADMIN ONLY) add an if to produce this code
+                in future we should make his manage posts and be able to change post visibility
+              a(href='/edit/')
+                button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') View Posts
+              //- button for admins to see asked questions
+              //- button to view saved posts?    
+              p #{values}
+              //- each val in values
+              //-   a(href=val.link)
+              //-     button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') #{val.text}
+            
+    //-  block for the content of a page
+    .primary
+        div(class='primary')
+            block primary
+            
+            

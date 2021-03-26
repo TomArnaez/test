@@ -1,9 +1,19 @@
-extends layout
+extends side-nav-sublayout
 
-block content
-  if categories
-    h1=HiThere
-  h1= title
+//- hiding sidebar for people not logged in
+append head
+  style(type='text/css').
+    .side-panel {
+      display: none;
+    }
+
+block primary
+
+  div(class='container-fluid')
+    br
+    h1= title
+    br
+
   p Welcome to #{title}
   p Database version: #{databaseVersion}
   a(href='/admin/login') Login

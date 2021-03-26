@@ -1,41 +1,85 @@
-form(action='/search' method='GET')
-    input.typeahead(type='text', name='q', placeholder="Search for a condition...", autocomplete='off')
+form(class='d-flex' action='search' method='GET')
+    input.typeahead(class="form-control me-2" style='margin-left:10px' type='text' name='q' placeholder="Search" aria-label="Search" autocomplete='off')
     input(type="hidden" name="page" value="0")
-    input(type='submit' style='position: absolute; left: -9999px')
-
-script.
-
-    var substringMatcher = function (strs) {
-        return function findMatches(q, cb) {
-            var matches, substringRegex;
-
-            // an array that will be populated with substring matches
-            matches = [];
-
-            // regex used to determine if a string contains the substring `q`
-            substrRegex = new RegExp(q, 'i');
-
-            // iterate through the pool of strings and for any string that
-            // contains the substring `q`, add it to the `matches` array
-            $.each(strs, function (i, str) {
-                if (substrRegex.test(str)) {
-                    matches.push(str);
-                }
-            });
-
-            cb(matches);
-        };
-    };
-    var categories = !{JSON.stringify(categories)};
-    let tags = !{JSON.stringify(tags)};
-    var states = [];
-    categories.forEach(cat => states.push(cat.termName));
-    tags.forEach(tag => states.push(tag.termName));
-    $('.typeahead').typeahead(
-        {
-            hint: true,
-            highlight: true,
-        }, {
-            name: "Post",
-            source: substringMatcher(states),
+    //button(class="btn btn-outline-success gap-2" type="submit" style='margin-left:10px') Search
+    script(language='javascript', src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js")
+    style(type='text/css').
+        .tt-menu .more{
+            display:none;
+        }
+        .tt-menu div:last-child .more {
+            display:block;
+            }
+    script.
+        const categories = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('termName'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: !{JSON.stringify(categories)}
         });
+        const posts = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: !{JSON.stringify(posts)}
+        });
+        const messages = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('title'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            local: !{JSON.stringify(messages)}
+        });
+        console.log(messages);
+
+
+        $('.typeahead').typeahead(
+            {
+                hint: true,
+                highlight: true,
+                minLength: 1,
+                length: 8
+            }, {
+                name: "Category",
+                displayKey: "termName",
+                templates: {
+                    suggestion: function (data) {
+                        return '<div><a href=' + data.url + '>' + data.termName +' </div>';
+                    },
+                    header: function(data) {
+                        return '<h4>Categories (results: '+data.suggestions.length +')</h4>'
+                    },
+                    footer: function(data) {
+                        return '<p class="more"><a href="/search?q=' + data.query + '">See all results</a></p>';
+                    }                },
+                source: categories
+            }, {
+                name: "Post",
+                displayKey: "title",
+                length: 8,
+                templates: {
+                    suggestion: function (data) {
+                        return '<div><a href=' + data.url + '>' + data.title + '</div>';
+                    },
+                    header: function(data) {
+                        return '<h4>Posts (results: '+data.suggestions.length +')</h4>'
+                    },
+                footer: function(data) {
+                    return '<p class="more"><a href="/search?q=' + data.query + '">See all results</a></p>';
+                }
+                },
+                source: posts
+            }, {
+                name: "Questions",
+                displayKey: "title",
+                limit: 8,
+                templates: {
+                    suggestion: function (data) {
+                        return '<div><a href=' + data.url + '>' + data.title + '</a></div>';
+                    },
+                    header: function(data) {
+                        console.log(data);
+                        return '<h4>Questions (results: '+data.suggestions.length +')</h4>'
+                    },
+                    footer: function(data) {
+                        return '<p class="more"><a href="/search?q=' + data.query + '">See all results</a></p>';
+                    }
+                },
+                source: messages
+            });

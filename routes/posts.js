@@ -3,7 +3,7 @@ var router = express.Router();
 const db = require("../models");
 const Term = db.Term;
 
-router.get('/:category', function(req, res, next) {
+router.get('/category/:category', function(req, res, next) {
     let page = req.query.page;
     if (page == null)
         page = 0;
@@ -36,7 +36,7 @@ router.get('/:category', function(req, res, next) {
         );
 });
 
-router.get("/tags/:tag", function(req, res, next) {
+router.get("/tag/:tag", function(req, res, next) {
     let page = req.query.page;
     if (page == null)
         page = 0;
@@ -57,8 +57,8 @@ router.get("/tags/:tag", function(req, res, next) {
                         json.categoryName = token.termName;
                         // Don't zero index
                         json.currentPage = json.currentPage + 1;
-                        json.next_page = "/posts/tags/" + req.params.tag + "?page=" + (parseInt(page) + 1);
-                        json.prev_page = "/posts/tags/" + req.params.tag + "?page=" + (parseInt(page) - 1);
+                        json.next_page = "/posts/tag/" + req.params.tag + "?page=" + (parseInt(page) + 1);
+                        json.prev_page = "/posts/tag/" + req.params.tag + "?page=" + (parseInt(page) - 1);
                         res.render('category', json);
                     });
                 });

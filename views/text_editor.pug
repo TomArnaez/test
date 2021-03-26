@@ -1,4 +1,5 @@
-extends layout
+//- Page provides facility for admins to create a post that will be posted on the site.
+extends side-nav-sublayout
 
 append head
   script(type="application/javascript" src="/tinymce/tinymce.min.js")
@@ -10,26 +11,67 @@ append head
   -   var title = "Create New Post"
   - }
   
-block content
+block primary
   div(class='container-fluid')
     h1= title
-    
-  //- container for back button
-  div(class='container-fluid' style='padding:2rem;')
-    a(href='/edit/')
-      button(class='btn btn-dark') Back To List
-      
-    
+
   //- container for post form
   div(class='container-xl')
-    form(name="editor-form", method="post")
-        div(id='input' style='padding:10px')
-            span.label Post Name:
-            input(type="text", id='postLbl', name="filename", value=postname)
+      form(name="editor-form", method="post")
+        div(id='input' class="form-row")
+            div(class="form-group col-md-6")
+                label(for='filename') Title
+                input(type="text" class="form-control" id='postLbl', name="filename", value=postname)
+            div(class="form-group col-md-6")
+                label(for='category') Category
+                select(class="form-control" name="category")
+                    for category in categories
+                        option(value=category.id) #{category.termName}
+            div(class="form-group col-md-2") Tag:
+                label(for='tagstype')
+                input(type="text" class="form-control" id="tagstype" name='tags' value="")
+                script.
+                    var tagSubstringMatcher = function (tag) {
+                        return function findMatches(q, cb) {
+                            var matches, substringRegex;
+                            // an array that will be populated with substring matches
+                            matches = [];
+                            // regex used to determine if a string contains the substring `q`
+                            substrRegex = new RegExp(q, 'i');
+
+                            // iterate through the pool of strings and for any string that
+                            // contains the substring `q`, add it to the `matches` array
+                            $.each(tag, function (i, tag) {
+                                if (substrRegex.test(tag.termName)) {
+                                    matches.push(tag);
+                                }
+                            });
+
+                            cb(matches);
+                        };
+                    };
+                    var states = !{JSON.stringify(tags)};
+                    $('#tagstype').tagsinput({
+                        itemValue: 'id',
+                        itemText: 'termName',
+                        freeInput: true,
+                        typeaheadjs: ({
+                            hint: true,
+                            highlight: true,
+                            minLength: 1
+                        }, {
+                            name: 'states',
+                            displayKey: 'termName',
+                            source: tagSubstringMatcher(states)
+                        })
+                    });
         div.input
             textarea(name="content", id="my-expressjs-tinymce-app", value="Enter title here")
         br
         div.actions
             input(type="submit", value='Save' class='btn btn-success')
               
-      
+  //- container for back button
+  div(class='container-fluid' style='padding:2rem;')
+    a(href= back)
+      button(class='btn btn-dark') Back To List
