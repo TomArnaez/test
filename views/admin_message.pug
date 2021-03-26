@@ -38,6 +38,8 @@ block primary
                           button(type='button', class='btn btn-primary w-75 p-1 gap-2') Post Response
                         a(href='/admin/respond/' + item.custom_id)
                           button(type='button' class='btn btn-success w-75 p-1 gap-2') Private Response
+                        a(href='/admin/respond/forward/'+item.custom_id)
+                          button(type='button' class='btn btn-info w-75 p-1 gap-2') Forward
                     else 
                       if (item.is_public == 1)
                         td
