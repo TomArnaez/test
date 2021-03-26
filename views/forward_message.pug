@@ -1,0 +1,27 @@
+extends side-nav-sublayout
+
+block primary
+    
+    div(class='container-fluid')
+      h1= title
+      
+    div(class='container-xl')
+        form(method='post')
+          div(class='form-group row')
+            label(for='message' class='col-sm-2 col-form-label') Question:
+            div(class='col-sm-10')
+              input(name='message' readonly class="form-control-plaintext" value=question[0].message)
+            
+          div(class='form-group row')
+            label(for='ccEmail' class='col-sm-2 col-form-label') Forward to:
+            div(class='col-sm-10')
+              input(type='text' name='ccEmail' minlength=20 required=true placeholder='email@example.com')
+          div(class='form-group row')
+            label(for='text' class='col-sm-2 col-form-label') Message* :
+            div(class='col-sm-10')
+              textarea(name='text' required=true class="form-control")
+              
+          button(type='submit' class='btn btn-success') Submit
+                
+                
+        

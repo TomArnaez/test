@@ -1,0 +1,39 @@
+extends side-nav-sublayout
+
+block primary
+  
+  div(class='container-fluid')
+    //- will be the question asked or the question title?
+    h1= title
+
+  div(class='container-xl')
+    //- Message Title
+    div(class='form-group row')
+      label(for='title' class='col-sm-2 col-form-label') Title:
+      div(class='col-sm-10')
+        input(type='text' name='title' readonly class="form-control-plaintext" value=question[0].title)
+    //- Question sent time
+    div(class='form-group row')
+      label(for='time_sent' class='col-sm-2 col-form-label') Asked on:
+      div(class='col-sm-10')
+        input(type='text' readonly class="form-control-plaintext" value=formatDate(question[0].time))
+    //- Question responded time
+    div(class='form-group row')
+      label(for='time_responded' class='col-sm-2 col-form-label') Responded on:
+      div(class='col-sm-10')
+        input(type=' text' name='time_responded' readonly class="form-control-plaintext" value= formatDate(question[0].response_time))
+    //- Message Body
+    div(class='form-group row')
+      label(for='message' class='col-sm-2 col-form-label') Question:
+      div(class='col-sm-10')
+        textarea(name='message' readonly class="form-control-plaintext")= question[0].message
+    //- Response Body
+    div(class='form-group row')
+      label(for='response' class='col-sm-2 col-form-label') Response:
+      div(class='col-sm-10')
+        textarea(name='response' readonly class="form-control-plaintext" value=question[0].response)= question[0].response
+            
+        
+  div(class='container-fluid' style='padding:2rem;')
+    a(href='/message/')
+      button(class='btn btn-dark') Back To Questions

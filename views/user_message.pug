@@ -1,29 +1,45 @@
-extends layout 
+extends side-nav-sublayout
 
-block content 
-    h1(style="text-align:center") Messages User Panel
-    include ./partial/msg
-    div(class="col-xl-3 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form-group p-4 border rounded-lg")
-        h4(style="text-align:center") Your User ID is: #{user_id}
-        -if(message == null){
-        h6(style="text-align:center") No message
-        -}else{
-        - for(let i = 0; i < message.length; i++){
-            li Message ID: #{message[i].custom_id}
-            li Title: #{message[i].title}
-            li Message: #{message[i].message}
-            li Time: #{message[i].time}
-            li Response: #{message[i].response}
-            li Response Time: #{message[i].response_time}
-            br
-            br
-        -}}
-
-        form(method='POST' action='/message/send')
-            div(class="form-group w-100")
-                label(class="w-25" class="h6") Title:
-                input(class="w-75" name='title' placeholder="Message Title" minlength=5 maxlength=30)
-            div(class="form-group w-100")
-                label(class="w-25" class="h6" style="float:left") Body:
-                textarea(class="w-75" name='message' placeholder="Message Body" minlength=20 rows='10' cols='30' required=true)
-            button(type='submit' class='btn btn-primary btn-block active') Submit
+block primary
+    
+    div(class='container-fluid')
+      h1= title
+      
+    div(class='container-fluid' style='padding:2rem;')
+      a(href='/message/new')
+        button(type='button', class='btn btn-light') New Question
+      
+      
+    div(class='container-fluid')
+      div(class='row')
+        table(class='table table-striped')
+          thead
+            tr
+              th(scope='col') Message ID
+              th(scope='col') Title
+              th(scope='col') Message
+              th(scope='col') Time
+              th(scope='col') Response
+          tbody
+            if (message != null) 
+                each item in message
+                  tr
+                    th(scope='row') #{item.custom_id}
+                    td #{item.title}
+                    td #{item.message}
+                    td #{formatDate(item.time)}
+                    if (item.is_public == 1)
+                      td
+                        a(href='/edit/view/title/' + item.custom_id)
+                          button(class='btn btn-primary w-75 p-1 gap-2') View Post
+                    else
+                      if (item.response != null)
+                        td 
+                          a(href='/message/response/' + item.custom_id)
+                            button(class='btn btn-info w-75 p-1 gap-2') View Response
+                      else 
+                        td No Response yet, Keep checking back!
+                    //- Action Buttons for below table data tag. Each route request appropriatley.
+            else 
+              tr
+                td No Questions Asked Yet
