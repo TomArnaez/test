@@ -5,7 +5,10 @@ block content
     include ./partial/msg
     form(action='/admin/register/' + token method='POST')
         div
-            label(for='username') Email
+            label(for='email') Email
+            input(id='email' name='email' placeholder='Email')
+        div
+            label(for='username') Username
             input(id='username' name='username' placeholder='Username')
         div
             label(for='fname') First Name
