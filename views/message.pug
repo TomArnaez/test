@@ -1,14 +1,17 @@
 extends side-nav-sublayout
 
 append head
+  
 
 block primary
 
+  //- Container for page title
   div(class='container-fluid')
     h1= title
     br
     br
     
+
   div(class='container-xl')
     form(method='POST' action='/message/send')
       p(style='font-weight: bold') * Required
@@ -31,6 +34,7 @@ block primary
       //- submit Button
       button(class='btn btn-success' type='submit') Send
 
+  //- Back button
   div(class='container-fluid' style='padding:2rem;')
     br
     a(href='/message/')

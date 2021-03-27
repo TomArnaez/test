@@ -1,6 +1,7 @@
 extends side-nav-sublayout
 
 append head
+  //- Styling changes for the feed boxes
   style(type='text/css').
     .social-feed-box {
       padding: 15px;
@@ -55,6 +56,7 @@ block primary
             div(class='mr-2')
               h2= item.title
               small(class='text-muted') #{formatDate(item.created_on)}
+            //- Drop down is an admin action. Gives admin option to edit post or hide it from view.
             div(class="dropdown")
               button(type='button' class='btn btn-light dropdown-toggle btn-sm' id='dropdownButton' data-toggle='dropdown')
               div(class='dropdown-content')
