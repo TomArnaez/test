@@ -109,7 +109,7 @@ router.get('/admin/post_response/:message_id', async (req, res) => {
         db.query("SELECT title, message FROM messages WHERE ? IN (custom_id) LIMIT 1;", [req.params.message_id], function(err, result) {
             //Error handling for database connection. Reroutes user to posts index (most likely the origin)
             if (err) {
-              console.log('Error connecteing with database');
+              console.log('Error connecting with database');
               res.redirect('/edit');
             } else {
 

@@ -67,6 +67,36 @@ router.post('/contact/send', (req, res) => {
 });
 
 /*
+ * send confirmation email
+ */
+router.sendConfirmationEmail = function sendConfirmationEmail(name, receiver, resetLink){
+    const message = `
+    <h2>Hello ${name}.</h2>
+    <h3>Welcome to INFORMATION HUB</h3>
+    <h3>Please Set Your Password Using The Link Below:</h3>
+    <p>${resetLink}</p>
+  `;
+
+    // setup email data with unicode symbols
+    let mailOptions = {
+        from: '"Information Hub" <informationhub.kings@gmail.com>', // sender address
+        to: receiver,
+        subject: 'Confirm Registration', // Subject
+        text: 'Nothing for now!', // text body
+        html: message // html body
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) return console.log(error);
+
+        console.log('Message has been sent: %s', info.messageId);
+        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+
+        req.flash('success_msg', 'Your Message Has Been Sent!!!');
+    });
+}
+
+/*
  *  Send email
  *  you can have a list of receivers in a string separated by ','
  *  you can use html as the message body
