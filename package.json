@@ -1,7 +1,7 @@
 {
   "name": "segmajorproject",
-  "engines" : {
-	"node": ">=15.12.0"
+  "engines": {
+    "node": ">=15.12.0"
   },
   "version": "0.0.0",
   "private": true,

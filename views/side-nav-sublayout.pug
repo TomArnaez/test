@@ -1,3 +1,4 @@
+//- Layout for navigation bar and the side panel. This should be extended by all pages that wish to include it
 extends layout
 
 append head
@@ -116,32 +117,7 @@ block content
               //-   a(href=val.link)
               //-     button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') #{val.text}
             
-    .alert
-      //- div(class='primary' )
-        block alert
-          include ./partial/msg
-          div(class='container-xl')
-            - if (error_msg)
-              div(class='alert alert-danger' role='alert')
-                p #{messages}
-                button(type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close") Close
-            if (error)
-              div(class='alert alert-danger' role='alert')
-                p #{error}
-                button(type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close") Close
-            if (success_msg)
-              div(class='alert alert-success' role='alert')
-                p #{success_msg}
-                button(type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close") Close
-            if (html_success_msg)
-              div(class='alert alert-success' role='alert')
-                p #{html_success_msg}
-                button(type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close") Close
-            - if (messages)
-              div(class='alert alert-success' role='alert')
-                p #{messages}
-                button(type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close") Close
-              
+    //-  block for the content of a page
     .primary
         div(class='primary')
             block primary

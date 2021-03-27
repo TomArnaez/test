@@ -9,6 +9,8 @@ router.get('/', function(req, res, next) {
   });
 });
 
+
+// Fetches main feed page
 router.get('/feed', function(req, res, next) {
 
   //Checks user is authenticated.
