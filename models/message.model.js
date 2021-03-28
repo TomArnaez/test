@@ -16,6 +16,9 @@ module.exports = (sequelize, Sequelize) => {
         is_public: {
             type: Sequelize.INTEGER
         },
+        message: {
+            type: Sequelize.TEXT
+        },
         response: {
             type: Sequelize.TEXT
         },
@@ -27,7 +30,10 @@ module.exports = (sequelize, Sequelize) => {
             set(value) {
                 throw new Error("Do not try to set the a url value!'");
             }
+        }
         },
-    });
+        {
+            timestamps: false
+        });
     return Message;
 }

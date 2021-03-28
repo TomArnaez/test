@@ -16,6 +16,7 @@ block primary
     h2(style="text-align:center") #{resultsString}
     //- Creates large Div container
     div(class='container-xl')
+    h3 Posts
     each item in post_results
         //- container for single post
         div(class='social-feed-box')
@@ -39,13 +40,26 @@ block primary
                     span  #[a(href=tag.url) #{tag.termName}]
                         if (i < item.tags.length)
                             span ,
+    h3 Messages
+    each item in message_results
+        div(class='social-feed-box')
+            //- container for title and publish time
+            div(class='media-body')
+                h2
+                    a(href=item.url) #{item.title}
+            hr
+            //- Container for post body ( '|' tells pug to use accept raw HTML which the posts are saved as)
+            div(class='social-body')
+                | !{item.message}
+            br
 
-        p Displaying page #{page_number} of #{total_pages}
-        nav(aria-label='Page navigation example')
-            ul.pagination
-                if page_number > 1
-                    li.page-item
-                        a.page-link(href=prev_page) Previous
-                if page_number < total_pages
-                    li.page-item
-                        a.page-link(href=next_page) Next
+        //-
+            p Displaying page #{page_number} of #{total_pages}
+            nav(aria-label='Page navigation example')
+                ul.pagination
+                    if page_number > 1
+                        li.page-item
+                            a.page-link(href=prev_page) Previous
+                    if page_number < total_pages
+                        li.page-item
+                            a.page-link(href=next_page) Next
