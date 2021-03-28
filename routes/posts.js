@@ -75,6 +75,9 @@ router.get('/:category/:id/:slug', function(req, res, next) {
         });
         resp.on("end", () => {
             let json = JSON.parse(data)
+            json.postname = json.title;
+            json.doc = json.html;
+            json.title = "Post Viewer";
             res.render('post', json);
         });
     });
