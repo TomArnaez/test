@@ -17,10 +17,12 @@ router.get('/feed', function(req, res, next) {
   if (req.isAuthenticated()) {
     const db = require("../models");
     const Post = db.Post;
+    const Term = db.Term;
 
-    Post.findAndCountAll({ include: { model: Term, as: "terms"}, order: [['created_on', 'DESC']]})
+    Post.findAll({ include: { model: Term, as: "terms"}, order: [['created_on', 'DESC']]})
       .then(data => {
-          res.render('feed', {title: 'Posts', results: result});
+          console.log(data);
+          res.render('feed', {title: 'Posts', results: data});
       })
       .catch(err => {
           req.flash('error_msg', 'Error when accessing database');

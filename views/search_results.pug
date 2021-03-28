@@ -1,4 +1,4 @@
-extends layout
+extends side-nav-sublayout
 
 append head
     style(type='text/css').
@@ -10,12 +10,13 @@ append head
 
         }
 
-block content
+block primary
+    h1(align='center') Search Results for query #{query}
     br
     h2(style="text-align:center") #{resultsString}
     //- Creates large Div container
     div(class='container-xl')
-    each item in results
+    each item in post_results
         //- container for single post
         div(class='social-feed-box')
             //- container for title and publish time

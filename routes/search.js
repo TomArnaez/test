@@ -6,27 +6,28 @@ const maybePluralize = (count, noun, suffix = 's') =>
 
 /* GET search results. */
 router.get('/', function(req, res, next) {
+    const db = require("../models");
+    const { Op } = require("sequelize");
+    const Post = db.Post;
+    const Term = db.Term;
+    Post.findAll({include: { model: Term, as: "terms"}, where: {
+        [Op.or]: [
+            {
+                title: {
+                    [Op.like]: '%' + req.query.q
+                }
+            },
+            {
+                description: {
+                    [Op.like]: req.query.q
+                }
+            }
+        ]
+        }
+    }).then(post_results => {
+        res.render('search_results', {query: req.query.q, post_results: post_results});
+    })
 
-    const http = require('http')
-    const title = req.query.q;
-    const page = req.query.page;
-
-    http.get("http://localhost:3000/api/posts?page=" + page + "&size=3&title=" + title, (resp) => {
-        let data = ""
-
-        resp.on("data", d => {
-            data += d
-        })
-        resp.on("end", () => {
-            let json = JSON.parse(data);
-            const resultsString = "" +  maybePluralize(json.totalItems, "result") + ' for query: "' + title + '"';
-            const obj = {search: true, searchQuery: title, resultsString: resultsString, results: json.posts,
-                page_number: parseInt(json.currentPage + 1), total_pages: json.totalPages, count: json.totalItems,
-                next_page: "search?q=" + title + "&page=" + (parseInt(page) + 1),
-                prev_page: "search?q=" + title + "&page=" + (parseInt(page) - 1)};
-            res.render('search', obj);
-        })
-    });
 });
 
 module.exports = router;

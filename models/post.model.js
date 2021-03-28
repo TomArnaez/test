@@ -16,8 +16,14 @@ module.exports = (sequelize, Sequelize) => {
         text: {
             type: Sequelize.STRING
         },
+        description: {
+            type: Sequelize.TEXT
+        },
         slug: {
             type: Sequelize.STRING
+        },
+        visible: {
+            type: Sequelize.INTEGER
         },
         created_on: {
             type: Sequelize.DATE
