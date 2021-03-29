@@ -13,6 +13,10 @@ append head
   
     
     style(type='text/css').
+      body {
+        background-color: var(--colour-secondary);
+      }
+    
       .navbar {
         height: 75px;
         width: 100%;
@@ -20,7 +24,7 @@ append head
         z-index: 2;
         top: 0;
         left: 0;
-        background-color: #f0f2f5;
+        background-color: var(--colour-primary);
         padding-top: 10px;
         padding-bottom: 10px;
       }
@@ -32,7 +36,7 @@ append head
         z-index: 1;
         top: 50px;
         left: 0;
-        background-color: #f0f2f5;
+        background-color: var(--colour-secondary);
         overflow-x: hidden;
         transition: 0.1s;
         padding-top: 50px;
@@ -49,14 +53,17 @@ append head
       
       .primary {
         margin-left: 150px;
-        background-color: #ffffff;
+        width: 100%;
+        height: 100%;
+        padding-right: 10%;
+        background-color: var(--colour-secondary);
         padding-top: 15px;
       }
       
 block content 
     .navbar
         block navbar
-            nav(class='navbar navbar-expand-lg navbar-light') 
+            nav(class='navbar navbar-expand-lg navbar-light border') 
               div(class='container-fluid')
                 a(class='navbar-brand' href='/') Info Hub
                 button(class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation")
@@ -85,7 +92,8 @@ block content
                         input(class="form-control me-2" style='margin-left:10px' type="search" placeholder="Search" aria-label="Search")
                         button(class="btn btn-outline-success gap-2" type="submit" style='margin-left:10px') Search
                     a(href='/admin/dashboard')
-                      button(class='btn btn-outline-primary my-2 my-sm-0' style='margin-left:10px') Account
+                      button(class='btn btn-outline-primary my-2 my-sm-0' style='margin-left:10px ') Account
+                        i(class="fas fa-user-circle" style='padding-left:8px')
                     
     .sidepanel
         block sidepanel
