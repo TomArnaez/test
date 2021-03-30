@@ -17,7 +17,7 @@ append head
         background-color: var(--colour-secondary);
       }
     
-      .navbar {
+      #navbar {
         height: 75px;
         width: 100%;
         position: fixed;
@@ -51,11 +51,44 @@ append head
         text-decoration: none;
       } */
       
+      #navbar-small {
+        display: none;
+      }
+      
+      @media (max-width: 990px) {
+        #sidebar {
+          margin-left: -250px;
+        }
+        #primary {
+          margin-left: 0px;
+          padding-right: 0px;
+        }
+        #navbar-small {
+          display: inline;
+        }
+        #navbar-big {
+          display: none;
+        }
+        
+        .navbar-collapse {
+          background-color: #ffffff;
+          padding: 40px;
+        }
+        
+        .nav-item {
+          background-color: #ffffff;
+          padding: 5px;
+        }
+      }
+      
+      @media (max-height: 400px) {
+        
+      }
+      
       .primary {
         margin-left: 150px;
-        width: 100%;
+        width: 90%;
         height: 100%;
-        padding-right: 10%;
         background-color: var(--colour-secondary);
         padding-top: 15px;
       }
@@ -63,7 +96,7 @@ append head
 block content 
     .navbar
         block navbar
-            nav(class='navbar navbar-expand-lg navbar-light border') 
+            nav(class='navbar navbar-expand-lg navbar-light border static-top' id='navbar') 
               div(class='container-fluid')
                 a(class='navbar-brand' href='/') Info Hub
                 button(class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation")
@@ -76,6 +109,11 @@ block content
                       
                       li(class='nav-item')
                         a(class='nav-link' href='/contact') Contact Us
+                        
+                      //- view questions
+                      li(class='nav-item' id='navbar-small')
+                        a(class='nav-link' href='/message') Your Questions
+                      
                       
                       li(class='nav-item dropdown')
                         a(class='nav-link dropdown-toggle' href='/edit/' id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false") Posts
@@ -86,18 +124,26 @@ block content
                             hr(class='dropdown-divider')
                           li
                             a(class='dropdown-item' href='/edit/new') Create New Post
+                      li(class='nav-item' id='navbar-small')
+                        a(class='nav-link' href='/admin/dashboard') Account
+                    div(id='navbar-small')
+                      form(class='d-flex' id='navbar-small')
+                          input(class="form-control me-2" type="search" placeholder="Search" aria-label="Search")
+                          button(class="btn btn-outline-success gap-2" type="submit" style='margin-left:10px') Search
+                    //- form(class='d-flex' id='navbar-small')
                     //- Todo: add code to only show if admin
-                div(class='d-flex justify-content-end' )
-                    form(class='d-flex')
-                        input(class="form-control me-2" style='margin-left:10px' type="search" placeholder="Search" aria-label="Search")
-                        button(class="btn btn-outline-success gap-2" type="submit" style='margin-left:10px') Search
-                    a(href='/admin/dashboard')
-                      button(class='btn btn-outline-primary my-2 my-sm-0' style='margin-left:10px ') Account
-                        i(class="fas fa-user-circle" style='padding-left:8px')
+                      //- div(class='d-flex justify-content-end' )
+                div(id='navbar-big')
+                  form(class='d-flex' id='navbar-big')
+                      input(class="form-control me-2" style='margin-left:10px' type="search" placeholder="Search" aria-label="Search")
+                      button(class="btn btn-outline-success gap-2" type="submit" style='margin-left:10px') Search
+                a(href='/admin/dashboard' id='navbar-big')
+                  button(class='btn btn-outline-primary my-2 my-sm-0' style='margin-left:10px ') Account
+                    i(class="fas fa-user-circle" style='padding-left:8px')
                     
     .sidepanel
         block sidepanel
-            div(class='side-panel')
+            nav(class='side-panel' id='sidebar')
               //- Button to view user questions
               a(href='/message') 
                 button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') View Your Questions
@@ -120,14 +166,18 @@ block content
                 button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') View Posts
               //- button for admins to see asked questions
               //- button to view saved posts?    
-              p #{values}
+              a(href='/media')
+                button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Media Manager
               //- each val in values
               //-   a(href=val.link)
               //-     button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') #{val.text}
-            
+            //- nav(class='navbar navbar-expand-lg')
+            //-   div(class='container-fluid')
+            //-     button(type='button' id='side-panelCollapse' class='btn btn-dark')
+            //-       i(class='fas fa-bars')
     //-  block for the content of a page
     .primary
-        div(class='primary')
+        div(class='primary' id='primary')
             block primary
             
             
