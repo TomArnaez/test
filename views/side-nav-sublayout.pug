@@ -115,7 +115,7 @@ block content
                         a(class='nav-link' href='/message') Your Questions
                       
                       
-                      li(class='nav-item dropdown')
+                      li(class='nav-item dropdown' id='navbar-big')
                         a(class='nav-link dropdown-toggle' href='/edit/' id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false") Posts
                         ul(class='dropdown-menu' aria-labelledby='navbarDropdown')
                           li
@@ -124,6 +124,19 @@ block content
                             hr(class='dropdown-divider')
                           li
                             a(class='dropdown-item' href='/edit/new') Create New Post
+                      li(class='nav-item dropdown' id='navbar-small')
+                        a(class='nav-link dropdown-toggle' href='/admin/dashboard/' role='button' data-bs-toggle='dropdown' aria-expanded='false') Admin Tools
+                        ul(class='dropdown-menu' aria-labelledby='navbarDropdown')
+                          li
+                            a(class='dropdown-item' href='/admin/message') Respond To Questions
+                          li
+                            a(class='dropdown-item' href='/admin/message/all') All User Questions
+                          li
+                            a(class='dropdown-item' href='/edit/new') Create a New Post
+                          li
+                            a(class='dropdown-item' href='/edit/') View Posts
+                          li
+                            a(class='dropdown-item' href='/media') Media Manager
                       li(class='nav-item' id='navbar-small')
                         a(class='nav-link' href='/admin/dashboard') Account
                     div(id='navbar-small')

@@ -151,13 +151,15 @@ router.post('/message/send', (req,res) => {
     const customID = getUniqueID();
     const currentTime = getTime();
 
-    db.query("INSERT INTO messages VALUE (DEFAULT,? ,? ,? ,? ,?,NULL,NULL, 0)",
-        [req.user ,customID, `${req.body.title}`,`${req.body.message}`, currentTime ], (err, result)=> {
+    db.query("INSERT INTO messages (user_id, custom_id, title, message) VALUE (?, ?, ?, ?)",
+        [req.user ,customID, `${req.body.title}`,`${req.body.message}`], (err, result)=> {
         if (err) {
+            console.log("error = " + err);
             req.flash('error_msg', 'No database connection.');
             res.redirect("/message");
         }
         else{
+            console.log("message successfully saved");
             req.flash('success_msg', 'Your Message Has Been Sent, Your Unique ID is:  '.concat(customID));
             res.redirect("/message");
         }
