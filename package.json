@@ -1,5 +1,8 @@
 {
   "name": "segmajorproject",
+  "engines": {
+    "node": ">=15.12.0"
+  },
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -8,33 +11,33 @@
     "dev": "nodemon -r esm ./bin/www"
   },
   "dependencies": {
-    "bcrypt": "^5.0.1",
-    "body-parser": "^1.17.2",
-    "bootstrap": "^4.6.0",
-    "connect-flash": "^0.1.1",
-    "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
+    "bcrypt": "*",
+    "body-parser": "*",
+    "bootstrap": "*",
+    "connect-flash": "*",
+    "cookie-parser": "*",
+    "debug": "*",
     "esm": "*",
-    "express": "~4.16.1",
-    "express-handlebars": "^3.0.0",
+    "express": "*",
+    "express-handlebars": "*",
     "express-session": "^1.17.1",
-    "generate-unique-id": "^2.0.1",
+    "generate-unique-id": "*",
     "http-errors": "*",
     "jquery": "*",
-    "jsonwebtoken": "^8.5.1",
-    "morgan": "~1.9.1",
+    "jsonwebtoken": "*",
+    "morgan": "*",
     "multer": "*",
     "mysql": "*",
     "mysql2": "^2.2.5",
-    "node-fetch": "^2.6.1",
-    "nodemailer": "5.1.1",
-    "nodemailer-mailgun-transport": "1.4.0",
+    "node-fetch": "*",
+    "nodemailer": "*",
     "nodemon": "^2.0.7",
-    "passport": "^0.4.1",
-    "passport-local": "^1.0.0",
+    "nodemailer-mailgun-transport": "*",
+    "passport": "*",
+    "passport-local": "*",
     "popper.js": "^1.16.1",
     "pug": "*",
-    "querystring": "^0.2.1",
+    "querystring": "*",
     "sanitize-filename": "*",
     "sequelize": "^6.5.0",
     "tinymce": "*",
@@ -42,8 +45,8 @@
     "uuid": "*"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
-    "chai-http": "^4.3.0",
-    "mocha": "^8.2.1"
+    "chai": "*",
+    "chai-http": "*",
+    "mocha": "*"
   }
 }

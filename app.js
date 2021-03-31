@@ -78,7 +78,6 @@ adminLoginRouter.use('/dashboard', adminDashboardRouter)
 adminLoginRouter.get('/media', media.mediaManger)
 adminLoginRouter.use('/upload', uploadRouter)
 
-//express session
 app.use(session({
   secret : 'secret',
   resave : true,
@@ -104,14 +103,12 @@ app.use(async (req, res, next) => {
   next();
 });
 
-app.use('/', indexRouter);
 
+app.use('/', indexRouter);
 app.use('/admin', adminLoginRouter);
-app.use('/admin/dashboard', adminDashboardRouter);
 app.use('/', contactRouter);
 app.use('/', messageRouter);
 app.use('/edit', editRouter);
-app.use('/admin', adminLoginRouter);
 app.use('/media', mediaRouter);
 //app.use('/users', usersRouter);
 app.use('/search', searchRouter);
