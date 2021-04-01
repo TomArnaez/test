@@ -242,15 +242,13 @@ router.post('/register/:token', (req, res) => {
                 req.body.username == "" ||
                 req.body.fname == "" ||
                 req.body.lname == "" ||
-                req.body.newpass == "" ||
-                req.body.newpass2 == "") { //Check that fields are not empty.
+                req.body.role == "") { //Check that fields are not empty.
                 req.flash('error_msg', 'Missing field(s).');
                 res.redirect("/admin/register/" + req.params.token);
             } else {
-                //check passwords match
-                let passmatch = req.body.newpass == req.body.newpass2
-                if (!passmatch) {
-                    req.flash('error_msg', 'Passwords do not match.');
+                //check valid role
+                if (req.body.role != "patient" || req.body.role != "parent") {
+                    req.flash('error_msg', 'Invalid role.');
                     res.redirect("/admin/register/" + req.params.token);
                 } else {
                     //check tos accepted
@@ -277,18 +275,18 @@ router.post('/register/:token', (req, res) => {
                                         req.flash('error_msg', 'This username is already in use.');
                                         res.redirect("/admin/register/" + req.params.token);
                                     } else {
+                                        //random password to begin with:
+                                        let newpass = [...Array(16)].map(i=>(~~(Math.random()*36)).toString(36)).join('');
 
                                         //add user to database
                                         bcrypt.hash(newpass, 10, function(err, newhash) { //Hash new password and update database.
-                                            db.query("INSERT INTO `users` (`id`, `user_login`, `user_email`, `user_pass`, `user_fname`, `user_lname`) VALUES (NULL, '?', '?', '?', '?', '?')", [req.body.username, req.body.email, newhash, req.body.fname, req.body.lname], function(err, result) {
+                                            db.query("INSERT INTO `users` (`id`, `user_login`, `user_email`, `user_pass`, `user_fname`, `user_lname`, ) VALUES (NULL, '?', '?', '?', '?', '?')", [req.body.username, req.body.email, newhash, req.body.fname, req.body.lname], function(err, result) {
                                                 if (err) {
                                                     req.flash('error_msg', 'No database connection.');
                                                     res.redirect("/admin/register/" + req.params.token);
                                                 }
 
                                                 //TODO: user activation/must confirm email to continue?
-
-                                                //MISSING: Email preferences ignored/not stored
 
                                                 //success, redirect to login/homepage & decrement uses remaining
                                                 decrementRegToken(req.params.token)
@@ -340,6 +338,27 @@ router.get('/logout', (req, res) => {
     res.redirect('/admin/login');
 })
 
+//Get parent/patient/staff as string
+function getUserViewRole(userid) {
+    var db = require('../database.js');
+    return new Promise(function (resolve, reject){
+        db.query("SELECT view_role as ROLE FROM users WHERE id = ?", [userid], function (err, result) {
+            if (err) reject(err);
+            resolve(result[0].ROLE);
+        });
+    });
+}
+
+//Get permission level (int)
+function getUserViewRole(userid) {
+    var db = require('../database.js');
+    return new Promise(function (resolve, reject){
+        db.query("SELECT permission_level as LEVEL FROM users WHERE id = ?", [userid], function (err, result) {
+            if (err) reject(err);
+            resolve(result[0].LEVEL);
+        });
+    });
+}
 
 // Everything after this middleware will REQUIRE a login!
 /**

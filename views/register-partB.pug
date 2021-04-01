@@ -19,11 +19,10 @@ block content
                 label(for='lname' class="w-25" class="h6") Last Name
                 input(id='lname' name='lname' placeholder='Last Name' class="w-75")
             div(class="form-group w-100")
-                label(for='newpass' class="w-25" class="h6") Password
-                input(type='password' id='newpass' name='newpass' class="w-75")
-            div(class="form-group w-100")
-                label(for='newpass2' class="w-25" class="h6") Confirm Password
-                input(type='password' id='newpass2' name='newpass2' class="w-75")
+                label(for='role') Patient/Parent:
+                    select#role(name='role')
+                        option(value='patient') Patient
+                        option(value='parent') Parent
             div(class="form-group w-100")
                 label(for='tos' class="w-75" class="h6") I accept the Terms and Condition and Privacy Policy
                 input(type='checkbox' required=true id='tos' name='tos' class="w-25")
