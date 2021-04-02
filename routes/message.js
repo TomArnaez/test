@@ -151,13 +151,15 @@ router.post('/message/send', (req,res) => {
     const customID = getUniqueID();
     const currentTime = getTime();
 
-    db.query("INSERT INTO messages VALUE (DEFAULT,? ,? ,? ,? ,?,NULL,NULL, 0)",
-        [req.user ,customID, `${req.body.title}`,`${req.body.message}`, currentTime ], (err, result)=> {
+    db.query("INSERT INTO messages (user_id, custom_id, title, message) VALUE (?, ?, ?, ?)",
+        [req.user ,customID, `${req.body.title}`,`${req.body.message}`], (err, result)=> {
         if (err) {
+            console.log("error = " + err);
             req.flash('error_msg', 'No database connection.');
             res.redirect("/message");
         }
         else{
+            console.log("message successfully saved");
             req.flash('success_msg', 'Your Message Has Been Sent, Your Unique ID is:  '.concat(customID));
             res.redirect("/message");
         }
@@ -171,8 +173,8 @@ router.post('/admin/post_response/:message_id', async (req,res) => {
     const content = req.body.content;
     const postname = req.body.filename;
 
-    db.query("UPDATE messages SET response = ?, response_time = ?, is_public = ? WHERE custom_id = ?",
-        [content.replace( /(<([^>]+)>)/ig, ''), currentTime, 1, req.params.message_id], (err, result)=> {
+    db.query("UPDATE messages SET response = ?, response_time = ?, is_public = ?, author_id = ? WHERE custom_id = ?",
+        [content.replace( /(<([^>]+)>)/ig, ''), currentTime, 1, req.user, req.params.message_id], (err, result)=> {
             if (err) {
                 req.flash('error_msg', 'No database connection.');
                 res.redirect("/admin/message");
@@ -197,7 +199,7 @@ router.post('/admin/post_response/:message_id', async (req,res) => {
             }
         });
 
-        db.query("INSERT INTO posts (title, text, html) VALUES (?, ?, ?);", [postname, content, content], function(err, result) {
+        db.query("INSERT INTO posts (title, text, html, author_id) VALUES (?, ?, ?, ?);", [postname, content, content, req.user], function(err, result) {
 
             //Error handling for database connection
             if (err){
@@ -249,8 +251,8 @@ router.post('/admin/respond/:custom_id', (req,res) => {
     let userEmail = '';
 
 
-    db.query("UPDATE messages SET response = ?, response_time = ?, is_public = ? WHERE custom_id = ?",
-        [req.body.message, currentTime, 0, req.params.custom_id, ], (err, result)=>{
+    db.query("UPDATE messages SET response = ?, response_time = ?, is_public = ?, author_id = ?, WHERE custom_id = ?",
+        [req.body.message, currentTime, 0, req.user, req.params.custom_id], (err, result)=>{
             if (err) {
                 req.flash('error_msg', 'No database connection.');
                 res.redirect("/admin/message");
