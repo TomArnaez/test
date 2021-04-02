@@ -109,7 +109,8 @@ router.get('/new', function (req, res, next) {
 
 //Saves post in database
 router.post('/new', function (req, res) {
-
+  console.log("this is the user ID: " + req.user);
+  const user_id = req.user;
   //gets data from form posted.
   const title = String(req.body.filename);
   const data = String(req.body.content);
@@ -131,7 +132,7 @@ router.post('/new', function (req, res) {
 
       //Inserts new post into database
       } else {
-          db.query("INSERT INTO posts (title, text, html) VALUES (?, ?, ?);", [title, data, data], function(err, result) {
+          db.query("INSERT INTO posts (title, text, html, author_id) VALUES (?, ?, ?, ?);", [title, data, data, user_id], function(err, result) {
 
               //Error handling for database connection
               if (err){
