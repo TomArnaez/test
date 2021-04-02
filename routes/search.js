@@ -34,7 +34,6 @@ router.get('/', async (req, res, next) => {
         response: {[Op.ne]: null},
         is_public: 0
     });
-    console.log(message_results);
     res.render('search_results', {query: req.query.q, post_results: post_results, message_results: message_results});
 });
 

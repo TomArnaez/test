@@ -21,7 +21,6 @@ router.get('/feed', function(req, res, next) {
 
     Post.findAll({ include: { model: Term, as: "terms"}, order: [['created_on', 'DESC']]})
       .then(data => {
-          console.log(data);
           res.render('feed', {title: 'Posts', results: data});
       })
       .catch(err => {

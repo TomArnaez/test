@@ -110,7 +110,6 @@ router.get('/new', function (req, res, next) {
 //Saves post in database
 router.post('/new', function (req, res) {
   //gets data from form posted
-  console.log(req.body);
   const title = String(req.body.filename);
   const data = String(req.body.content);
   const category = req.body.category;

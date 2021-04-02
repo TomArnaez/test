@@ -40,7 +40,7 @@ block primary
                     span  #[a(href=tag.url) #{tag.termName}]
                         if (i < item.tags.length)
                             span ,
-    h3 Messages
+    h3 Messages - #{message.results}.length
     each item in message_results
         div(class='social-feed-box')
             //- container for title and publish time

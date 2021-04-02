@@ -98,7 +98,6 @@ router.get('/message/new/:post_id', async (req, res) => {
 /* GET Message Admin Panel. */
 router.get('/admin/message', async (req,res) => {
     if(req.isAuthenticated()){
-
         res.render('admin_message', {title:'User Questions', message: await getMessages()});
     }
     else {
@@ -138,7 +137,6 @@ router.get('/admin/post_response/:message_id', async (req, res) => {
 /* GET all messages */
 router.get('/admin/message/all', async (req,res) => {
     if(req.isAuthenticated()){
-
         res.render('admin_message', {title: 'All Messages', message: await getAllMessages()});
     }
     else {
