@@ -3,7 +3,7 @@ extends side-nav-sublayout
 
 append head
   script(type="application/javascript" src="/tinymce/tinymce.min.js")
-  script(id='config' data-content=doc type="application/javascript" src= "/javascripts/tinymce-config.js")
+  script(id='config' data-content=doc type="application/javascript" src= "/js/tinymce-config.js")
   
   //- If this is a new post, sets default values for titles
   - if (postname == null) {
@@ -27,30 +27,15 @@ block primary
                 select(class="form-control" name="category")
                     for category in categories
                         option(value=category.id) #{category.termName}
-            div(class="form-group col-md-2") Tag:
-                label(for='tagstype')
+            div(class="form-group col-md-2")
+                label(for='tagstype') Tags
                 input(type="text" class="form-control" id="tagstype" name='tags' value="")
                 script.
-                    var tagSubstringMatcher = function (tag) {
-                        return function findMatches(q, cb) {
-                            var matches, substringRegex;
-                            // an array that will be populated with substring matches
-                            matches = [];
-                            // regex used to determine if a string contains the substring `q`
-                            substrRegex = new RegExp(q, 'i');
-
-                            // iterate through the pool of strings and for any string that
-                            // contains the substring `q`, add it to the `matches` array
-                            $.each(tag, function (i, tag) {
-                                if (substrRegex.test(tag.termName)) {
-                                    matches.push(tag);
-                                }
-                            });
-
-                            cb(matches);
-                        };
-                    };
-                    var states = !{JSON.stringify(tags)};
+                    const tags = new Bloodhound({
+                        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('termName'),
+                        queryTokenizer: Bloodhound.tokenizers.whitespace,
+                        local: !{JSON.stringify(tags)}
+                    });
                     $('#tagstype').tagsinput({
                         itemValue: 'id',
                         itemText: 'termName',
@@ -62,7 +47,7 @@ block primary
                         }, {
                             name: 'states',
                             displayKey: 'termName',
-                            source: tagSubstringMatcher(states)
+                            source: tags
                         })
                     });
         div.input

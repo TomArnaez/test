@@ -6,6 +6,9 @@ const logger = require('morgan');
 
 const passport = require('passport');
 require("./passport")(passport)
+const session = require('express-session');
+const flash = require('connect-flash');
+
 const db = require("./models");
 db.sequelize.sync();
 
@@ -15,17 +18,17 @@ const apiRouter = require("./routes/api");
 const postRouter = require("./routes/posts");
 const contactRouter = require('./routes/email');
 const messageRouter = require('./routes/message');
+const profileRouter = require('./routes/profile');
 
 const media = require('./media_impl')
 media.setupSync()
-const session = require('express-session');
-const flash = require('connect-flash');
-require("./passport")(passport)
 
 const adminLoginRouter = require('./routes/admin_login');
 const adminDashboardRouter = require('./routes/admin_dashboard');
+const adminCategoriesRouter = require('./routes/admin_categories');
 const indexRouter = require('./routes/index');
-const editRouter = require('./routes/edit.js');const mediaRouter = media.mediaRoute
+const editRouter = require('./routes/edit.js');
+const mediaRouter = media.mediaRoute
 const uploadRouter = media.uploadRoute
 
 const app = express();
@@ -77,6 +80,7 @@ app.use((req,res,next)=> {
 adminLoginRouter.use('/dashboard', adminDashboardRouter)
 adminLoginRouter.get('/media', media.mediaManger)
 adminLoginRouter.use('/upload', uploadRouter)
+adminLoginRouter.use('/categories', adminCategoriesRouter)
 
 app.use(async (req, res, next) => {
   const db = require("./models");
@@ -96,12 +100,14 @@ app.use('/', indexRouter);
 app.use('/admin', adminLoginRouter);
 app.use('/', contactRouter);
 app.use('/', messageRouter);
+app.use('/', profileRouter);
 app.use('/edit', editRouter);
 app.use('/media', mediaRouter);
 //app.use('/users', usersRouter);
 app.use('/search', searchRouter);
 app.use('/api', apiRouter);
 app.use('/posts', postRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

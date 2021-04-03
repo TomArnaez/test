@@ -34,7 +34,6 @@ router.get('/feed', function(req, res, next) {
   }
 })
 
-
 module.exports = router;
 
 function getDatabaseVersion() {

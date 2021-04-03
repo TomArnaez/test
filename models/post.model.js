@@ -13,9 +13,6 @@ module.exports = (sequelize, Sequelize) => {
         html: {
             type: Sequelize.TEXT
         },
-        text: {
-            type: Sequelize.STRING
-        },
         description: {
             type: Sequelize.TEXT
         },
@@ -31,11 +28,8 @@ module.exports = (sequelize, Sequelize) => {
         last_modified: {
             type: Sequelize.DATE
         },
-        author: {
-            type: DataTypes.VIRTUAL,
-            get() {
-                return "USER_PLACEHOLDER";
-            }
+        author_id: {
+            type: Sequelize.INTEGER
         },
         category: {
             type: DataTypes.VIRTUAL,
@@ -49,7 +43,7 @@ module.exports = (sequelize, Sequelize) => {
         url: {
             type: DataTypes.VIRTUAL,
             get() {
-                return `/posts/${this.category}/${this.id}/${this.slug}`;
+                return `/posts/${this.category}/${this.id}/${this.title}`;
             },
             set(value) {
                 throw new Error("Do not try to set the a url value!'");

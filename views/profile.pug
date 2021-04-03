@@ -1,0 +1,25 @@
+extends side-nav-sublayout
+
+block primary
+    div(class='container-fluid')
+        h1(style="text-align:center") Update your profile
+        include ./partial/msg
+        div(class="row justify-content-md-center")
+            div(class="col col-lg-2")
+                img(src="https://www.applesfromny.com/wp-content/uploads/2020/05/Jonagold_NYAS-Apples2.png" class="img-thumbnail")
+                button(type="submit" class="btn btn-primary btn-block active") Change Profile Image
+            div(class="col col-lg-2")
+                form(action='/admin/changepassword' method="POST")
+                    div(class="form-group w-100")
+                        label(class="w-25" class="h6" for="email") Email:
+                        input(class="w-75" type="password" id="email" name="oldpass" placeholder="Email")
+                    div(class="form-group w-100")
+                        label(class="w-25" class="h6" for="oldpass") Old:
+                        input(class="w-75" type="password" id="oldpass" name="oldpass" placeholder="Old Password")
+                    div(class="form-group w-100")
+                        label(class="w-25" class="h6" for="newpass") New:
+                        input(class="w-75" type="password" id="newpass" name="newpass" placeholder="New Password")
+                    div(class="form-group w-100")
+                        label(class="w-25" class="h6" for="newpass2") Confirm New:
+                        input(class="w-75" type="password" id="newpass2" name="newpass2" placeholder="Confirm New Password")
+                    button(type='submit' class='btn btn-primary btn-block active') Change Password

@@ -5,14 +5,14 @@ append head
     - var content = doc;
 
 block primary
-
     //- container for pgae title
     div(class='container-fluid')
-        h1= title
+        h1 Post Viewer
         br
     div(class='container-xl')
-        h2(style='aligned:left') #{postname}
+        h2(style='aligned:left') #{title}
         small(class='text-muted')
+            p Posted by #{user.user_login}
             span Posted in #[a(href=category_url) #{category}]
             if tags.length > 0
                 span  | Tagged as
@@ -29,7 +29,7 @@ block primary
         br
         br
         div(id='output' class='border' style='padding:20px')
-            | !{doc}
+            | !{html}
 
     div(class='container-fluid' style='padding:2rem;')
         a(href='/edit/')

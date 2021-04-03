@@ -26,8 +26,6 @@ form(class='d-flex' action='search' method='GET')
             queryTokenizer: Bloodhound.tokenizers.whitespace,
             local: !{JSON.stringify(messages)}
         });
-        console.log(messages);
-
 
         $('.typeahead').typeahead(
             {

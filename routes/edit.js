@@ -32,11 +32,11 @@ router.get('/view/:id', async (req, res, next) => {
   if (req.isAuthenticated()) {
       const db = require("../models");
       const post = await db.Post.findOne({where: {id: post_id}, include: { model: db.Term, as: "terms"}})
+      const user = await db.User.findOne({where: {id: post.author_id}});
 
       if (post != null) {
-        console.log(post)
         res.render('Post', {title: 'Post Viewer', id: post_id, postname: post.title, doc: post.html,
-            category_url: post.category_url, category: post.category, tags: post.tags});
+            category_url: post.category_url, category: post.category, tags: post.tags, user: user});
       } else {
         req.flash('error_msg', 'No post with id: \'' + post_id + '\' in database');
         res.redirect('/edit/');
@@ -109,11 +109,13 @@ router.get('/new', function (req, res, next) {
 
 //Saves post in database
 router.post('/new', function (req, res) {
+
   //gets data from form posted
   const title = String(req.body.filename);
   const data = String(req.body.content);
   const category = req.body.category;
   const tags = String(req.body.tags).split(',');
+  const userId = req.user;
 
   //checks that file with same title doesn't already exist in database, throws error if true and returns user to index
   db.query("SELECT title FROM posts WHERE ? IN (title) LIMIT 1;", [title], function(err, result) {
@@ -137,7 +139,7 @@ router.post('/new', function (req, res) {
 
           //Inserts new post into database
       } else {
-          db.query("INSERT INTO posts (title, text, html) VALUES (?, ?, ?);", [title, data, data], function (err, result) {
+          db.query("INSERT INTO posts (title, description, html) VALUES (?, ?, ?);", [title, data, data], function (err, result) {
 
               //Error handling for database connection
               if (err) {
