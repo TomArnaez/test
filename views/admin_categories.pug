@@ -2,6 +2,7 @@ extends side-nav-sublayout
 
 block primary
     h1 Categories
+    include ./partial/msg
     div(class="container")
         div(class="row")
             div(class="col-sm")
@@ -9,14 +10,108 @@ block primary
                 form(name="category-form", method="post")
                     div(class="form-group")
                         label(for="termName") Category name
-                        input(type="text" class="form-control" id="termName" placeholder="Enter category name")
+                        input(type="text" class="form-control" id="termName" placeholder="Enter category name" name="termName")
                     div(class="form-group")
                         label(for="termSlug") Slug
-                        input(type="text" class="form-control" id="termSlug" placeholder="Enter category name")
+                        input(type="text" class="form-control" id="termSlug" placeholder="Enter category name" name="termSlug")
                         small(id="slugHelp" class="form-text text-muted").
                             The "slug" is the URL-friendly version of the name, it is usually all lowercase and contains only letters, numbers and hyphens.
                     div(class="form-group")
                         label(for="description") Description
-                        textarea(type="text" class="form-control" id="description" rows="3")
+                        textarea(type="text" class="form-control" id="description" rows="3" name="description")
                     input(type="submit", value='Add' class='btn btn-success')
             div(class="col-sm")
+                h4 Existing Categories
+                div(id="toolbar")
+                    button(id="remove" class="btn btn-danger" disabled) Delete
+                br
+                table(id="table" class="table table-bordered" data-pagination="true")
+
+                script.
+                    var $table = $('#table')
+                    var $remove = $('#remove')
+                    var selections = []
+
+                    function getIdSelections() {
+                        return $.map($table.bootstrapTable('getSelections'), function (row) {
+                            return row.id
+                        })
+                    }
+
+                    function responseHandler(res) {
+                        $.each(res.rows, function (i, row) {
+                            row.state = $.inArray(row.id, selections) !== -1
+                        })
+                        return res
+                    }
+
+
+                    function initTable() {
+                        $table.bootstrapTable('destroy').bootstrapTable({
+                            height: 550,
+                            locale: $('#locale').val(),
+                            data: !{JSON.stringify(categories)},
+                            columns: [
+                                [{
+                                    field: 'state',
+                                    checkbox: true,
+                                    align: 'center',
+                                    valign: 'middle'
+                                }, {
+                                    title: 'ID',
+                                    field: 'id',
+                                    align: 'center',
+                                    sortable: true,
+                                }, {
+                                    title: 'Name',
+                                    field: 'termName',
+                                    align: 'center',
+                                    sortable: true
+                                }, {
+                                    title: 'Slug',
+                                    field: 'termSlug',
+                                    align: 'center',
+                                    sortable: true
+                                }, {
+                                    title: 'Post Count',
+                                    field: 'posts.length',
+                                    align: 'center',
+                                    sortable: true
+                                }]
+                            ]
+                        })
+                        $table.on('check.bs.table uncheck.bs.table ' +
+                            'check-all.bs.table uncheck-all.bs.table',
+                            function () {
+                                $remove.prop('disabled', !$table.bootstrapTable('getSelections').length)
+                                // save your data, here just save the current page
+                                selections = getIdSelections()
+                                // push or splice the selections if you want to save all data selections
+                            })
+                        $table.on('all.bs.table', function (e, name, args) {
+                            console.log(name, args)
+                        })
+
+                        $remove.click(function () {
+                            var ids = getIdSelections();
+                            ids.forEach(id => {
+                                $.ajax({
+                                    url: '/api/terms/' + id,
+                                    method: 'delete',
+                                });
+                            })
+                            console.log(ids);
+                            $table.bootstrapTable('remove', {
+                                field: 'id',
+                                values: ids
+                            });
+
+                            //db.Term.destroy({ where: { id: ids}})
+                            $remove.prop('disabled', true)
+                        })
+                    }
+
+                    $(function() {
+                        initTable();
+                        //$('#locale').change(initTable)
+                    })

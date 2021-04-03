@@ -32,6 +32,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             unique: true
         },
+        description: {
+            type: DataTypes.TEXT
+        },
         url: {
             type: DataTypes.VIRTUAL,
             get() {

@@ -158,7 +158,6 @@ router.post('/new', function (req, res) {
                   req.flash('success_msg', 'Successfully saved post to database');
                   db.query("INSERT INTO postTerms (postId, termId) VALUES (?, ?);", [newPostID, category], function (err, result) {
                       if (err) {
-                          console.log(result);
                           req.flash('error_msg', 'Error connecting to database while adding category association: ' + err);
                           res.render('text_editor', {
                               title: 'Content Editor',

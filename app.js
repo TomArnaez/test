@@ -88,7 +88,8 @@ app.use(async (req, res, next) => {
   const Term = db.Term;
   const Post = db.Post;
   const Message = db.Message;
-  res.locals.categories = await Term.findAll({ where: {termType: 'category'} });
+
+  res.locals.categories = await Term.findAll({ where: {termType: 'category'}, include: { model: Post, as: "posts", attributes: ['id']} });
   res.locals.tags = await Term.findAll({where: {termType: 'tag'}});
   res.locals.posts = await Post.findAll({include: { model: Term, as: "terms"}});
   res.locals.messages = await Message.findAll({where: {is_public: 0, response: {[Op.ne]: null}}, attributes: ['title', 'custom_id', 'url']});
@@ -111,6 +112,7 @@ app.use('/posts', postRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
+  console.log(req.url);
   next(createError(404));
 });
 
