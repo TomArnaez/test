@@ -25,7 +25,7 @@ media.setupSync()
 
 const adminLoginRouter = require('./routes/admin_login');
 const adminDashboardRouter = require('./routes/admin_dashboard');
-const adminCategoriesRouter = require('./routes/admin_categories');
+const adminCategoriesRouter = require('./routes/admin_terms');
 const indexRouter = require('./routes/index');
 const editRouter = require('./routes/edit.js');
 const mediaRouter = media.mediaRoute
@@ -80,7 +80,7 @@ app.use((req,res,next)=> {
 adminLoginRouter.use('/dashboard', adminDashboardRouter)
 adminLoginRouter.get('/media', media.mediaManger)
 adminLoginRouter.use('/upload', uploadRouter)
-adminLoginRouter.use('/categories', adminCategoriesRouter)
+adminLoginRouter.use('/terms', adminCategoriesRouter)
 
 app.use(async (req, res, next) => {
   const db = require("./models");

@@ -1,15 +1,22 @@
 extends side-nav-sublayout
 
 block primary
-    h1 Categories
+    h1 Terms
     include ./partial/msg
     div(class="container")
         div(class="row")
             div(class="col-sm")
-                h4 Add New Category
+                h4 Add New Term
                 form(name="category-form", method="post")
                     div(class="form-group")
-                        label(for="termName") Category name
+                        label(for="termType") Term type
+                        select(class="form-control" id="termType" name="termType")
+                            option(value="Category") Category
+                            option(value="Tag") Tag
+                        small(id="termTypeHelp" class="form-text text-muted").
+                            Posts can only be assigned to one category but can have multiple tags.
+                    div(class="form-group")
+                        label(for="termName") Term name
                         input(type="text" class="form-control" id="termName" placeholder="Enter category name" name="termName")
                     div(class="form-group")
                         label(for="termSlug") Slug
@@ -21,7 +28,7 @@ block primary
                         textarea(type="text" class="form-control" id="description" rows="3" name="description")
                     input(type="submit", value='Add' class='btn btn-success')
             div(class="col-sm")
-                h4 Existing Categories
+                h4 Existing Terms
                 div(id="toolbar")
                     button(id="remove" class="btn btn-danger" disabled) Delete
                 br
@@ -50,7 +57,7 @@ block primary
                         $table.bootstrapTable('destroy').bootstrapTable({
                             height: 550,
                             locale: $('#locale').val(),
-                            data: !{JSON.stringify(categories)},
+                            data: !{JSON.stringify(terms)},
                             columns: [
                                 [{
                                     field: 'state',
@@ -61,6 +68,13 @@ block primary
                                     title: 'ID',
                                     field: 'id',
                                     align: 'center',
+                                    sortable: true,
+
+                                }, {
+                                    title: 'Term Type',
+                                    field: 'termType',
+                                    align: 'center',
+                                    valign: 'middle',
                                     sortable: true,
                                 }, {
                                     title: 'Name',
