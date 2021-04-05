@@ -249,24 +249,27 @@ router.get('/admin/respond/:custom_id', (req, res) => {
 router.post('/admin/respond/:custom_id', (req,res) => {
     const currentTime = getTime();
     let userEmail = '';
+    console.log('custom id = ' + req.params.custom_id);
 
-
-    db.query("UPDATE messages SET response = ?, response_time = ?, is_public = ?, author_id = ?, WHERE custom_id = ?",
+    db.query("UPDATE messages SET response = ?, response_time = ?, is_public = ?, author_id = ? WHERE custom_id = ?;",
         [req.body.message, currentTime, 0, req.user, req.params.custom_id], (err, result)=>{
             if (err) {
                 req.flash('error_msg', 'No database connection.');
+                console.log('error coneccting: ' + err);
                 res.redirect("/admin/message");
             }
             else {
                 db.query("SELECT user_email, custom_id FROM messages JOIN users ON messages.user_id = users.id WHERE custom_id = ?",
                     [req.params.custom_id], (err, result)=> {
                     if (err) {
+                      console.log('error conecting second part: ' + err);
                     } else {
                         userEmail = result[0].user_email;
 
                         if(userEmail == '')
                         {
                             req.flash('error_msg', `Email Wasn't sent :(`);
+                            console.log('e-mail failed to send');
                         }else
                         {
                             if(req.body.id== ''){
@@ -283,6 +286,7 @@ router.post('/admin/respond/:custom_id', (req,res) => {
                 });
 
                 req.flash('success_msg', 'Your Message Has Been Sent');
+                console.log('nailed it');
                 res.redirect("/admin/message");
             }
         });
