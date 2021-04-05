@@ -18,7 +18,7 @@ router.get('/message', async (req,res) => {
 // Gets page to display response to a message
 router.get('/message/response/:custom_id', async (req, res) => {
   if(req.isAuthenticated()) {
-    db.query("SELECT * FROM messages WHERE ? IN (custom_id) LIMIT 1;", [req.params.custom_id], function(err, result) {
+    db.query("SELECT * FROM messages JOIN users ON messages.author_id = users.id WHERE ? IN (custom_id) LIMIT 1;", [req.params.custom_id], function(err, result) {
         //Error handling for database connection. Reroutes user to posts index (most likely the origin)
         if (err) {
           console.log('Error connecteing with database');
