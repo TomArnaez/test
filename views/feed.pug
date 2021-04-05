@@ -55,8 +55,8 @@ block primary
           div(class='media-body d-flex justify-content-between align-items-center')
             div(class='mr-2')
               h2= item.title
-              a(href='#' style='text-decoration:none')
-                small(class='text-muted' style='text-decoration:none') Written by Marianne Samyn
+              a(href='/author/'+item.author_id style='text-decoration:none')
+                small(class='text-muted' style='text-decoration:none') Written By !{item.user_fname} !{item.user_lname}
               br
               small(class='text-muted') #{formatDate(item.created_on)}
             //- Drop down is an admin action. Gives admin option to edit post or hide it from view.
