@@ -153,9 +153,10 @@ router.post('/message/send', (req,res) => {
     let public123 = 0;
     if(`${req.body.public}` == 1) public123 = 1;
 
-    db.query("INSERT INTO messages VALUE (DEFAULT,? ,? ,? ,? ,?,NULL,NULL, ?)",
+    db.query("INSERT INTO messages VALUE (DEFAULT,? ,? ,? ,? ,?,NULL,NULL,NULL, ?)",
         [req.user ,customID, `${req.body.title}`,`${req.body.message}`, currentTime, public123 ], (err, result)=> {
         if (err) {
+            console.log(err , 'error');
             req.flash('error_msg', 'No database connection.');
             res.redirect("/message");
         }
