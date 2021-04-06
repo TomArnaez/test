@@ -10,6 +10,9 @@ block primary
         h1 Post Viewer
         br
     div(class='container-xl')
+        div(id='buttons', style='float:right')
+            a(href='/edit/' + id)
+                button(type='button' class='btn btn-success') Edit
         h2(style='aligned:left') #{title}
         small(class='text-muted')
             p Posted by #{user.user_login}
@@ -22,12 +25,7 @@ block primary
                 span  #[a(href=tag.url) #{tag.url}]
                     if (i < tags.length)
                         span ,
-        div(id='buttons', style='float:right')
-            a(href='/edit/' + id)
-                button(type='button' class='btn btn-success') Edit
-        br
-        br
-        br
+            p Description: #{post.description}
         div(id='output' class='border' style='padding:20px')
             | !{html}
 

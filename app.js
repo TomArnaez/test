@@ -93,6 +93,8 @@ app.use(async (req, res, next) => {
   res.locals.tags = await Term.findAll({where: {termType: 'tag'}});
   res.locals.posts = await Post.findAll({include: { model: Term, as: "terms"}});
   res.locals.messages = await Message.findAll({where: {is_public: 0, response: {[Op.ne]: null}}, attributes: ['title', 'custom_id', 'url']});
+  res.locals.unanswered_messages = await Message.findAll({where: {response: {[Op.eq]: null}}});
+
   next();
 });
 
@@ -126,6 +128,5 @@ app.use(function(err, req, res) {
   res.status(err.status || 500);
   res.render('error');
 });
-
 
 module.exports = app;

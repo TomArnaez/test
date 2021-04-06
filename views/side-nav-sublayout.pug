@@ -102,6 +102,7 @@ block content
               //- Button to view user questions
               a(href='/message') 
                 button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') View Your Questions
+
               //- button to ask a question of the staff  
               a(href='/message/new')
                 button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Ask a Question
@@ -109,6 +110,8 @@ block content
               hr
               a(href='/admin/message')
                 button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Respond to Questions
+                  sup(color="red")
+                    span(class="badge") #{unanswered_messages.length}
               //- view ALL user questions
               a(href='/admin/message/all')
                 button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') All User Questions
