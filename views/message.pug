@@ -1,8 +1,5 @@
 extends side-nav-sublayout
 
-append head
-  
-
 block primary
 
   //- Container for page title
@@ -19,25 +16,27 @@ block primary
       div(class='form-group row')
         label(for='title' class='col-sm-2 col-form-label') Subject*
         div(class='col-sm-10')
-          if (post != null)
+          -if (post != null)
             input(type='text' name='title' required=true minlength=5 class='form-control' value='Question about post '+post[0].id+ ' ('+post[0].title+')')
-          else 
+          -else 
             input(type='text' name='title' required=true minlength=5 class='form-control')
+      br
       //- Message Body
       div(class='form-group row')
         label(for='message' class='col-sm-2 col-form-label') Message*
         div(class='col-sm-10')
           textarea(name='message' required=true minlength=20 placeholder='Type your message here' class='form-control')
           br
-          .form-check.form-switch
-            input#flexSwitchCheckChecked.form-check-input(type='checkbox' name='public' checked='' value='1')
-            label.form-check-label(for='flexSwitchCheckChecked') Share my question with others
+          div(class='form-check form-switch')
+            input(type='checkbox' class='form-check-input' id='flexSwitchCheckChecked' name='public' checked='' value='1')
+            label(for='flexSwitchCheckChecked' class='form-check-label') Share my question with others
       //- submit Button
+      br
       button(class='btn btn-success' type='submit') Send
 
   //- Back button
   div(class='container-fluid' style='padding:2rem;')
     br
     a(href='/message/')
-      button(class='btn btn-dark') Back To Questions
+      button(class='btn btn-secondary') Back To Questions
         

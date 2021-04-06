@@ -254,8 +254,8 @@ router.post('/admin/respond/:custom_id', (req,res) => {
     let userEmail = '';
     console.log('custom id = ' + req.params.custom_id);
 
-    db.query("UPDATE messages SET response = ?, response_time = ?, author_id = ? WHERE custom_id = ?;",
-        [req.body.message, currentTime, req.user, req.params.custom_id], (err, result)=>{
+    db.query("UPDATE messages SET response = ?, response_time = ?, author_id = ?, is_public =? WHERE custom_id = ?;",
+        [req.body.message, currentTime, req.user, 0, req.params.custom_id], (err, result)=>{
             if (err) {
                 req.flash('error_msg', 'No database connection.');
                 console.log('error coneccting: ' + err);
