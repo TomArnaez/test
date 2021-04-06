@@ -27,7 +27,7 @@ block primary
   div(class='container-fluid')
     //- Creating Table with Bootstrap
     div(class='row')
-      table(id="table" class="table table-bordered" data-pagination="true" data-group-by="true", data-group-by-field="Visible")
+      table(id="table" class="table table-bordered" data-toggle="table" data-pagination="true" data-search="true" data-group-by-field="Visible")
       script.
         var $table = $('#table')
         var $remove = $('#remove')
@@ -46,12 +46,17 @@ block primary
           return res
         }
 
+        function timeFormatter(value, row, index) {
+          return row.created_on
+        }
+
         function actionFormatter(value, row, index) {
           let view_url = '/edit/view/' + row.id;
           let edit_url = '/edit/' + row.id;
           let delete_url = '/edit/delete/' + row.id;
           let hide_url = '/edit/hide/' + row.id;
-          return [
+          let show_url = '/edit/show/' + row.id;
+          let actions = [
             '<a class="view" href="' + view_url + '" title="Edit">',
             '<i class="fa fa-eye"></i>',
             '</a>  ',
@@ -60,10 +65,16 @@ block primary
             '</a>  ',
             '<a class="delete" href="' + delete_url + '" title="Delete">',
             '<i class="fa fa-trash"></i>',
-            '</a>  ',
-            '<a class="hide" href="' + hide_url + '" title="Hide">',
-            '<i class="fa fa-eye-slash"></i></a>',
+            '</a>  '
           ].join('')
+
+          if (row.visible) {
+            actions += '<a class="hide" href="' + hide_url + '" title="Hide"><i class="fa fa-eye-slash"></i></a>'
+          } else {
+            actions += '<a class="show" href="' + show_url + '" title="Show"><i class="fa fa-eye-slash"></i></a>'
+          }
+
+          return actions
         }
 
         window.operateEvents = {
@@ -110,7 +121,8 @@ block primary
                 title: "Created on",
                 field: "created_on",
                 align: "center",
-                sortable: true
+                sortable: true,
+                formatter: timeFormatter,
               }, {
                 title: "Author ID",
                 field: "author_id",
