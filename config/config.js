@@ -25,11 +25,15 @@ config.mysql.pool=  {
 
 /** Email Settings */
 
-//Email address
-config.email.username = "informationhub.kings@gmail.com";
-//Email password
-config.email.password = "cpointisthebest";
+config.email.username = "informationhub.kings@gmail.com";  //Email address
 
+config.email.password = "cpointisthebest";  //Email password
+
+config.email.host = "smtp.gmail.com";  //host
+
+config.email.port = 587;   //Port
+
+config.email.secure = false;  //TLS
 
 
 config.media = {};

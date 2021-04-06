@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/info', function(req, res, next) {
 
-  res.render('info_page', { title: 'About Us'});
+  res.render('info_page', { title: 'About Us', active: 'about'});
 
 });
 
@@ -32,10 +32,33 @@ router.get('/feed', function(req, res, next) {
           req.flash('error_msg', 'Error when accessing database');
           res.redirect('/')
       });
+
   //Redirects user to login page if not authenticated
   } else {
       req.flash('error_msg', 'You are not authenticated.');
       res.redirect("/admin/login");
+  }
+})
+
+router.get('/author/:id', function(req, res, next) {
+  //Checks user is authenticated.
+  if (req.isAuthenticated()) {
+
+    db.query("SELECT * FROM users WHERE ? IN (id);", [req.params.id], function(err, result) {
+
+      //Error handling for databasae connection. Re-routes user to index page
+      if (err){
+          req.flash('error_msg', 'Error when accessing database');
+          res.redirect('/')
+
+      } else {
+        res.render('author_info', {title: 'Author Information', results: result, back:req.header('Referer')})
+      }
+    });
+
+  } else {
+    req.flash('error_msg', 'You are not authenticated.');
+    res.redirect("/admin/login");
   }
 })
 

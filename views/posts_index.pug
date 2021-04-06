@@ -9,8 +9,9 @@ append head
     }
     .btn {
       margin-left: 5px;
+      margin-top: 5px;
     }
-  script(type='application/javascript' src='javascripts/confirm-delete.js')
+  script(type='application/javascript' src='../public/javascripts/confirm-delete.js')
 
 block primary
 
@@ -180,9 +181,8 @@ block primary
           tr
             th(scope='col') Id
             th(scope='col') Name
-            th(scope='col') Text
+            th(scope='col') Description
             th(scope='col') Created
-            th(scope='col') Visible
             th(scope='col') Actions
         tbody
           //- creates all of the below tags for each item in the results array
@@ -192,9 +192,8 @@ block primary
               tr
                 th(scope='row' class='col-lg-1') #{item.id}
                 td(class='col-lg-2') #{item.title}
-                td(class='col-lg-4') #{item.text}
+                td(class='col-lg-4') #{item.description}
                 td(class='col-lg-2') #{formatDate(item.created_on)}
-                td(class='col-lg-1')
                 //- Action Buttons for below table data tag. Each route request appropriatley.
                 td(class='col-lg-2')
                   a(href='/edit/view/'+item.id)
@@ -215,7 +214,6 @@ block primary
             th(scope='row') Not visible posts
             td
             td
-            td
           each item in results
             if (item.visible == 0)
               tr
@@ -223,7 +221,6 @@ block primary
                 td(class='col-lg-2') #{item.title}
                 td(class='col-lg-4') #{item.text}
                 td(class='col-lg-2') #{formatDate(item.created_on)}
-                td(class='col-lg-1')
                 //- Action Buttons for below table data tag. Each route request appropriatley.
                 td(class='col-lg-2')
                   a(href='/edit/view/'+item.id)
