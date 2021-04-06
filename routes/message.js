@@ -113,7 +113,7 @@ router.get('/admin/post_response/:message_id', async (req, res) => {
         db.query("SELECT title, message FROM messages WHERE ? IN (custom_id) LIMIT 1;", [req.params.message_id], function(err, result) {
             //Error handling for database connection. Reroutes user to posts index (most likely the origin)
             if (err) {
-              console.log('Error connecteing with database');
+              console.log('Error connecting with database');
               res.redirect('/edit');
             } else {
 
@@ -150,9 +150,11 @@ router.get('/admin/message/all', async (req,res) => {
 router.post('/message/send', (req,res) => {
     const customID = getUniqueID();
     const currentTime = getTime();
+    let public123 = 0;
+    if(`${req.body.public}` == 1) public123 = 1;
 
-    db.query("INSERT INTO messages VALUE (DEFAULT,? ,? ,? ,? ,?,NULL,NULL, 0)",
-        [req.user ,customID, `${req.body.title}`,`${req.body.message}`, currentTime ], (err, result)=> {
+    db.query("INSERT INTO messages VALUE (DEFAULT,? ,? ,? ,? ,?,NULL,NULL, ?)",
+        [req.user ,customID, `${req.body.title}`,`${req.body.message}`, currentTime, public123 ], (err, result)=> {
         if (err) {
             req.flash('error_msg', 'No database connection.');
             res.redirect("/message");
@@ -188,7 +190,7 @@ router.post('/admin/post_response/:message_id', async (req,res) => {
                         if(userEmail == '') {
                             req.flash('error_msg', `Email Wasn't sent :(`);
                         } else {
-                            email.sendEmail(userEmail, 'Answer to your message: ' + result[0].cusstom_id,
+                            email.sendEmail(userEmail, 'Answer to your message: '.concat(req.params.message_id),
                                 content.replace( /(<([^>]+)>)/ig, ''));
 
                         }
@@ -221,7 +223,7 @@ router.get('/admin/respond/:custom_id', (req, res) => {
         db.query("SELECT title, message FROM messages WHERE ? IN (custom_id) LIMIT 1;", [req.params.custom_id], function(err, result) {
             //Error handling for database connection. Reroutes user to posts index (most likely the origin)
             if (err) {
-              console.log('Error connecteing with database');
+              console.log('Error connecting with database');
               res.redirect('/admin/message');
             } else {
 
@@ -249,8 +251,8 @@ router.post('/admin/respond/:custom_id', (req,res) => {
     let userEmail = '';
 
 
-    db.query("UPDATE messages SET response = ?, response_time = ?, is_public = ? WHERE custom_id = ?",
-        [req.body.message, currentTime, 0, req.params.custom_id, ], (err, result)=>{
+    db.query("UPDATE messages SET response = ?, response_time = ? WHERE custom_id = ?",
+        [req.body.message, currentTime, req.params.custom_id, ], (err, result)=>{
             if (err) {
                 req.flash('error_msg', 'No database connection.');
                 res.redirect("/admin/message");
@@ -267,15 +269,9 @@ router.post('/admin/respond/:custom_id', (req,res) => {
                             req.flash('error_msg', `Email Wasn't sent :(`);
                         }else
                         {
-                            if(req.body.id== ''){
-                                email.sendEmail(userEmail, 'Answer to your message: ' + result[0].cusstom_id,
-                                    req.body.message);
-                            }
-                            else
-                            {
-                                email.sendEmail(userEmail, 'Answer to your message: ' + result[0].cusstom_id,
-                                    req.body.message, req.body.ccEmail);
-                            }
+                            email.sendEmail(userEmail, 'Answer to your message: '.concat(result[0].title) + ` (${req.params.custom_id})`,
+                                `${req.body.message}`, `${req.body.ccEmail}`);
+
                         }
                     }
                 });
@@ -293,12 +289,10 @@ router.post('/admin/respond/:custom_id', (req,res) => {
 router.post('/admin/message/send', (req,res) => {
     const currentTime = getTime();
     let userEmail = '';
-    let post = 0;
-    // if(`${req.body.post}` == 'post') post = 1;
 
 
-    db.query("UPDATE messages SET response = ?, response_time = ?, is_public = ? WHERE custom_id = ?",
-        [req.body.message, currentTime, post, req.body.id], (err, result)=>{
+    db.query("UPDATE messages SET response = ?, response_time = ? WHERE custom_id = ?",
+        [req.body.message, currentTime, req.body.id], (err, result)=>{
             if (err) {
                 req.flash('error_msg', 'No database connection.');
                 res.redirect("/admin/message");
@@ -315,15 +309,9 @@ router.post('/admin/message/send', (req,res) => {
                             req.flash('error_msg', `Email Wasn't sent :(`);
                         }else
                         {
-                            if(req.body.id== ''){
-                                email.sendEmail(userEmail, 'Answer to your message: '.concat(req.body.id),
-                                    req.body.message);
-                            }
-                            else
-                            {
-                                email.sendEmail(userEmail, 'Answer to your message: '.concat(req.body.id),
-                                    req.body.message, req.body.ccEmail);
-                            }
+                            email.sendEmail(userEmail, 'Answer to your message: '.concat(result[0].title) + ` (${req.body.id})`,
+                                `${req.body.message}`, `${req.body.ccEmail}`);
+
                         }
                     }
                 });

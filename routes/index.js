@@ -9,6 +9,11 @@ router.get('/', function(req, res, next) {
   });
 });
 
+router.get('/info', function(req, res, next) {
+
+  res.render('info_page', { title: 'About Us'});
+
+});
 
 // Fetches main feed page
 router.get('/feed', function(req, res, next) {

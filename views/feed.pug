@@ -5,8 +5,8 @@ append head
   style(type='text/css').
     .social-feed-box {
       padding: 15px;
-      border: 1px solid #e7eaec;
-      background: #fff;
+      border: 2px solid #e7eaec;
+      background: var(--colour-primary);
       margin-bottom: 15px;  
     }
     
@@ -50,11 +50,14 @@ block primary
     each item in results
       if (item.visible == 1)
         //- container for single post
-        div(class='social-feed-box')
+        div(class='social-feed-box rounded')
           //- container for title and publish time
           div(class='media-body d-flex justify-content-between align-items-center')
             div(class='mr-2')
               h2= item.title
+              a(href='#' style='text-decoration:none')
+                small(class='text-muted' style='text-decoration:none') Written by Marianne Samyn
+              br
               small(class='text-muted') #{formatDate(item.created_on)}
             //- Drop down is an admin action. Gives admin option to edit post or hide it from view.
             div(class="dropdown")
