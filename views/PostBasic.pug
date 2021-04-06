@@ -1,0 +1,37 @@
+//- container for single post
+div(class='social-feed-box')
+    //- container for title and publish time
+    div(class='media-body')
+        h2
+            a(href=item.url) #{item.title}
+        a(href='#' style='text-decoration:none')
+            small(class='text-muted' style='text-decoration:none') Written by Marianne Samyn
+        br
+        small(class='text-muted') #{formatDate(item.created_on)}
+        //- Drop down is an admin action. Gives admin option to edit post or hide it from view.
+        div(class="dropdown" style="float: right")
+            button(type='button' class='btn btn-light dropdown-toggle btn-sm' id='dropdownButton' data-toggle='dropdown')
+            div(class='dropdown-content')
+                a(class='dropdown-item' href='/edit/' + item.id)
+                    button(class='btn w-100 text-left') Edit
+                a(class='dropdown-item')
+                    form(action='edit/hide/' + item.id method='get')
+                        button(type='submit' class='btn w-100 text-left') Hide
+    hr
+    //- Container for post body ( '|' tells pug to use accept raw HTML which the posts are saved as)
+    div(class='social-body')
+        | !{item.description}
+    hr
+    small(class='text-muted')
+        span Posted in #[a(href=item.category_url) #{item.category}]
+        if item.tags.length > 0
+            span  | Tagged as
+        - var i = 0;
+        each tag in item.tags
+            - i++;
+            span  #[a(href=tag.url) #{tag.termName}]
+                if (i < item.tags.length)
+                    span ,
+    div(class='footer')
+        a(href='/message/new/' + item.id)
+            button(class='btn btn-info') Ask Question about Post

@@ -11,8 +11,6 @@
     "dev": "nodemon -r esm ./bin/www"
   },
   "dependencies": {
-    "@azure/msal-node": "^1.0.1",
-    "@microsoft/microsoft-graph-client": "*",
     "axios": "^0.21.1",
     "bcrypt": "*",
     "body-parser": "*",
@@ -21,7 +19,6 @@
     "cookie-parser": "*",
     "curl": "^0.1.4",
     "debug": "*",
-    "dotenv": "^8.2.0",
     "esm": "*",
     "express": "*",
     "express-handlebars": "*",
@@ -29,7 +26,6 @@
     "generate-unique-id": "*",
     "handlebars": "^4.7.7",
     "http-errors": "*",
-    "isomorphic-fetch": "^3.0.0",
     "jquery": "*",
     "jsonwebtoken": "*",
     "morgan": "*",
@@ -44,14 +40,12 @@
     "passport-local": "*",
     "popper.js": "^1.16.1",
     "pug": "*",
-    "qs": "^6.7.0",
     "querystring": "*",
     "sanitize-filename": "*",
     "sequelize": "^6.5.0",
     "tinymce": "*",
     "unique-filename": "*",
-    "uuid": "*",
-    "yargs": "^16.2.0"
+    "uuid": "*"
   },
   "devDependencies": {
     "chai": "*",

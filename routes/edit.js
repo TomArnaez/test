@@ -36,8 +36,8 @@ router.get('/view/:id', async (req, res, next) => {
       const user = await db.User.findOne({where: {id: post.author_id}});
 
       if (post != null) {
-        res.render('Post', {title: 'Post Viewer', id: post_id, postname: post.title, doc: post.html,
-            category_url: post.category_url, category: post.category, tags: post.tags, user: user});
+        res.render('Post', {title: 'Post Viewer', id: post_id, postname: post.title, doc: post.html, description: post.description,
+            category_url: post.category_url, category: post.category, tags: post.tags, user: user, post:post});
       } else {
         req.flash('error_msg', 'No post with id: \'' + post_id + '\' in database');
         res.redirect('/edit/');
@@ -112,7 +112,6 @@ router.get('/new', function (req, res, next) {
 router.post('/new', function (req, res) {
 
   //gets data from form posted
-  console.log("this is the user ID: " + req.user);
   const user_id = req.user;
   //gets data from form posted.
   const title = String(req.body.filename);
@@ -200,7 +199,7 @@ router.get('/:id', function (req, res, next) {
   Post.findOne({where: {id: post_id}, include: { model: db.Term, as: "terms"}})
       .then(post => {
           if (post != null) {
-              res.render('text_editor', {postname:post.title, doc:post.html,
+              res.render('text_editor', {postname:post.title, doc:post.html, posttags: post.tags,
                   category_id: post.category_id, description: post.description, back: '/edit/', messages: req.flash()});
           } else {
               req.flash('error_msg', 'No post with id: \'' + post_id + '\' in database');
@@ -221,7 +220,7 @@ router.get('/:id', function (req, res, next) {
 })
 
 router.get('/hide/:post_id', function(req, res, next) {
-
+  console.log("m8");
   db.query("UPDATE posts SET visible = ? WHERE id = ?;", [0, req.params.post_id], function(err, result) {
     if (err){
       req.flash('error_msg', 'Error when accessing database');
@@ -257,19 +256,34 @@ router.post('/:id', function (req, res, next) {
   const data = String(req.body.content);
   const category = String(req.body.category);
   const description = String(req.body.description);
+  const tags = String(req.body.tags);
 
   //Updates entry with provided ID in database with new title and data
-  db.query("UPDATE posts SET title = ?, html = ?, description = ? WHERE id = ?; " +
-      "UPDATE postTerms set termId = ? WHERE postId = ?;",
+    db.query("UPDATE posts SET title = ?, html = ?, description = ? WHERE id = ?; " +
+        "UPDATE postTerms set termId = ? WHERE postId = ?;",
       [title, data, description, req.params.id, category, req.params.id], function(err, result) {
 
       //Error handling for database connection. Redirects user to posts index
       if (err){
-          req.flash('error_msg', 'Error when accessing database');
+          req.flash('error_msg', 'Error when accessing database: ' + err);
           res.redirect('/edit');
 
       //If update successful, redirects user to posts index
       } else {
+
+          tags.forEach(tag => {
+              db.query("DELETE FROM postTerms WHERE postId = ? AND termId != ?", [req.params.id, category], function(err, result) {
+                  if (err) {
+                      console.log(err);
+                  }
+                  console.log(result);
+              });
+              db.query("INSERT into postTerms (postId, termId) VALUES (?, ?) ON DUPLICATE KEY UPDATE postId=postId termId=termId", [tag, req.params.id], function(err, result) {
+                  if (err) {
+                      console.log(err);
+                    }
+              })
+          });
           req.flash('success_msg', 'Post Successfully updated');
           res.redirect('/edit');
       }

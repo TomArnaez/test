@@ -17,6 +17,7 @@ block primary
   //- container-fluid sets div to largest size for bootstrap
   div(class='container-fluid')
     h1= title
+    include ./partial/msg
 
   div(class='container-fluid' style='padding:2rem;')
     a(href='/edit/new')
@@ -51,16 +52,16 @@ block primary
           let delete_url = '/edit/delete/' + row.id;
           let hide_url = '/edit/hide/' + row.id;
           return [
-            '<a class="view" href="' + edit_url + '" title="Edit">',
+            '<a class="view" href="' + view_url + '" title="Edit">',
             '<i class="fa fa-eye"></i>',
             '</a>  ',
-            '<a class="edit" href="javascript:void(0)" title="Edit">',
+            '<a class="edit" href="' + edit_url + '" title="Edit">',
             '<i class="fa fa-edit"></i>',
             '</a>  ',
             '<a class="delete" href="' + delete_url + '" title="Delete">',
             '<i class="fa fa-trash"></i>',
             '</a>  ',
-            '<a class="delete" href="' + hide_url + '" title="Hide">',
+            '<a class="hide" href="' + hide_url + '" title="Hide">',
             '<i class="fa fa-eye-slash"></i></a>',
           ].join('')
         }

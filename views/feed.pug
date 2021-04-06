@@ -40,7 +40,7 @@ append head
 block primary
 
   //- Container for page title
-  div(class='container-fluid')
+  div(class='container-fluid' align="center")
     br
     h1 Feed
     br
@@ -49,30 +49,4 @@ block primary
   div(class='container-xl')
     each item in results
       if (item.visible == 1)
-        //- container for single post
-        div(class='social-feed-box rounded')
-          //- container for title and publish time
-          div(class='media-body d-flex justify-content-between align-items-center')
-            div(class='mr-2')
-              h2= item.title
-              a(href='#' style='text-decoration:none')
-                small(class='text-muted' style='text-decoration:none') Written by Marianne Samyn
-              br
-              small(class='text-muted') #{formatDate(item.created_on)}
-            //- Drop down is an admin action. Gives admin option to edit post or hide it from view.
-            div(class="dropdown")
-              button(type='button' class='btn btn-light dropdown-toggle btn-sm' id='dropdownButton' data-toggle='dropdown')
-              div(class='dropdown-content')
-                a(class='dropdown-item' href='/edit/'+item.id)
-                  button(class='btn w-100 text-left') Edit
-                a(class='dropdown-item')
-                  form(action='edit/hide/'+item.id method='post')
-                    button(type='submit' class='btn w-100 text-left') Hide
-          hr
-          //- Container for post body ( '|' tells pug to use accept raw HTML which the posts are saved as)
-          div(class='social-body')
-            | !{item.html}
-          hr
-          div(class='footer')
-            a(href='/message/new/'+item.id)
-              button(class='btn btn-info') Ask Question about Post
+        include PostBasic

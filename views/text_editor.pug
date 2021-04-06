@@ -16,10 +16,10 @@ block primary
       form(name="editor-form", method="post")
         div(id='input' class="form-row")
             div(class="form-group col-md-6")
-                label(for='filename') Title
+                label(for='filename') Title:
                 input(type="text" class="form-control" id='postLbl', name="filename", value=postname, placeholder="Enter the title for the post here...")
             div(class="form-group col-md-6")
-                label(for='category') Category
+                label(for='category') Category:
                 select(class="form-control" name="category")
                     for category in categories
                         if category.id == category_id
@@ -27,7 +27,7 @@ block primary
                         else
                             option(value=category.id) #{category.termName}
             div(class="form-group col")
-                label(for='tagstype') Tags
+                label(for='tagstype') Tags:
                 input(type="text" class="form-control" id="tagstype" name='tags' value="")
                 script.
                     const tags = new Bloodhound({
@@ -35,6 +35,7 @@ block primary
                         queryTokenizer: Bloodhound.tokenizers.whitespace,
                         local: !{JSON.stringify(tags)}
                     });
+
                     $('#tagstype').tagsinput({
                         itemValue: 'id',
                         itemText: 'termName',
@@ -49,8 +50,14 @@ block primary
                             source: tags
                         })
                     });
+
+                    // Enable the tags already applied to this this post in the tag input form.
+                    $.each(!{JSON.stringify(posttags)}, function (index, value) {
+                        $('#tagstype').tagsinput('add', value);
+                        console.log(value);
+                    });
         div(class="form-group")
-            label(for="description") Description
+            label(for="description") Description:
             textarea(type="text" class="form-control" id="descriptionLabel" rows="2" name="description" placeholder="A brief description of this post's content...") #{description}
         div.input
             textarea(name="content", id="my-expressjs-tinymce-app", value="Enter title here")
