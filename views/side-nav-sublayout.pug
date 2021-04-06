@@ -10,6 +10,9 @@ append head
       -var mins = date.getMinutes(); if(mins < 10){mins = "0" + mins;}
       -return days +' '+ month +' '+ year +' | '+ hours +':'+ mins;
       -}
+    -if(typeof permission == 'undefined'){
+      -var permission = 0;
+    -}
     - if(typeof active == 'undefined') {
         -var active = '';
     -}
@@ -136,28 +139,28 @@ block content
                         li(class='nav-item' id='navbar-small')
                           a(class='nav-link' href='/message') Your Questions
                       -}
-                      
-                      -if (active.includes('posts')) {
-                        li(class='nav-createitem dropdown' id='navbar-big')
-                          a(class='nav-link dropdown-toggle active' href='/edit/' id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false") Posts
-                          ul(class='dropdown-menu' aria-labelledby='navbarDropdown')
-                            li
-                              a(class='dropdown-item' href='/edit/') View Posts
-                            li
-                              hr(class='dropdown-divider')
-                            li
-                              a(class='dropdown-item' href='/edit/new') Create New Post
-                      -} else {
-                        li(class='nav-item dropdown' id='navbar-big')
-                          a(class='nav-link dropdown-toggle' href='/edit/' id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false") Posts
-                          ul(class='dropdown-menu' aria-labelledby='navbarDropdown')
-                            li
-                              a(class='dropdown-item' href='/edit/') View Posts
-                            li
-                              hr(class='dropdown-divider')
-                            li
-                              a(class='dropdown-item' href='/edit/new') Create New Post
-                      -}
+                      -if(permission > 1)
+                        -if (active.includes('posts')) {
+                          li(class='nav-createitem dropdown' id='navbar-big')
+                            a(class='nav-link dropdown-toggle active' href='/edit/' id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false") Posts
+                            ul(class='dropdown-menu' aria-labelledby='navbarDropdown')
+                              li
+                                a(class='dropdown-item' href='/edit/') View Posts
+                              li
+                                hr(class='dropdown-divider')
+                              li
+                                a(class='dropdown-item' href='/edit/new') Create New Post
+                        -} else {
+                          li(class='nav-item dropdown' id='navbar-big')
+                            a(class='nav-link dropdown-toggle' href='/edit/' id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false") Posts
+                            ul(class='dropdown-menu' aria-labelledby='navbarDropdown')
+                              li
+                                a(class='dropdown-item' href='/edit/') View Posts
+                              li
+                                hr(class='dropdown-divider')
+                              li
+                                a(class='dropdown-item' href='/edit/new') Create New Post
+                        -}
                       li(class='nav-item dropdown' id='navbar-small')
                         a(class='nav-link dropdown-toggle' href='/admin/dashboard/' role='button' data-bs-toggle='dropdown' aria-expanded='false') Admin Tools
                         ul(class='dropdown-menu' aria-labelledby='navbarDropdown')
@@ -207,43 +210,44 @@ block content
                   button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Ask a Question
                 -}
               //- should put in divider to separate admin tools and non
-              hr
-              a(href='/admin/message')
-                -if(active.includes('respond questions')){
-                  button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') Respond to Questions
-                -} else {
-                  button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Respond to Questions
-                -}
-              //- view ALL user questions
-              a(href='/admin/message/all')
-                -if(active.includes('all questions')){
-                  button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') All User Questions
-                -} else {
-                  button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') All User Questions
-                -}
-              //- button to create new post (ADMIN ONLY) add an if to produce this
-              a(href='/edit/new')
-                -if(active.includes('create posts')) {
-                  button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') Create a New Post
-                -} else {
-                  button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Create a New Post
-                -}
-              //- button to view posts index (ADMIN ONLY) add an if to produce this code
-                in future we should make his manage posts and be able to change post visibility
-              a(href='/edit/')
-                -if(active.includes('view posts')) {
-                  button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') View Posts
-                -} else {
-                  button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') View Posts
-                -}
-              //- button for admins to see asked questions
-              //- button to view saved posts?    
-              a(href='/media')
-                -if(active.includes('media manager')){
-                  button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') Media Manager
-                -} else {
-                  button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Media Manager
-                -}
+              -if(permission > 1)
+                hr
+                a(href='/admin/message')
+                  -if(active.includes('respond questions')){
+                    button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') Respond to Questions
+                  -} else {
+                    button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Respond to Questions
+                  -}
+                //- view ALL user questions
+                a(href='/admin/message/all')
+                  -if(active.includes('all questions')){
+                    button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') All User Questions
+                  -} else {
+                    button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') All User Questions
+                  -}
+                //- button to create new post (ADMIN ONLY) add an if to produce this
+                a(href='/edit/new')
+                  -if(active.includes('create posts')) {
+                    button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') Create a New Post
+                  -} else {
+                    button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Create a New Post
+                  -}
+                //- button to view posts index (ADMIN ONLY) add an if to produce this code
+                  in future we should make his manage posts and be able to change post visibility
+                a(href='/edit/')
+                  -if(active.includes('view posts')) {
+                    button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') View Posts
+                  -} else {
+                    button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') View Posts
+                  -}
+                //- button for admins to see asked questions
+                //- button to view saved posts?    
+                a(href='/media')
+                  -if(active.includes('media manager')){
+                    button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') Media Manager
+                  -} else {
+                    button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Media Manager
+                  -}
               //- each val in values
               //-   a(href=val.link)
               //-     button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') #{val.text}
