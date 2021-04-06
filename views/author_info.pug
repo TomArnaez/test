@@ -1,0 +1,35 @@
+extends side-nav-sublayout
+
+block primary
+  
+  div(class='container-fluid')
+    //- will be the question asked or the question title?
+    h1= title
+    br
+    br
+      
+  div(class='container-xl')
+    //- author forename
+    div(class='form-group row')
+      label(for='fName' class='col-sm-2 col-form-label') Forename:
+      div(class='col-sm-10')
+        input(type='text' name='fName' readonly class="form-control-plaintext" value=results[0].user_fname)
+    //- Surname
+    div(class='form-group row')
+      label(for='sName' class='col-sm-2 col-form-label') Surname:
+      div(class='col-sm-10')
+        input(type='text' name='sName' readonly class="form-control-plaintext" value=results[0].user_lname)
+        //- Role
+    div(class='form-group row')
+      label(for='role' class='col-sm-2 col-form-label') Role:
+      div(class='col-sm-10')
+        input(type=' text' name='role' readonly class="form-control-plaintext" value= results[0].view_role)
+    //- description/bio
+    div(class='form-group row')
+      label(for='desc' class='col-sm-2 col-form-label') About me:
+      div(class='col-sm-10')
+        textarea(name='desc' readonly class="form-control-plaintext" style='resize:none')= results[0].Description
+        
+  div(class='container-fluid' style='padding:2rem;')
+    a(href=back)
+      button(class='btn btn-dark') Back

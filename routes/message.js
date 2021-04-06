@@ -8,7 +8,7 @@ const email = require('./email.js');
 /* GET Message page. */
 router.get('/message', async (req,res) => {
     if(req.isAuthenticated()) {
-        res.render('user_message', {title: 'Your Questions', message: await getUserMessage(req.user)});
+        res.render('user_message', {title: 'Your Questions', message: await getUserMessage(req.user), active:'your questions'});
     }
     else{
         res.render('login');
@@ -18,7 +18,7 @@ router.get('/message', async (req,res) => {
 // Gets page to display response to a message
 router.get('/message/response/:custom_id', async (req, res) => {
   if(req.isAuthenticated()) {
-    db.query("SELECT * FROM messages WHERE ? IN (custom_id) LIMIT 1;", [req.params.custom_id], function(err, result) {
+    db.query("SELECT * FROM messages JOIN users ON messages.author_id = users.id WHERE ? IN (custom_id) LIMIT 1;", [req.params.custom_id], function(err, result) {
         //Error handling for database connection. Reroutes user to posts index (most likely the origin)
         if (err) {
           console.log('Error connecteing with database');
@@ -53,7 +53,7 @@ router.get('/admin/respond/forward/:custom_id', async (req, res) => {
         } else {
           //Checks if post with provided ID exists in the database. If true, then renders edit page
           if (result.length != 0) {
-            res.render('forward_message', {title: 'View Response', question: result});
+            res.render('forward_message', {title: 'View Response', question: result, active: 'respond questions'});
 
           //Redirects user to posts index if no post exists
           } else {
@@ -70,7 +70,7 @@ router.get('/admin/respond/forward/:custom_id', async (req, res) => {
 // Gets page to create a new Questions
 router.get('/message/new', async (req,res) => {
     if(req.isAuthenticated()) {
-        res.render('message', {title: 'Send in a Question for Staff', message: await getUserMessage(req.user), post: null});
+        res.render('message', {title: 'Send in a Question for Staff', message: await getUserMessage(req.user), post: null, active:'ask question'});
     }
     else{
         res.render('login');
@@ -85,7 +85,7 @@ router.get('/message/new/:post_id', async (req, res) => {
           req.flash('error_msg', 'Error connecteing with database')
           res.redirect('/feed');
         } else {
-          res.render('message', {title: 'Ask Staff about this post', post: result});
+          res.render('message', {title: 'Ask Staff about this post', post: result, active:'respond questions'});
         }
       });
   }
@@ -99,7 +99,7 @@ router.get('/message/new/:post_id', async (req, res) => {
 router.get('/admin/message', async (req,res) => {
     if(req.isAuthenticated()){
 
-        res.render('admin_message', {title:'User Questions', message: await getMessages()});
+        res.render('admin_message', {title:'User Questions', message: await getMessages(), active:'respond questions'});
     }
     else {
         res.render('login');
@@ -120,7 +120,7 @@ router.get('/admin/post_response/:message_id', async (req, res) => {
               //Checks if post with provided ID exists in the database. If true, then renders edit page
               if (result.length != 0) {
                 const doc = '<h2> Question: ' + result[0].message + '</h2> \n <br>';
-                res.render('text_editor', {title: 'Post Response', postname: req.params.message_id, doc: doc, back: '/admin/message'});
+                res.render('text_editor', {title: 'Post Response', postname: req.params.message_id, doc: doc, back: '/admin/message', active:'respond questions'});
 
               //Redirects user to posts index if no post exists
               } else {
@@ -139,7 +139,7 @@ router.get('/admin/post_response/:message_id', async (req, res) => {
 router.get('/admin/message/all', async (req,res) => {
     if(req.isAuthenticated()){
 
-        res.render('admin_message', {title: 'All Messages', message: await getAllMessages()});
+        res.render('admin_message', {title: 'All Messages', message: await getAllMessages(), active:'all questions'});
     }
     else {
         res.render('login');
@@ -167,7 +167,7 @@ router.post('/message/send', (req,res) => {
 });
 
 // posts a response to a question. from the content_editor page
-router.post('/admin/post_response/:message_id', async (req,res) => {
+router.post('/admin/post_response/:message_id', async (req,res) => {js
     const currentTime = getTime();
     let userEmail = '';
     const content = req.body.content;
@@ -229,7 +229,7 @@ router.get('/admin/respond/:custom_id', (req, res) => {
 
               //Checks if post with provided ID exists in the database. If true, then renders edit page
               if (result.length != 0) {
-                res.render('message-response', {title: 'Private Response', question:result[0].message, back: '/admin/message'});
+                res.render('message-response', {title: 'Private Response', question:result[0].message, back: '/admin/message', active:'respond questions'});
 
               //Redirects user to posts index if no post exists
               } else {
@@ -249,24 +249,27 @@ router.get('/admin/respond/:custom_id', (req, res) => {
 router.post('/admin/respond/:custom_id', (req,res) => {
     const currentTime = getTime();
     let userEmail = '';
+    console.log('custom id = ' + req.params.custom_id);
 
-
-    db.query("UPDATE messages SET response = ?, response_time = ? WHERE custom_id = ?",
-        [req.body.message, currentTime, req.params.custom_id, ], (err, result)=>{
+    db.query("UPDATE messages SET response = ?, response_time = ?, author_id = ? WHERE custom_id = ?;",
+        [req.body.message, currentTime, req.user, req.params.custom_id], (err, result)=>{
             if (err) {
                 req.flash('error_msg', 'No database connection.');
+                console.log('error coneccting: ' + err);
                 res.redirect("/admin/message");
             }
             else {
                 db.query("SELECT user_email, custom_id FROM messages JOIN users ON messages.user_id = users.id WHERE custom_id = ?",
                     [req.params.custom_id], (err, result)=> {
                     if (err) {
+                      console.log('error conecting second part: ' + err);
                     } else {
                         userEmail = result[0].user_email;
 
                         if(userEmail == '')
                         {
                             req.flash('error_msg', `Email Wasn't sent :(`);
+                            console.log('e-mail failed to send');
                         }else
                         {
                             email.sendEmail(userEmail, 'Answer to your message: '.concat(result[0].title) + ` (${req.params.custom_id})`,
@@ -277,6 +280,7 @@ router.post('/admin/respond/:custom_id', (req,res) => {
                 });
 
                 req.flash('success_msg', 'Your Message Has Been Sent');
+                console.log('nailed it');
                 res.redirect("/admin/message");
             }
         });

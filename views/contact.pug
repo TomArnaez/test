@@ -1,9 +1,21 @@
 extends side-nav-sublayout
 
+append head
+  
+  style(type='text/css').
+    .side-panel {
+      display: none;
+    }
+    
+    .primary {
+      margin-left: 0px;
+      width: 100%;
+    }
+
 block primary
 
   //- Title container
-  div(class='container-fluid')
+  div(class='container-fluid text-align-center')
     br
     h1= title
     br
