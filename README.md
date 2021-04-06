@@ -9,9 +9,9 @@ Information Hub is a web application comprising of a content management system a
 # Team Members
 * Akshat Agrawal (k19034866)   
 * Christian Dobbie (k00000000)  
-* Joshua Williams (k00000000)  
-* Skye Macdonald (k00000000)  
-* Mohammad Shahrestani (k00000000)  
+* Joshua Williams (k19011045)  
+* Skye Macdonald (k19015078)  
+* Mohammad Shahrestani (k19019925)  
 * Thomas Arnaez-Selhi (k1889120)
 # Installation
 ### Run the following commands on the terminal to install and run the web application.
