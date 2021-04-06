@@ -22,7 +22,7 @@ router.get('/feed', function(req, res, next) {
   if (req.isAuthenticated()) {
 
     //Querries databasae for posts in descending date order. (feed will be chronological going down the page)
-    db.query("SELECT * FROM posts JOIN users ON posts.author_id = users.id ORDER BY posts.created_on DESC;", [], function(err, result) {
+    db.query("SELECT posts.id, posts.title, posts.last_modified, posts.html, posts.visible, posts.author_id, users.user_fname, users.user_lname FROM posts JOIN users ON posts.author_id = users.id ORDER BY posts.created_on DESC;", [], function(err, result) {
 
       //Error handling for databasae connection. Re-routes user to index page
       if (err){
