@@ -26,6 +26,142 @@ block primary
   div(class='container-fluid')
     //- Creating Table with Bootstrap
     div(class='row')
+      table(id="table" class="table table-bordered" data-pagination="true" data-group-by="true", data-group-by-field="Visible")
+      script.
+        var $table = $('#table')
+        var $remove = $('#remove')
+        var selections = []
+
+        function getIdSelections() {
+          return $.map($table.bootstrapTable('getSelections'), function (row) {
+            return row.id
+          })
+        }
+
+        function responseHandler(res) {
+          $.each(res.rows, function (i, row) {
+            row.state = $.inArray(row.id, selections) !== -1
+          })
+          return res
+        }
+
+        function actionFormatter(value, row, index) {
+          let view_url = '/edit/view/' + row.id;
+          let edit_url = '/edit/' + row.id;
+          let delete_url = '/edit/delete/' + row.id;
+          let hide_url = '/edit/hide/' + row.id;
+          return [
+            '<a class="view" href="' + edit_url + '" title="Edit">',
+            '<i class="fa fa-eye"></i>',
+            '</a>  ',
+            '<a class="edit" href="javascript:void(0)" title="Edit">',
+            '<i class="fa fa-edit"></i>',
+            '</a>  ',
+            '<a class="delete" href="' + delete_url + '" title="Delete">',
+            '<i class="fa fa-trash"></i>',
+            '</a>  ',
+            '<a class="delete" href="' + hide_url + '" title="Hide">',
+            '<i class="fa fa-eye-slash"></i></a>',
+          ].join('')
+        }
+
+        window.operateEvents = {
+            'click .remove': function (e, value, row, index) {
+              $table.bootstrapTable('remove', {
+                field: 'id',
+                values: [row.id]
+              })
+            }
+          }
+
+        function initTable() {
+          $table.bootstrapTable('destroy').bootstrapTable({
+            height: 550,
+            locale: $('#locale').val(),
+            data: !{JSON.stringify(results)},
+            columns: [
+              [{
+                field: 'state',
+                checkbox: true,
+                align: 'center',
+                valign: 'middle'
+              }, {
+                title: "Visible",
+                field: "visible",
+                align: "center",
+                sortable: "true"
+                }, {
+                title: 'ID',
+                field: 'id',
+                align: 'center',
+                sortable: true,
+              }, {
+                title: 'Description',
+                field: 'description',
+                align: 'center',
+                sortable: true
+              }, {
+                title: "Title",
+                field: "title",
+                align: 'center',
+                sortable: true
+              }, {
+                title: "Created on",
+                field: "created_on",
+                align: "center",
+                sortable: true
+              }, {
+                title: "Author ID",
+                field: "author_id",
+                align: "center",
+                sortable: true
+              },{
+                title: "Actions",
+                field: "action",
+                align: "center",
+                clickToSelect: false,
+                events: window.operateEvents,
+                formatter: actionFormatter,
+              }]
+            ]
+          })
+          $table.on('check.bs.table uncheck.bs.table ' +
+                  'check-all.bs.table uncheck-all.bs.table',
+                  function () {
+                    $remove.prop('disabled', !$table.bootstrapTable('getSelections').length)
+                    // save your data, here just save the current page
+                    selections = getIdSelections()
+                    // push or splice the selections if you want to save all data selections
+                  })
+          $table.on('all.bs.table', function (e, name, args) {
+            console.log(name, args)
+          })
+
+          $remove.click(function () {
+            var ids = getIdSelections();
+            ids.forEach(id => {
+              $.ajax({
+                url: '/api/posts/' + id,
+                method: 'delete',
+              });
+            })
+            console.log(ids);
+            $table.bootstrapTable('remove', {
+              field: 'id',
+              values: ids
+            });
+
+            //db.Term.destroy({ where: { id: ids}})
+            $remove.prop('disabled', true)
+          })
+        }
+
+        $(function () {
+          initTable();
+
+          //$('#locale').change(initTable)
+        })
+
       table(class='table table-striped')
         thead
           tr

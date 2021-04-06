@@ -182,6 +182,8 @@ block content
         hr
         a(href='/admin/message')
           button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Respond to Questions
+            sup
+              span(class="badge badge-danger") #{unanswered_messages.length}
         //- view ALL user questions
         a(href='/admin/message/all')
           button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') All User Questions

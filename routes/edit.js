@@ -117,7 +117,8 @@ router.post('/new', function (req, res) {
   //gets data from form posted.
   const title = String(req.body.filename);
   const data = String(req.body.content);
-  const category = req.body.category;
+  const category = String(req.body.category);
+  const description = String(req.body.description);
   const tags = String(req.body.tags).split(',');
   //checks that file with same title doesn't already exist in database, throws error if true and returns user to index
   db.query("SELECT title FROM posts WHERE ? IN (title) LIMIT 1;", [title], function(err, result) {
@@ -135,21 +136,22 @@ router.post('/new', function (req, res) {
           res.render('text_editor', {
               title: 'Content Editor',
               postname: title,
+              description: description,
               doc: data,
               messages: req.flash('error_msg')
           });
 
           //Inserts new post into database
       } else {
-          db.query("INSERT INTO posts (title, text, html, author_id) VALUES (?, ?, ?, ?);", [title, data, data, user_id], function(err, result) {
+          db.query("INSERT INTO posts (title, html, description, author_id) VALUES (?, ?, ?, ?);", [title, data, description, user_id], function(err, result) {
 
               //Error handling for database connection
               if (err) {
-                  console.log('wut');
                   req.flash('error_msg', 'Error connecting to database: ' + err);
                   res.render('text_editor', {
                       title: 'Content Editor',
                       postname: title,
+                      description: description,
                       doc: data,
                       messages: req.flash('error_msg')
                   });
@@ -164,6 +166,7 @@ router.post('/new', function (req, res) {
                           res.render('text_editor', {
                               title: 'Content Editor',
                               postname: title,
+                              description: description,
                               doc: data,
                               messages: req.flash('error_msg')
                           });
@@ -197,7 +200,8 @@ router.get('/:id', function (req, res, next) {
   Post.findOne({where: {id: post_id}, include: { model: db.Term, as: "terms"}})
       .then(post => {
           if (post != null) {
-              res.render('text_editor', {title: 'Content Editor', postname:post.title, doc:post.html, category_id: post.category_id, back: '/edit/', messages: req.flash()});
+              res.render('text_editor', {postname:post.title, doc:post.html,
+                  category_id: post.category_id, description: post.description, back: '/edit/', messages: req.flash()});
           } else {
               req.flash('error_msg', 'No post with id: \'' + post_id + '\' in database');
               res.redirect('/edit');
@@ -208,8 +212,6 @@ router.get('/:id', function (req, res, next) {
           res.redirect('/edit');
       })
 
-
-
   //Redirects user to login page if not authenticated
   } else {
       req.flash('error_msg', 'You are not authenticated.');
@@ -218,7 +220,8 @@ router.get('/:id', function (req, res, next) {
 
 })
 
-router.post('/hide/:post_id', function(req, res, next) {
+router.get('/hide/:post_id', function(req, res, next) {
+
   db.query("UPDATE posts SET visible = ? WHERE id = ?;", [0, req.params.post_id], function(err, result) {
     if (err){
       req.flash('error_msg', 'Error when accessing database');
@@ -253,12 +256,12 @@ router.post('/:id', function (req, res, next) {
   const title = String(req.body.filename);
   const data = String(req.body.content);
   const category = String(req.body.category);
-  console.log(category);
+  const description = String(req.body.description);
 
   //Updates entry with provided ID in database with new title and data
-  db.query("UPDATE posts SET title = ?, html = ? WHERE id = ?; " +
+  db.query("UPDATE posts SET title = ?, html = ?, description = ? WHERE id = ?; " +
       "UPDATE postTerms set termId = ? WHERE postId = ?;",
-      [title, data, req.params.id, category, req.params.id], function(err, result) {
+      [title, data, description, req.params.id, category, req.params.id], function(err, result) {
 
       //Error handling for database connection. Redirects user to posts index
       if (err){
@@ -275,9 +278,8 @@ router.post('/:id', function (req, res, next) {
 })
 
 //DELETE Function
-router.post('/delete/:id', function(req, res, next) {
+router.get('/delete/:id', function(req, res, next) {
   var id = req.params.id;
-
   //Idk why i added this ngl.
   if (id != null) {
 
@@ -286,9 +288,9 @@ router.post('/delete/:id', function(req, res, next) {
 
         //Error Handling for database connection. Redirects user to posts index
         if (err){
+            console.log("ehhh");
             req.flash('error_msg', 'Error when accessing database');
             res.redirect('/edit');
-
         //Redircts user to posts index if successful to show new change
         } else {
             req.flash('success_msg', 'Post Deleted');
