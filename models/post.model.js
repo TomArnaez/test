@@ -40,6 +40,15 @@ module.exports = (sequelize, Sequelize) => {
                 throw new Error("Do not try to set a category value!");
             }
         },
+        category_id: {
+            type: DataTypes.VIRTUAL,
+            get() {
+                return `${this.terms[0].id}`;
+            },
+            set(value) {
+                throw new Error("Do not try to set a category value!");
+            }
+        },
         url: {
             type: DataTypes.VIRTUAL,
             get() {

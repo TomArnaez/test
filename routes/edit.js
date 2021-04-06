@@ -3,6 +3,7 @@ const db = require('../database.js');
 const passport = require('passport');
 var router = express.Router();
 
+
 //Takes user to posts index page
 router.get('/', function(req, res, next) {
   //Checks user is an admin. Only admins can access editing router
@@ -184,34 +185,29 @@ router.post('/new', function (req, res) {
 //Renders page to edit post with given ID
 router.get('/:id', function (req, res, next) {
   var post_id = req.params.id;
+  const db = require("../models");
+  const Term = db.Term;
+  const Post = db.Post;
 
   //Checks user is an admin. Only admins can access editing router
   if (req.isAuthenticated()) {
 
-  const db = require("../models");
-  const Post = db.Post;
-
-  db
-    //Query database for post with provided ID
-    db.query("SELECT title, html FROM posts WHERE ? IN (id) LIMIT 1; SELECT ", [post_id], function(err, result) {
-
-      //Error handling for database connection. Reroutes user to posts index (most likely the origin)
-      if (err) {
-        req.flash('error_msg', 'Error connecteing with database');
-        res.redirect('/edit');
-      } else {
-
-        //Checks if post with provided ID exists in the database. If true, then renders edit page
-        if (result.length != 0) {
-          res.render('text_editor', {title: 'Content Editor', postname:result[0].title, doc:result[0].html, back: '/edit/', messages: req.flash()});
-
-        //Redirects user to posts index if no post exists
-        } else {
-          req.flash('error_msg', 'No post with id: \'' + post_id + '\' in database');
+  //Query database for post with provided ID
+  Post.findOne({where: {id: post_id}, include: { model: db.Term, as: "terms"}})
+      .then(post => {
+          if (post != null) {
+              res.render('text_editor', {title: 'Content Editor', postname:post.title, doc:post.html, category_id: post.category_id, back: '/edit/', messages: req.flash()});
+          } else {
+              req.flash('error_msg', 'No post with id: \'' + post_id + '\' in database');
+              res.redirect('/edit');
+          };
+      })
+      .catch(err => {
+          req.flash('error_msg', 'Error connecteing with database');
           res.redirect('/edit');
-        }
-      }
-    });
+      })
+
+
 
   //Redirects user to login page if not authenticated
   } else {
