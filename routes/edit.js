@@ -112,12 +112,13 @@ router.get('/new', function (req, res, next) {
 router.post('/new', function (req, res) {
 
   //gets data from form posted
+  console.log("this is the user ID: " + req.user);
+  const user_id = req.user;
+  //gets data from form posted.
   const title = String(req.body.filename);
   const data = String(req.body.content);
   const category = req.body.category;
   const tags = String(req.body.tags).split(',');
-  const userId = req.user;
-
   //checks that file with same title doesn't already exist in database, throws error if true and returns user to index
   db.query("SELECT title FROM posts WHERE ? IN (title) LIMIT 1;", [title], function(err, result) {
 
@@ -140,7 +141,7 @@ router.post('/new', function (req, res) {
 
           //Inserts new post into database
       } else {
-          db.query("INSERT INTO posts (title, description, html) VALUES (?, ?, ?);", [title, data, data], function (err, result) {
+          db.query("INSERT INTO posts (title, text, html, author_id) VALUES (?, ?, ?, ?);", [title, data, data, user_id], function(err, result) {
 
               //Error handling for database connection
               if (err) {

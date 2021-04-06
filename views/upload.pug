@@ -2,24 +2,27 @@ extends side-nav-sublayout
 
 block primary
 
-    h1(style="text-align:center") Upload Media Content
+  div(class='container-fluid')
+    br
+    h1 Upload Media Content
     include ./partial/msg
-    p(style="text-align:center")
-        u 
-            a(href='/admin/media') View all uploaded files
-    div(class="col-xl-3 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form-group p-4 border rounded-lg")
-        form(method='POST', enctype="multipart/form-data")
-            div(class="form-group w-100")
-                label(class="w-25" class="h6" for="filename") File name: 
-                input(class="w-75" type="text", id="filename", name="filename" placeholder="Override File Name")
-            div(class="form-group w-100")   
-                label(class="w-25" class="h6" for="filetype") File Type: 
-                input(class="w-75" type="text", id="filetype", name="filetype" placeholder="Override file type (extension)")
-            
-            // This **HAS** to be the last option, so multer can read the file name
-            div(class="form-group w-100")
-                label(class="w-25" class="h6" for="file") File to upload: 
-                input(class="w-75" class="btn btn-warning" type="file", name="file", id="file")
-            div(class="w-100")
-                button(type="submit" class='btn btn-primary btn-block active') Upload
-
+    br
+    
+  p(style="text-align:center")
+      u 
+          a(href='/admin/media') View all uploaded files
+  div(class="col-xl-4 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form-group p-4 border rounded-lg")
+      form(method='POST', enctype="multipart/form-data")
+          div(class="form-group w-100")
+              label(class="w-25" class="h6" for="filename") File name: 
+              input(class="w-75" type="text", id="filename", name="filename" placeholder="Override File Name")
+          div(class="form-group w-100")   
+              label(class="w-25" class="h6" for="filetype") File Type: 
+              input(class="w-75" type="text", id="filetype", name="filetype" placeholder="Override file type (extension)")
+          
+          // This **HAS** to be the last option, so multer can read the file name
+          div(class="form-group w-100")
+              label(class="w-25" class="h6" for="file") File to upload: 
+              input(class="w-75" class="btn btn-warning" type="file", name="file", id="file")
+          div(class="w-100")
+              button(type="submit" class='btn btn-primary btn-block active') Upload
