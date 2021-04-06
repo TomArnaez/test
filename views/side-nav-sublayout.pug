@@ -108,30 +108,30 @@ block content
                 div(class='collapse navbar-collapse' id='navbarSupportedContent')
                     ul(class='navbar-nav me-auto mb-2 mb-lg-0')
                       -if(active.includes('feed')) {
-                        li(class='nav-item active')
-                          a(class='nav-link' href='/feed') Feed
+                        li(class='nav-item')
+                          a(class='nav-link active' href='/feed') Feed
                       -} else {
                         li(class='nav-item')
                           a(class='nav-link' href='/feed') Feed
                       -}
                       -if(active.includes('contact')){
-                        li(class='nav-item active')
-                          a(class='nav-link' href='/contact') Contact Us
+                        li(class='nav-item')
+                          a(class='nav-link active' href='/contact') Contact Us
                       -} else {
                         li(class='nav-item')
                           a(class='nav-link' href='/contact') Contact Us
                       -}
                       -if(active.includes('about')){
-                        li(class='nav-item active')
-                          a(class='nav-link' href='/info') About Us
+                        li(class='nav-item')
+                          a(class='nav-link active' href='/info') About Us
                       -} else {
                         li(class='nav-item')
                           a(class='nav-link' href='/info') About Us
                       -}
                       //- view questions
                       -if(active.includes('your questions')){
-                        li(class='nav-item active' id='navbar-small')
-                          a(class='nav-link' href='/message') Your Questions
+                        li(class='nav-item' id='navbar-small')
+                          a(class='nav-link active' href='/message') Your Questions
                       -} else {
                         li(class='nav-item' id='navbar-small')
                           a(class='nav-link' href='/message') Your Questions
