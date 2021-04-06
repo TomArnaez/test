@@ -10,7 +10,10 @@ append head
       -var mins = date.getMinutes(); if(mins < 10){mins = "0" + mins;}
       -return days +' '+ month +' '+ year +' | '+ hours +':'+ mins;
       -}
-  
+    - if(typeof active == 'undefined') {
+        -var active = '';
+    -}
+    
     
     style(type='text/css').
       body {
@@ -104,29 +107,57 @@ block content
               
                 div(class='collapse navbar-collapse' id='navbarSupportedContent')
                     ul(class='navbar-nav me-auto mb-2 mb-lg-0')
-                      li(class='nav-item')
-                        a(class='nav-link' href='/feed') Feed
-                      
-                      li(class='nav-item')
-                        a(class='nav-link' href='/contact') Contact Us
-                      
-                      li(class='nav-item')
-                        a(class='nav-link' href='/info') About Us
-                        
+                      -if(active.includes('feed')) {
+                        li(class='nav-item active')
+                          a(class='nav-link' href='/feed') Feed
+                      -} else {
+                        li(class='nav-item')
+                          a(class='nav-link' href='/feed') Feed
+                      -}
+                      -if(active.includes('contact')){
+                        li(class='nav-item active')
+                          a(class='nav-link' href='/contact') Contact Us
+                      -} else {
+                        li(class='nav-item')
+                          a(class='nav-link' href='/contact') Contact Us
+                      -}
+                      -if(active.includes('about')){
+                        li(class='nav-item active')
+                          a(class='nav-link' href='/info') About Us
+                      -} else {
+                        li(class='nav-item')
+                          a(class='nav-link' href='/info') About Us
+                      -}
                       //- view questions
-                      li(class='nav-item' id='navbar-small')
-                        a(class='nav-link' href='/message') Your Questions
+                      -if(active.includes('your questions')){
+                        li(class='nav-item active' id='navbar-small')
+                          a(class='nav-link' href='/message') Your Questions
+                      -} else {
+                        li(class='nav-item' id='navbar-small')
+                          a(class='nav-link' href='/message') Your Questions
+                      -}
                       
-                      
-                      li(class='nav-item dropdown' id='navbar-big')
-                        a(class='nav-link dropdown-toggle' href='/edit/' id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false") Posts
-                        ul(class='dropdown-menu' aria-labelledby='navbarDropdown')
-                          li
-                            a(class='dropdown-item' href='/edit/') View Posts
-                          li
-                            hr(class='dropdown-divider')
-                          li
-                            a(class='dropdown-item' href='/edit/new') Create New Post
+                      -if (active.includes('posts')) {
+                        li(class='nav-createitem dropdown' id='navbar-big')
+                          a(class='nav-link dropdown-toggle active' href='/edit/' id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false") Posts
+                          ul(class='dropdown-menu' aria-labelledby='navbarDropdown')
+                            li
+                              a(class='dropdown-item' href='/edit/') View Posts
+                            li
+                              hr(class='dropdown-divider')
+                            li
+                              a(class='dropdown-item' href='/edit/new') Create New Post
+                      -} else {
+                        li(class='nav-item dropdown' id='navbar-big')
+                          a(class='nav-link dropdown-toggle' href='/edit/' id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false") Posts
+                          ul(class='dropdown-menu' aria-labelledby='navbarDropdown')
+                            li
+                              a(class='dropdown-item' href='/edit/') View Posts
+                            li
+                              hr(class='dropdown-divider')
+                            li
+                              a(class='dropdown-item' href='/edit/new') Create New Post
+                      -}
                       li(class='nav-item dropdown' id='navbar-small')
                         a(class='nav-link dropdown-toggle' href='/admin/dashboard/' role='button' data-bs-toggle='dropdown' aria-expanded='false') Admin Tools
                         ul(class='dropdown-menu' aria-labelledby='navbarDropdown')
@@ -163,28 +194,56 @@ block content
             nav(class='side-panel' id='sidebar')
               //- Button to view user questions
               a(href='/message') 
-                button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') View Your Questions
+                -if(active.includes('your questions')){
+                  button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') View Your Questions
+                -} else {
+                  button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') View Your Questions
+                -}
               //- button to ask a question of the staff  
               a(href='/message/new')
-                button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Ask a Question
+                -if(active.includes('ask question')) {
+                  button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') Ask a Question
+                -} else {
+                  button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Ask a Question
+                -}
               //- should put in divider to separate admin tools and non
               hr
               a(href='/admin/message')
-                button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Respond to Questions
+                -if(active.includes('respond questions')){
+                  button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') Respond to Questions
+                -} else {
+                  button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Respond to Questions
+                -}
               //- view ALL user questions
               a(href='/admin/message/all')
-                button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') All User Questions
+                -if(active.includes('all questions')){
+                  button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') All User Questions
+                -} else {
+                  button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') All User Questions
+                -}
               //- button to create new post (ADMIN ONLY) add an if to produce this
               a(href='/edit/new')
-                button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Create a New Post
+                -if(active.includes('create posts')) {
+                  button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') Create a New Post
+                -} else {
+                  button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Create a New Post
+                -}
               //- button to view posts index (ADMIN ONLY) add an if to produce this code
                 in future we should make his manage posts and be able to change post visibility
               a(href='/edit/')
-                button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') View Posts
+                -if(active.includes('view posts')) {
+                  button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') View Posts
+                -} else {
+                  button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') View Posts
+                -}
               //- button for admins to see asked questions
               //- button to view saved posts?    
               a(href='/media')
-                button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Media Manager
+                -if(active.includes('media manager')){
+                  button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') Media Manager
+                -} else {
+                  button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Media Manager
+                -}
               //- each val in values
               //-   a(href=val.link)
               //-     button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') #{val.text}

@@ -19,7 +19,7 @@ let transporter = nodemailer.createTransport({
 
 /* GET Contact page. */
 router.get('/contact', (req, res) =>{
-  res.render('contact', {title: 'E-mail us'});
+  res.render('contact', {title: 'E-mail us', active:'contact'});
 });
 
 // Body Parser Middleware

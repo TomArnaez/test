@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/info', function(req, res, next) {
 
-  res.render('info_page', { title: 'About Us'});
+  res.render('info_page', { title: 'About Us', active: 'about'});
 
 });
 
@@ -31,7 +31,7 @@ router.get('/feed', function(req, res, next) {
 
       //Renders feed page with results from query
       } else {
-          res.render('feed', {title: 'Posts', results: result});
+          res.render('feed', {title: 'Posts', results: result, active: 'feed'});
       }
     });
 

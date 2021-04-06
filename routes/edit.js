@@ -14,7 +14,7 @@ router.get('/', function(req, res, next) {
           req.flash('error_msg', 'Error when accessing database');
           res.redirect('/')
       } else {
-          res.render('posts_index', {title: 'Posts', results: result, messages: req.flash('error_msg')});
+          res.render('posts_index', {title: 'Posts', results: result, messages: req.flash('error_msg'), active: 'view posts'});
       }
     });
   } else {
@@ -42,7 +42,7 @@ router.get('/view/:id', function (req, res, next) {
 
         //Checks a post with the ID Exists and renders a page with the post
         if (result.length != 0) {
-          res.render('Post', {title: 'Post Viewer', id:post_id, postname:result[0].title, doc:result[0].html,});
+          res.render('Post', {title: 'Post Viewer', id:post_id, postname:result[0].title, doc:result[0].html, active: 'posts'});
 
         //Redirects user to Posts index if no post exists in the data base with the provided ID
         } else {
@@ -98,7 +98,7 @@ router.get('/new', function (req, res, next) {
 
   //Checks user is an admin. Only admins can access editing router
   if (req.isAuthenticated()) {
-      res.render('text_editor', {title: 'Content Editor', postname:null, doc: null, back: '/edit/'});
+      res.render('text_editor', {title: 'Content Editor', postname:null, doc: null, back: '/edit/', active: 'create posts'});
 
   //Redirects user to login page if they are not authenticated
   } else {

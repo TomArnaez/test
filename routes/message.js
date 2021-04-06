@@ -8,7 +8,7 @@ const email = require('./email.js');
 /* GET Message page. */
 router.get('/message', async (req,res) => {
     if(req.isAuthenticated()) {
-        res.render('user_message', {title: 'Your Questions', message: await getUserMessage(req.user)});
+        res.render('user_message', {title: 'Your Questions', message: await getUserMessage(req.user), active:'your questions'});
     }
     else{
         res.render('login');
@@ -53,7 +53,7 @@ router.get('/admin/respond/forward/:custom_id', async (req, res) => {
         } else {
           //Checks if post with provided ID exists in the database. If true, then renders edit page
           if (result.length != 0) {
-            res.render('forward_message', {title: 'View Response', question: result});
+            res.render('forward_message', {title: 'View Response', question: result, active: 'respond questions'});
 
           //Redirects user to posts index if no post exists
           } else {
@@ -70,7 +70,7 @@ router.get('/admin/respond/forward/:custom_id', async (req, res) => {
 // Gets page to create a new Questions
 router.get('/message/new', async (req,res) => {
     if(req.isAuthenticated()) {
-        res.render('message', {title: 'Send in a Question for Staff', message: await getUserMessage(req.user), post: null});
+        res.render('message', {title: 'Send in a Question for Staff', message: await getUserMessage(req.user), post: null, active:'ask question'});
     }
     else{
         res.render('login');
@@ -85,7 +85,7 @@ router.get('/message/new/:post_id', async (req, res) => {
           req.flash('error_msg', 'Error connecteing with database')
           res.redirect('/feed');
         } else {
-          res.render('message', {title: 'Ask Staff about this post', post: result});
+          res.render('message', {title: 'Ask Staff about this post', post: result, active:'respond questions'});
         }
       });
   }
@@ -99,7 +99,7 @@ router.get('/message/new/:post_id', async (req, res) => {
 router.get('/admin/message', async (req,res) => {
     if(req.isAuthenticated()){
 
-        res.render('admin_message', {title:'User Questions', message: await getMessages()});
+        res.render('admin_message', {title:'User Questions', message: await getMessages(), active:'respond questions'});
     }
     else {
         res.render('login');
@@ -120,7 +120,7 @@ router.get('/admin/post_response/:message_id', async (req, res) => {
               //Checks if post with provided ID exists in the database. If true, then renders edit page
               if (result.length != 0) {
                 const doc = '<h2> Question: ' + result[0].message + '</h2> \n <br>';
-                res.render('text_editor', {title: 'Post Response', postname: req.params.message_id, doc: doc, back: '/admin/message'});
+                res.render('text_editor', {title: 'Post Response', postname: req.params.message_id, doc: doc, back: '/admin/message', active:'respond questions'});
 
               //Redirects user to posts index if no post exists
               } else {
@@ -139,7 +139,7 @@ router.get('/admin/post_response/:message_id', async (req, res) => {
 router.get('/admin/message/all', async (req,res) => {
     if(req.isAuthenticated()){
 
-        res.render('admin_message', {title: 'All Messages', message: await getAllMessages()});
+        res.render('admin_message', {title: 'All Messages', message: await getAllMessages(), active:'all questions'});
     }
     else {
         res.render('login');
@@ -229,7 +229,7 @@ router.get('/admin/respond/:custom_id', (req, res) => {
 
               //Checks if post with provided ID exists in the database. If true, then renders edit page
               if (result.length != 0) {
-                res.render('message-response', {title: 'Private Response', question:result[0].message, back: '/admin/message'});
+                res.render('message-response', {title: 'Private Response', question:result[0].message, back: '/admin/message', active:'respond questions'});
 
               //Redirects user to posts index if no post exists
               } else {
