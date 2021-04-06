@@ -1,0 +1,23 @@
+extends side-nav-sublayout
+
+append head
+  style(type='text/css').
+    .side-panel {
+      display: none;
+    }
+    
+    .primary {
+      margin-left: 0px;
+      width: 100%;
+    }
+
+block primary
+  
+  div(class='container-fluid text-center')
+    h1= title
+    br
+    br
+      
+  div(class="col-xl-3 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form-group p-4")
+    p Welcome to the King's Peadiatric Liver Center Information Hub.
+    p Our aim here on the Information Hub is to help you understand your condition and houw you can live and thrive with it
