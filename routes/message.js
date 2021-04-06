@@ -185,12 +185,13 @@ router.post('/admin/post_response/:message_id', async (req,res) => {
                             req.flash('error_msg', 'No database connection.');
                             res.redirect("/admin/message");
                         } else {
+                            console.log(result);
                             userEmail = result[0].user_email;
 
                             if(userEmail == '') {
                                 req.flash('error_msg', `Email Wasn't sent :(`);
                             } else {
-                                email.sendEmail(userEmail, 'Answer to your message: ' + result[0].cusstom_id,
+                                email.sendEmail(userEmail, 'Answer to your message: ' + result[0].custom_id,
                                     content.replace( /(<([^>]+)>)/ig, ''));
 
                             }

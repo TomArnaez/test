@@ -151,6 +151,7 @@ block content
                     a(class='dropdown-item' href='/edit/') View Posts
                   li
                     a(class='dropdown-item' href='/media') Media Manager
+
               li(class='nav-item' id='navbar-small')
                 a(class='nav-link' href='/admin/dashboard') Account
             div(id='navbar-small')
@@ -162,12 +163,15 @@ block content
               //- div(class='d-flex justify-content-end' )
           div(id='navbar-big')
             form(class='d-flex' id='navbar-big')
-              include search_dropdown
-              button(class="btn btn-outline-success gap-2" type="submit" style='margin-left:10px')
-                i(class="fas fa-search")
-          a(href='/admin/dashboard' id='navbar-big')
-            button(class='btn btn-outline-primary my-2 my-sm-0' style='margin-left:10px ') Account
-              i(class="fas fa-user-circle" style='padding-left:8px')
+              div(id='input' class="form-row")
+                div(class="form-group col-md-6")
+                  include search_dropdown
+                div(class="form-group col-md-6")
+                  button(class="btn btn-outline-success gap-2" type="submit" style='margin-left:10px')
+                    i(class="fas fa-search")
+                  a(href='/admin/dashboard' id='navbar-big')
+                    button(class='btn btn-outline-primary my-2 my-sm-0' style='margin-left:10px ') Account
+                      i(class="fas fa-user-circle" style='padding-left:8px')
 
   .sidepanel
     block sidepanel
@@ -198,6 +202,8 @@ block content
         //- button to view saved posts?
         a(href='/media')
           button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Media Manager
+        a(href='/admin/terms')
+          button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Term Manager
         //- each val in values
         //-   a(href=val.link)
         //-     button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') #{val.text}

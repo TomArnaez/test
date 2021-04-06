@@ -5,16 +5,15 @@ const nodemailer = require('nodemailer');
 const app = express();
 const config = require('../config/config.js');
 
+
 /* Configuring the nodemailer setup */
 let transporter = nodemailer.createTransport({
     service: 'gmail',
+    port: 2525,
     auth: {
-        user: config.email.username, //username
-        pass: config.email.password  // password
+        user: config.email.username,
+        pass: config.email.password
     },
-    tls:{
-        rejectUnauthorized:false  //bypass the security in localhost
-    }
 });
 
 /* GET Contact page. */

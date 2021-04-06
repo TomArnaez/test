@@ -11,6 +11,7 @@ block primary
   div(class='container-fluid')
     br
     h1= title
+    include ./partial/msg
     //- Shows NUmber of messages listed
     -if (message != null) {
       p Total Number of Messages: #{message.length}
