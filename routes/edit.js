@@ -188,8 +188,12 @@ router.get('/:id', function (req, res, next) {
   //Checks user is an admin. Only admins can access editing router
   if (req.isAuthenticated()) {
 
+  const db = require("../models");
+  const Post = db.Post;
+
+  db
     //Query database for post with provided ID
-    db.query("SELECT title, html FROM posts WHERE ? IN (id) LIMIT 1;", [post_id], function(err, result) {
+    db.query("SELECT title, html FROM posts WHERE ? IN (id) LIMIT 1; SELECT ", [post_id], function(err, result) {
 
       //Error handling for database connection. Reroutes user to posts index (most likely the origin)
       if (err) {
@@ -251,9 +255,13 @@ router.post('/show/:post_id', function(req, res, next) {
 router.post('/:id', function (req, res, next) {
   const title = String(req.body.filename);
   const data = String(req.body.content);
+  const category = String(req.body.category);
+  console.log(category);
 
   //Updates entry with provided ID in database with new title and data
-  db.query("UPDATE posts SET title = ?, html = ? WHERE id = ?;", [title, data, req.params.id], function(err, result) {
+  db.query("UPDATE posts SET title = ?, html = ? WHERE id = ?; " +
+      "UPDATE postTerms set termId = ? WHERE postId = ?;",
+      [title, data, req.params.id, category, req.params.id], function(err, result) {
 
       //Error handling for database connection. Redirects user to posts index
       if (err){
@@ -266,6 +274,7 @@ router.post('/:id', function (req, res, next) {
           res.redirect('/edit');
       }
   });
+
 })
 
 //DELETE Function

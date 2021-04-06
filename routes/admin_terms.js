@@ -26,7 +26,6 @@ router.post('/', function (req, res, next) {
     const termSlug = String(req.body.termSlug);
     const description = String(req.body.description);
     const termType = String(req.body.termType);
-    console.log(termType);
 
     Term.create({termType: termType, termName: termName, termSlug: termSlug, description: description
         }).then(newCategory=> {
@@ -36,7 +35,7 @@ router.post('/', function (req, res, next) {
             req.flash("error_msg", err)
     });
     req.flash('error_msg', 'New Term added');
-    res.render('admin_terms');
+    res.redirect('/admin/terms');
 });
 
 module.exports = router;
