@@ -173,7 +173,7 @@ router.post('/message/send', (req,res) => {
     }
     else{
         req.flash('error_msg', 'Invalid Input');
-        res.redirect("/message");
+        res.redirect("/message/new");
     }
 
 });
