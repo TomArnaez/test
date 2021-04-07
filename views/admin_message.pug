@@ -65,11 +65,11 @@ block primary
                     else 
                       //-  Actions if the response is public 
                       if (item.is_public == 1)
-                        td
+                        td(class='col-sm-2')
                           a(href='/edit/view/title/' + item.custom_id)
                             button(class='btn btn-primary w-75 p-1 gap-2 ') View Post
                       //- Actions if the response is private
                       else
-                        td 
+                        td(class='col-sm-2') 
                           a(href='/message/response/' + item.custom_id)
                             button(class='btn btn-info w-75 p-1 gap-2') View Response
