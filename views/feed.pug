@@ -58,7 +58,7 @@ block primary
               a(href='/author/'+item.author_id style='text-decoration:none')
                 small(class='text-muted' style='text-decoration:none') Written By !{item.user_fname} !{item.user_lname}
               br
-              small(class='text-muted') #{formatDate(item.created_on)}
+              small(class='text-muted') #{formatDate(item.last_modified)}
             //- Drop down is an admin action. Gives admin option to edit post or hide it from view.
             div(class="dropdown")
               button(type='button' class='btn btn-light dropdown-toggle btn-sm' id='dropdownButton' data-toggle='dropdown')
