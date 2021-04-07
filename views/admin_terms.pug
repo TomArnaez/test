@@ -42,9 +42,9 @@ block primary
                     var $remove = $('#remove')
                     var selections = []
 
-                    function getIdSelections() {
+                    function getSelections() {
                         return $.map($table.bootstrapTable('getSelections'), function (row) {
-                            return row.id
+                            return row
                         })
                     }
 
@@ -109,22 +109,19 @@ block primary
                                 selections = getIdSelections()
                                 // push or splice the selections if you want to save all data selections
                             })
-                        $table.on('all.bs.table', function (e, name, args) {
-                            console.log(name, args)
-                        })
 
                         $remove.click(function () {
-                            var ids = getIdSelections();
-                            ids.forEach(id => {
-                                $.ajax({
-                                    url: '/api/terms/' + id,
-                                    method: 'delete',
-                                });
-                            })
-                            console.log(ids);
+                            let rows = getSelections();
+                            rows.forEach(row => {
+                                if (row.posts.length == 0)
+                                    $.ajax({
+                                        url: '/api/terms/' + id,
+                                        method: 'delete',
+                                    });
+                                })
                             $table.bootstrapTable('remove', {
                                 field: 'id',
-                                values: ids
+                                values: rows.map(a => a.id)
                             });
 
                             //db.Term.destroy({ where: { id: ids}})
