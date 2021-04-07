@@ -109,7 +109,7 @@ router.get('/new', function (req, res, next) {
 
 //Saves post in database
 router.post('/new', function (req, res) {
-  console.log("this is the user ID: " + req.user);
+  const currentTime = getTime();
   const user_id = req.user;
   //gets data from form posted.
   const title = String(req.body.filename);
@@ -132,7 +132,7 @@ router.post('/new', function (req, res) {
 
       //Inserts new post into database
       } else {
-          db.query("INSERT INTO posts (title, text, html, author_id) VALUES (?, ?, ?, ?);", [title, data, data, user_id], function(err, result) {
+          db.query("INSERT INTO posts (title, html, last_modified, created_on, author_id) VALUES (?, ?, ?, ?, ?);", [title, data, currentTime, currentTime, user_id], function(err, result) {
 
               //Error handling for database connection
               if (err){
@@ -218,11 +218,12 @@ router.post('/show/:post_id', function(req, res, next) {
 
 //UPDATE function
 router.post('/:id', function (req, res, next) {
+  const currentTime = getTime();
   const title = String(req.body.filename);
   const data = String(req.body.content);
 
   //Updates entry with provided ID in database with new title and data
-  db.query("UPDATE posts SET title = ?, html = ? WHERE id = ?;", [title, data, req.params.id], function(err, result) {
+  db.query("UPDATE posts SET title = ?, html = ?, last_modified = ? WHERE id = ?;", [title, data, currentTime, req.params.id], function(err, result) {
 
       //Error handling for database connection. Redirects user to posts index
       if (err){
@@ -266,3 +267,19 @@ router.post('/delete/:id', function(req, res, next) {
 //edit, create, update, delete functions.
 
 module.exports = router;
+
+function getTime() {
+    const date = new Date();
+    return date.getFullYear()
+            + '-' +
+            date.getMonth()
+            + '-' +
+            date.getDate()
+            + ' ' +
+            date.getHours()
+            + ':' +
+            date.getMinutes()
+            + ':' +
+            date.getSeconds();
+
+}
