@@ -20,15 +20,18 @@ block primary
     h1= title
     include ./partial/msg
 
-  div(class='container-fluid' style='padding:2rem;')
+  div(class='container-fluid' style='padding:2rem;' id="toolbar")
+    button#remove.btn.btn-danger(disabled='')
+      i.fa.fa-trash
+      |  Delete
     a(href='/edit/new')
       button(type='button', class='btn btn-light') New Post
 
   //- Creates large Div container
   div(class='container-fluid')
-    //- Creating Table with Bootstrap
+
     div(class='row')
-      table(id="table" class="table table-bordered" data-toggle="table" data-pagination="true" data-search="true" data-group-by-field="Visible")
+      table(id="table" class="table table-bordered" data-toggle="table" data-pagination="true" data-search="true" data-group-by-field="Visible" data-toolbar="#toolbar")
       script.
         var $table = $('#table')
         var $remove = $('#remove')
@@ -69,6 +72,7 @@ block primary
             '</a>  '
           ].join('')
 
+          // Depending on whether the post is visible or not we use a show/hide button.
           if (row.visible) {
             actions += '<a class="hide" href="' + hide_url + '" title="Hide"><i class="fa fa-eye-slash"></i></a>'
           } else {
