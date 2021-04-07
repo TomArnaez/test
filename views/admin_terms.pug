@@ -18,11 +18,13 @@ block primary
                     div(class="form-group")
                         label(for="termName") Term name
                         input(type="text" class="form-control" id="termName" placeholder="Enter category name" name="termName")
+                        small(id='termNameHelp' class="form-text text-muted").
+                            The name of the term that will appear in pages.
                     div(class="form-group")
                         label(for="termSlug") Slug
                         input(type="text" class="form-control" id="termSlug" placeholder="Enter category name" name="termSlug")
                         small(id="slugHelp" class="form-text text-muted").
-                            The "slug" is the URL-friendly version of the name, it is usually all lowercase and contains only letters, numbers and hyphens.
+                            The "slug" is the URL-friendly version of the name, it is usually all lowercase and contains only letters, numbers and hyphens. It must be unique to all terms.
                     div(class="form-group")
                         label(for="description") Description
                         textarea(type="text" class="form-control" id="description" rows="3" name="description")
@@ -83,6 +85,11 @@ block primary
                                 }, {
                                     title: 'Slug',
                                     field: 'termSlug',
+                                    align: 'center',
+                                    sortable: true
+                                }, {
+                                    title: 'Description',
+                                    field: 'description',
                                     align: 'center',
                                     sortable: true
                                 }, {

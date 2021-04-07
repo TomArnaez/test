@@ -23,19 +23,20 @@ router.get('/', function(req, res, next) {
 
 router.post('/', function (req, res, next) {
     const termName = String(req.body.termName);
-    const termSlug = String(req.body.termSlug);
+    const termSlug = String(req.body.termSlug).toLowerCase();
     const description = String(req.body.description);
-    const termType = String(req.body.termType);
+    const termType = String(req.body.termType).toLowerCase();
 
     Term.create({termType: termType, termName: termName, termSlug: termSlug, description: description
-        }).then(newCategory=> {
-            req.flash('error_msg', 'New Term added');
+        }).then(newTerm => {
+            req.flash('success_msg', 'New Term added');
+            res.redirect('/admin/terms');
         }).catch(err => {
+            req.flash("error_msg", "Error adding term: ", err)
             console.log(err);
-            req.flash("error_msg", err)
+            res.redirect('/admin/terms');
     });
-    req.flash('error_msg', 'New Term added');
-    res.redirect('/admin/terms');
+
 });
 
 module.exports = router;
