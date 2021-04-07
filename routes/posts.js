@@ -79,6 +79,7 @@ router.get('/:category/:id/:slug', async(req, res, next) => {
     if (req.isAuthenticated()) {
         const db = require("../models");
         const post = await db.Post.findOne({where: {id: post_id}, include: { model: db.Term, as: "terms"}})
+        console.log(post);
         const user = await db.User.findOne({where: {id: post.author_id}});
 
         if (post != null) {

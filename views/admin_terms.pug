@@ -1,28 +1,28 @@
 extends side-nav-sublayout
 
 block primary
-    h1 Terms
+    h1(align="center") Term Manager
     include ./partial/msg
     div(class="container")
         div(class="row")
             div(class="col-sm")
-                h4 Add New Term
+                h4(align="center") Add New Term
                 form(name="category-form", method="post")
                     div(class="form-group")
                         label(for="termType") Term type
-                        select(class="form-control" id="termType" name="termType")
+                        select(class="form-control" id="termType" name="termType" required)
                             option(value="Category") Category
                             option(value="Tag") Tag
                         small(id="termTypeHelp" class="form-text text-muted").
                             Posts can only be assigned to one category but can have multiple tags.
                     div(class="form-group")
                         label(for="termName") Term name
-                        input(type="text" class="form-control" id="termName" placeholder="Enter category name" name="termName")
+                        input(type="text" class="form-control" id="termName" placeholder="Enter category name" name="termName" required)
                         small(id='termNameHelp' class="form-text text-muted").
                             The name of the term that will appear in pages.
                     div(class="form-group")
                         label(for="termSlug") Slug
-                        input(type="text" class="form-control" id="termSlug" placeholder="Enter category name" name="termSlug")
+                        input(type="text" class="form-control" id="termSlug" placeholder="Enter category name" name="termSlug" required)
                         small(id="slugHelp" class="form-text text-muted").
                             The "slug" is the URL-friendly version of the name, it is usually all lowercase and contains only letters, numbers and hyphens. It must be unique to all terms.
                     div(class="form-group")
@@ -30,11 +30,12 @@ block primary
                         textarea(type="text" class="form-control" id="description" rows="3" name="description")
                     input(type="submit", value='Add' class='btn btn-success')
             div(class="col-sm")
-                h4 Existing Terms
+                h4(align="center") Existing Terms
                 div(id="toolbar")
-                    button(id="remove" class="btn btn-danger" disabled) Delete
+                    button(id="remove" class="btn btn-danger") Delete
+
                 br
-                table(id="table" class="table table-bordered" data-toggle="table" data-pagination="true" data-search="true")
+                table(id="table" class="table table-bordered" data-toggle="table" data-pagination="true" data-toolbar="#toolbar" data-search="true")
 
                 script.
                     var $table = $('#table')

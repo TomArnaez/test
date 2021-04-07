@@ -3,9 +3,7 @@ extends side-nav-sublayout
 
 append head
   script(type="application/javascript" src="/tinymce/tinymce.min.js")
-  script(id='config' data-content=doc type="application/javascript" src= "/js/tinymce-config.js")
-  
-
+  script(id='config' data-content=html type="application/javascript" src= "/js/tinymce-config.js")
   
 block primary
   div(class='container-fluid')
@@ -28,7 +26,7 @@ block primary
                             option(value=category.id) #{category.termName}
             div(class="form-group col")
                 p Tags:
-                input(type="text" class="form-control" id="tagstype" name='tags' value="")
+                input(type="text" class="form-control" id="tagstype" name='tags')
                 script.
                     const tags = new Bloodhound({
                         datumTokenizer: Bloodhound.tokenizers.obj.whitespace('termName'),
