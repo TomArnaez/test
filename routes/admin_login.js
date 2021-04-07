@@ -12,7 +12,7 @@ router.get('/login', (req, res) => {
     if (req.isAuthenticated()) {
         res.redirect("/admin/dashboard");
     } else {
-        res.render('login');
+        res.render('login', {messages: req.flash()});
     }
 })
 

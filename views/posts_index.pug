@@ -1,4 +1,5 @@
-extends layout
+//- Page for admins to view all current posts on the site
+extends side-nav-sublayout
 
 append head
   style(type='text/css').
@@ -7,9 +8,13 @@ append head
         vertical-align: middle;
       }
     }
-  script(type='application/javascript' src='javascripts/confirm-delete.js')
+    .btn {
+      margin-left: 5px;
+      margin-top: 5px;
+    }
+  script(type='application/javascript' src='../public/javascripts/confirm-delete.js')
 
-block content
+block primary
   
   //- container-fluid sets div to largest size for bootstrap
   div(class='container-fluid')
@@ -28,22 +33,58 @@ block content
           tr
             th(scope='col') Id
             th(scope='col') Name
+            th(scope='col') Description
             th(scope='col') Created
             th(scope='col') Actions
         tbody
           //- creates all of the below tags for each item in the results array
           //- results array is a select query for all posts in the posts table
           each item in results
-            tr
-              th(scope='row') #{item.id}
-              td #{item.title}
-              td #{item.created_on}
-              //- Action Buttons for below table data tag. Each route request appropriatley.
-              td
-                a(href='/edit/view/'+item.id)
-                  button(type='button', class='btn') View
-                a(href='/edit/' + item.id)
-                  button(type='button' class='btn btn-success') Edit
-                a
-                  button(type='button', class='btn btn-danger', onClick='confirmDelete('+item.id+')') Delete
+            if (item.visible == 1)
+              tr
+                th(scope='row' class='col-lg-1') #{item.id}
+                td(class='col-lg-2') #{item.title}
+                td(class='col-lg-4') #{item.description}
+                td(class='col-lg-2') #{formatDate(item.created_on)}
+                //- Action Buttons for below table data tag. Each route request appropriatley.
+                td(class='col-lg-2')
+                  a(href='/edit/view/'+item.id)
+                    button(class='btn btn-primary' title='View Post')
+                      i(class="fas fa-eye")
+                  a(href='/edit/' + item.id)
+                    button(class='btn btn-success' title='Edit')
+                      i(class="far fa-edit")
+                  a
+                    button(type='button', class='btn btn-danger', onClick='confirmDelete('+item.id+')' title='Delete')
+                      i(class="fas fa-trash-alt")
+                  form(action='hide/'+item.id method='post')
+                    button(type='submit' class='btn btn-info' title='Hide')
+                      i(class="fas fa-eye-slash")
+          tr(class='table-secondary')
+            td
+            td
+            th(scope='row') Not visible posts
+            td
+            td
+          each item in results
+            if (item.visible == 0)
+              tr
+                th(scope='row' class='col-lg-1') #{item.id}
+                td(class='col-lg-2') #{item.title}
+                td(class='col-lg-4') #{item.text}
+                td(class='col-lg-2') #{formatDate(item.created_on)}
+                //- Action Buttons for below table data tag. Each route request appropriatley.
+                td(class='col-lg-2')
+                  a(href='/edit/view/'+item.id)
+                    button(type='button', class='btn btn btn-primary' title='View Post')
+                      i(class="fas fa-eye")
+                  a(href='/edit/' + item.id)
+                    button(type='button' class='btn btn-success' title='Edit')
+                      i(class="far fa-edit")
+                  a
+                    button(type='button', class='btn btn-danger', onClick='confirmDelete('+item.id+')' title='Delete')
+                      i(class="fas fa-trash-alt")
+                  form(action='show/'+item.id method='post')
+                    button(type='submit' class='btn btn-info' title='Show')
+                      i(class="fas fa-eye")
                 

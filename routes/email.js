@@ -7,7 +7,11 @@ const config = require('../config/config.js');
 
 /* Configuring the nodemailer setup */
 let transporter = nodemailer.createTransport({
-    service: 'gmail',
+    // service: 'gmail',
+    host: config.email.host,
+    port: config.email.port,
+    secure: config.email.secure,
+
     auth: {
         user: config.email.username, //username
         pass: config.email.password  // password
@@ -19,7 +23,7 @@ let transporter = nodemailer.createTransport({
 
 /* GET Contact page. */
 router.get('/contact', (req, res) =>{
-    res.render('contact');
+  res.render('contact', {title: 'E-mail us', active:'contact'});
 });
 
 // Body Parser Middleware
@@ -60,6 +64,36 @@ router.post('/contact/send', (req, res) => {
         res.redirect("/contact");
     });
 });
+
+/*
+ * send confirmation email
+ */
+router.sendConfirmationEmail = function sendConfirmationEmail(name, receiver, resetLink){
+    const message = `
+    <h2>Hello ${name}.</h2>
+    <h3>Welcome to INFORMATION HUB</h3>
+    <h3>Please Set Your Password Using The Link Below:</h3>
+    <p>${resetLink}</p>
+  `;
+
+    // setup email data with unicode symbols
+    let mailOptions = {
+        from: '"Information Hub" <informationhub.kings@gmail.com>', // sender address
+        to: receiver,
+        subject: 'Confirm Registration', // Subject
+        text: 'Nothing for now!', // text body
+        html: message // html body
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) return console.log(error);
+
+        console.log('Message has been sent: %s', info.messageId);
+        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+
+        req.flash('success_msg', 'Your Message Has Been Sent!!!');
+    });
+}
 
 /*
  *  Send email
