@@ -1,8 +1,17 @@
-if {error_msg} != ''
-    p #{error_msg}
-if {error} != ''
-    p #{error}
-if {success_msg} != ''
-    p #{success_msg}
+if (error_msg.length > 0)
+    div(class="alert alert-danger alert-dismissible fade show text-left" role="alert")
+        p #{error_msg}
+        button.close(type='button' data-dismiss='alert' aria-label='Close')
+            span(aria-hidden='true') &times;
+if (error.length > 0)
+    div(class="alert alert-danger alert-dismissible fade show text-left" role="alert")
+        p #{error}
+        button.close(type='button' data-dismiss='alert' aria-label='Close')
+            span(aria-hidden='true') &times;
+if (success_msg.length > 0)
+    div(class="alert alert-success alert-dismissible fade show text-left" role="alert")
+        p #{success_msg}
+        button.close(type='button' data-dismiss='alert' aria-label='Close')
+            span(aria-hidden='true') &times;
 if {html_success_msg} != ''
     p !{html_success_msg}
