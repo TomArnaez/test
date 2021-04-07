@@ -18,7 +18,6 @@ const apiRouter = require("./routes/api");
 const postRouter = require("./routes/posts");
 const contactRouter = require('./routes/email');
 const messageRouter = require('./routes/message');
-const profileRouter = require('./routes/profile');
 
 const media = require('./media_impl')
 media.setupSync()
@@ -104,8 +103,7 @@ app.use(async (req, res, next) => {
 app.use('/', indexRouter);
 app.use('/admin', adminLoginRouter);
 app.use('/', contactRouter);
-app.use('/', messageRouter);
-app.use('/', profileRouter);
+app.use('/', messageRouter);;
 app.use('/edit', editRouter);
 app.use('/media', mediaRouter);
 //app.use('/users', usersRouter);

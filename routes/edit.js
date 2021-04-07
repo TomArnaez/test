@@ -124,7 +124,6 @@ router.post('/new', function (req, res) {
 
   //gets data from form posted
   const currentTime = getTime();
-  console.log(currentTime);
   const user_id = req.user;
   //gets data from form posted.
   const title = String(req.body.filename);
@@ -271,34 +270,27 @@ router.post('/:id', function (req, res, next) {
   const description = String(req.body.description);
   const tags = String(req.body.tags);
 
-  //Updates entry with provided ID in database with new title and data
-    db.query("UPDATE posts SET title = ?, html = ?, description = ? WHERE id = ?; " +
-        "UPDATE postTerms set termId = ? WHERE postId = ?;",
-      [title, data, description, req.params.id, category, req.params.id], function(err, result) {
+  console.log(tags);
+  console.log(category);
+
+    //Updates entry with provided ID in database with new title and data
+    db.query("UPDATE posts SET title = ?, html = ?, last_modified = ? WHERE id = ?;", [title, data, currentTime, req.params.id], function(err, result) {
 
       //Error handling for database connection. Redirects user to posts index
       if (err){
-          req.flash('error_msg', 'Error when accessing database: ' + err);
+          req.flash('error_msg', 'Error when updating post: ' + err);
           res.redirect('/edit');
 
       //If update successful, redirects user to posts index
+
       } else {
-            /*
-          tags.forEach(tag => {
-              db.query("DELETE FROM postTerms WHERE postId = ? AND termId != ?", [req.params.id, category], function(err, result) {
-                  if (err) {
-                      console.log(err);
-                  }
-                  console.log(result);
-              });
-              db.query("INSERT into postTerms (postId, termId) VALUES (?, ?) ON DUPLICATE KEY UPDATE postId=postId termId=termId", [tag, req.params.id], function(err, result) {
-                  if (err) {
-                      console.log(err);
-                    }
-              })
-          });
-             */
-          req.flash('success_msg', 'Post Successfully updated');
+          // Update and the associations with categories and tags.
+          const err = updateAssociations(req.params.id, category, tags)
+          if(!err) {
+              req.flash('success_msg', 'Error while updating tags and category assiciations: ' + err);
+          } else {
+              req.flash('success_msg', 'Post Successfully updated');
+          }
           res.redirect('/edit');
       }
   });
@@ -346,4 +338,38 @@ function getTime() {
             + ':' +
             date.getSeconds();
 
+}
+
+function updateAssociations(postId, newCategories, newTags) {
+    const seq = require("../models");
+
+    seq.Post.findOne({where: {id: req.params.id}, include: { model: seq.Term, as: "terms"}})
+        .then(post => {
+            if (post.category_id != category) {
+                db.query("UPDATE postTerms set termId = ? WHERE postId = ? AND termId = ?;",
+                    [category, post.id, post.category_id], function (err, result) {
+                    })
+            }
+        }).catch(err => {
+        return err
+    })
+
+
+    /*
+  tags.forEach(tag => {
+      db.query("DELETE FROM postTerms WHERE postId = ? AND termId != ?", [req.params.id, category], function(err, result) {
+          if (err) {
+              console.log(err);
+          }
+          console.log(result);
+      });
+      db.query("INSERT into postTerms (postId, termId) VALUES (?, ?) ON DUPLICATE KEY UPDATE postId=postId termId=termId", [tag, req.params.id], function(err, result) {
+          if (err) {
+              console.log(err);
+            }
+      })
+  });
+     */
+
+    return null;
 }

@@ -223,12 +223,14 @@ block content
               a(href='/admin/message')
                 -if(active.includes('respond questions')){
                   button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') Respond to Questions
-                    sup
-                      span(class="badge badge-danger") #{unanswered_messages.length}
+                    -if(unanswered_messages.length > 0)
+                      sup
+                        span(class="badge badge-danger") #{unanswered_messages.length}
                 -} else {
                   button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Respond to Questions
-                    sup
-                      span(class="badge badge-danger") #{unanswered_messages.length}
+                    -if(unanswered_messages.length > 0)
+                      sup
+                        span(class="badge badge-danger") #{unanswered_messages.length}
                 -}
               //- view ALL user questions
               a(href='/admin/message/all')

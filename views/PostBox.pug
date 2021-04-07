@@ -60,13 +60,13 @@ div(class='social-feed-box')
         | !{item.description}
     hr
     small(class='text-muted')
-        span Posted in #[a(href=item.category_url) #{item.category}]
+        span Posted in #[a(href=item.category_url style='text-decoration:none') #{item.category}]
         if item.tags.length > 0
             span  | Tagged as
         - var i = 0;
         each tag in item.tags
             - i++;
-            span  #[a(href=tag.url) #{tag.termName}]
+            span  #[a(href=tag.url style='text-decoration:none') #{tag.termName}]
                 if (i < item.tags.length)
                     span ,
     div(class='footer')
