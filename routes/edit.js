@@ -36,7 +36,7 @@ router.get('/view/:id', async (req, res, next) => {
       const user = await db.User.findOne({where: {id: post.author_id}});
 
       if (post != null) {
-        res.render('Post', {title: 'Post Viewer', id: post_id, postname: post.title, doc: post.html, description: post.description,
+        res.render('Post', {title: 'Post Viewer', id: post_id, postname: post.title, html: post.html, description: post.description,
             category_url: post.category_url, category: post.category, tags: post.tags, user: user, post:post});
       } else {
         req.flash('error_msg', 'No post with id: \'' + post_id + '\' in database');
@@ -50,8 +50,6 @@ router.get('/view/:id', async (req, res, next) => {
       if (err) {
         req.flash('error_msg', 'Error connecteing with database')
         res.redirect('/edit/');
-<<<<<<< HEAD
-=======
       } else {
 
         //Checks a post with the ID Exists and renders a page with the post
@@ -63,7 +61,6 @@ router.get('/view/:id', async (req, res, next) => {
           req.flash('error_msg', 'No post with id: \'' + post_id + '\' in database');
           res.redirect('/edit/');
         }
->>>>>>> master
       }
     });
     */
@@ -213,7 +210,7 @@ router.get('/:id', function (req, res, next) {
   Post.findOne({where: {id: post_id}, include: { model: db.Term, as: "terms"}})
       .then(post => {
           if (post != null) {
-              res.render('text_editor', {postname:post.title, doc:post.html, posttags: post.tags,
+              res.render('text_editor', {postname:post.title, html:post.html, posttags: post.tags,
                   category_id: post.category_id, description: post.description, back: '/edit/', messages: req.flash()});
           } else {
               req.flash('error_msg', 'No post with id: \'' + post_id + '\' in database');
@@ -234,7 +231,6 @@ router.get('/:id', function (req, res, next) {
 })
 
 router.get('/hide/:post_id', function(req, res, next) {
-  console.log("m8");
   db.query("UPDATE posts SET visible = ? WHERE id = ?;", [0, req.params.post_id], function(err, result) {
     if (err){
       req.flash('error_msg', 'Error when accessing database');
@@ -284,7 +280,7 @@ router.post('/:id', function (req, res, next) {
 
       //If update successful, redirects user to posts index
       } else {
-
+            /*
           tags.forEach(tag => {
               db.query("DELETE FROM postTerms WHERE postId = ? AND termId != ?", [req.params.id, category], function(err, result) {
                   if (err) {
@@ -298,6 +294,7 @@ router.post('/:id', function (req, res, next) {
                     }
               })
           });
+             */
           req.flash('success_msg', 'Post Successfully updated');
           res.redirect('/edit');
       }

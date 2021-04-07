@@ -15,7 +15,6 @@ append head
       -var active = '';
   -}
 
-
   style(type='text/css').
     body {
       background-color: var(--colour-secondary);
@@ -184,6 +183,8 @@ block content
                             a(class='dropdown-item' href='/edit/') View Posts
                           li
                             a(class='dropdown-item' href='/media') Media Manager
+                          li
+                            a(class='dropdown-item' href='/media') Term Manager
                       li(class='nav-item' id='navbar-small')
                         a(class='nav-link' href='/admin/dashboard') Account
                     div(id='navbar-big')
@@ -222,8 +223,12 @@ block content
               a(href='/admin/message')
                 -if(active.includes('respond questions')){
                   button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') Respond to Questions
+                    sup
+                      span(class="badge badge-danger") #{unanswered_messages.length}
                 -} else {
                   button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Respond to Questions
+                    sup
+                      span(class="badge badge-danger") #{unanswered_messages.length}
                 -}
               //- view ALL user questions
               a(href='/admin/message/all')
@@ -254,6 +259,12 @@ block content
                   button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') Media Manager
                 -} else {
                   button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Media Manager
+                -}
+              a(href='/admin/terms')
+                -if (active.includes('term manager')) {
+                  button(class='btn btn-outline-secondary w-100 gap-2 active' style='border:none') Term Manager
+                -} else {
+                  button(class='btn btn-outline-secondary w-100 gap-2' style='border:none') Term Manager
                 -}
               //- each val in values
               //-   a(href=val.link)

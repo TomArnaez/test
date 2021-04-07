@@ -15,6 +15,7 @@ router.get('/category/:category', function(req, res, next) {
                     res.render('category', {found: false});
                 } else {
                     const http = require('http')
+
                     http.get("http://localhost:3000/api/posts?category=" + req.params.category + "&page=" + page, (resp) => {
                         let data = "";
                         resp.on("data", d => {
@@ -26,10 +27,13 @@ router.get('/category/:category', function(req, res, next) {
                             console.log(json);
                             json.found = true;
                             json.categoryName = token.termName;
+                            /*
                             // Don't zero index
                             json.currentPage = json.currentPage + 1;
                             json.next_page = "/posts/" + req.params.category + "?page=" + (parseInt(page) + 1);
                             json.prev_page = "/posts/" + req.params.category + "?page=" + (parseInt(page) - 1);
+
+                             */
                             res.render('category', json);
                         });
                     });
