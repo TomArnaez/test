@@ -36,15 +36,15 @@ append head
         .dropdown:hover .dropbtn {background-color: #3e8e41;}
 
 //- container for single post
-div(class='social-feed-box')
+div(class='social-feed-box rounded')
     //- container for title and publish time
-    div(class='media-body')
-        h2
-            a(href=item.url) #{item.title}
-        a(href='#' style='text-decoration:none')
-            small(class='text-muted' style='text-decoration:none') Written by Marianne Samyn
-        br
-        small(class='text-muted') #{formatDate(item.created_on)}
+    div(class='media-body d-flex justify-content-between align-items-center')
+        div(class='mr-2')
+            h2=item.title
+            a(href='#' style='text-decoration:none')
+                small(class='text-muted' style='text-decoration:none') Written By !{item.user_fname} !{item.user_lname}
+            br
+            small(class='text-muted') #{formatDate(item.created_on)}
         //- Drop down is an admin action. Gives admin option to edit post or hide it from view.
         div(class="dropdown" style="float: right")
             button(type='button' class='btn btn-light dropdown-toggle btn-sm' id='dropdownButton' data-toggle='dropdown')
@@ -57,7 +57,7 @@ div(class='social-feed-box')
     hr
     //- Container for post body ( '|' tells pug to use accept raw HTML which the posts are saved as)
     div(class='social-body')
-        | !{item.description}
+        | !{item.html}
     hr
     small(class='text-muted')
         span Posted in #[a(href=item.category_url style='text-decoration:none') #{item.category}]

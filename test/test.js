@@ -3,15 +3,16 @@ process.env.NODE_ENV = 'test';
 
 //Check app 'compiles' (Will fail if any syntax error in files)
 let app = require('../app');
-let request = require('supertest');
 
 //Require the dev-dependencies
+let request = require('supertest');
 let chai = require('chai');
 let chaiHttp = require('chai-http');
+
 const should = chai.should();
 chai.use(chaiHttp);
 
-const userCredentials = {
+const validUserCredentials = {
     username: 'tom',
     password: 'password'
 }
@@ -22,11 +23,11 @@ describe('Pages', () => {
         authenticatedUser = request.agent(app)
         authenticatedUser
             .post('/admin/login')
-            .send(userCredentials)
+            .send(validUserCredentials)
             .end(function (err, res) {
                 done();
             })
-    })
+    });
 
     describe('Term Manager', () => {
         it("It should return status 200", (done) => {
@@ -37,7 +38,7 @@ describe('Pages', () => {
                     done();
                 })
         })
-    })
+    });
 
     describe('Ask Question', ()  => {
         it("It should return status 200", (done) => {
@@ -49,6 +50,7 @@ describe('Pages', () => {
                 })
         })
     });
+
     describe('New Post', ()  => {
         it("It should return status 200", (done) => {
             authenticatedUser
