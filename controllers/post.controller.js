@@ -1,6 +1,7 @@
 const db = require("../models");
 const Post = db.Post;
 const Term = db.Term;
+const User = db.User;
 const Op = db.Sequelize.Op;
 
 const getPagination = (page, size) => {
@@ -48,8 +49,9 @@ exports.findAll = (req, res) => {
 exports.findOne = (req, res) => {
     const id = req.params.id
     //Post.findByPk(id)
-    Post.findOne({where: {id: id}, include: { model: Term, as: "terms"}})
+    Post.findOne({where: {id: id}, include: [{ model: Term, as: "terms"}, {model: User}]})
         .then(data => {
+
             res.send(data);
         })
         .catch(err => {

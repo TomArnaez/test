@@ -20,11 +20,10 @@ router.get('/feed', function(req, res, next) {
 
   //Checks user is authenticated.
   if (req.isAuthenticated()) {
-    const db = require("../models");
-    const Post = db.Post;
-    const Term = db.Term;
+    const seq = require("../models");
 
-    Post.findAll({ include: { model: Term, as: "terms"}, order: [['created_on', 'DESC']]})
+    //Querries databasae for posts in descending date order. (feed will be chronological going down the page)
+    seq.Post.findAll({ include: [{ model: seq.Term, as: "terms"}, {model: seq.User, attributes: ["user_fname", "user_lname"]}], order: [['created_on', 'DESC']]})
       .then(data => {
           res.render('feed', {title: 'Posts', results: data});
       })

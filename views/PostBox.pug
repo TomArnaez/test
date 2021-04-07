@@ -42,7 +42,7 @@ div(class='social-feed-box rounded')
         div(class='mr-2')
             h2=item.title
             a(href='#' style='text-decoration:none')
-                small(class='text-muted' style='text-decoration:none') Written By !{item.user_fname} !{item.user_lname}
+                small(class='text-muted' style='text-decoration:none') Written By !{item.user.user_fname} !{item.user.user_lname}
             br
             small(class='text-muted') #{formatDate(item.created_on)}
         //- Drop down is an admin action. Gives admin option to edit post or hide it from view.
