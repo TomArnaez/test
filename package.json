@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "start": "node -r esm ./bin/www",
-    "test": "mocha -r esm",
+    "test": "mocha -r esm || true",
     "dev": "nodemon -r esm ./bin/www"
   },
   "dependencies": {

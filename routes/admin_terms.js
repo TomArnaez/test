@@ -9,7 +9,7 @@ router.get('/', function(req, res, next) {
     if (req.isAuthenticated()) {
         Term.findAll({ where: {}, include: { model: Post, as: "posts", attributes: ['id']} })
             .then(results => {
-                res.render('admin_terms', {terms: results});
+                res.render('admin_terms', {terms: results, active: 'term manager'});
             })
             .catch(err => {
                 req.flash("error_msg", err);

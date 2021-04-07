@@ -312,7 +312,7 @@ async function mediaManager(req, res) {
         }
     }
 
-    res.render('media', {files : names})
+    res.render('media', {files : names, active: 'media manager'})
 }
 
 module.exports = {

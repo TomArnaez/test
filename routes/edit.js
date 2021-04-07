@@ -123,6 +123,8 @@ router.get('/new', function (req, res, next) {
 router.post('/new', function (req, res) {
 
   //gets data from form posted
+  const currentTime = getTime();
+  console.log(currentTime);
   const user_id = req.user;
   //gets data from form posted.
   const title = String(req.body.filename);
@@ -153,7 +155,7 @@ router.post('/new', function (req, res) {
 
           //Inserts new post into database
       } else {
-          db.query("INSERT INTO posts (title, html, description, author_id) VALUES (?, ?, ?, ?);", [title, data, description, user_id], function(err, result) {
+          db.query("INSERT INTO posts (title, html, last_modified, created_on, author_id) VALUES (?, ?, ?, ?, ?);", [title, data, currentTime, currentTime, user_id], function(err, result) {
 
               //Error handling for database connection
               if (err) {
@@ -262,6 +264,7 @@ router.post('/show/:post_id', function(req, res, next) {
 
 //UPDATE function
 router.post('/:id', function (req, res, next) {
+  const currentTime = getTime();
   const title = String(req.body.filename);
   const data = String(req.body.content);
   const category = String(req.body.category);
@@ -328,3 +331,19 @@ router.get('/delete/:id', function(req, res, next) {
 //edit, create, update, delete functions.
 
 module.exports = router;
+
+function getTime() {
+    const date = new Date();
+    return date.getFullYear()
+            + '-' +
+            date.getMonth()
+            + '-' +
+            date.getDate()
+            + ' ' +
+            date.getHours()
+            + ':' +
+            date.getMinutes()
+            + ':' +
+            date.getSeconds();
+
+}

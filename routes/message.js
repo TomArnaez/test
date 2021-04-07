@@ -153,9 +153,10 @@ router.post('/message/send', (req,res) => {
     let public123 = 0;
     if(`${req.body.public}` == 1) public123 = 1;
 
-    db.query("INSERT INTO messages VALUE (DEFAULT,? ,? ,? ,? ,?,NULL,NULL, ?)",
+    db.query("INSERT INTO messages VALUE (DEFAULT,? ,? ,? ,? ,?,NULL,NULL,NULL, ?)",
         [req.user ,customID, `${req.body.title}`,`${req.body.message}`, currentTime, public123 ], (err, result)=> {
             if (err) {
+                console.log(err , 'error');
                 req.flash('error_msg', 'No database connection.');
                 res.redirect("/message");
             }
@@ -167,14 +168,14 @@ router.post('/message/send', (req,res) => {
 });
 
 // posts a response to a question. from the content_editor page
-router.post('/admin/post_response/:message_id', async (req,res) => {js
+router.post('/admin/post_response/:message_id', async (req,res) => {
     const currentTime = getTime();
     let userEmail = '';
     const content = req.body.content;
     const postname = req.body.filename;
 
-    db.query("UPDATE messages SET response = ?, response_time = ?, is_public = ? WHERE custom_id = ?",
-        [content.replace( /(<([^>]+)>)/ig, ''), currentTime, 1, req.params.message_id], (err, result)=> {
+    db.query("UPDATE messages SET response = ?, response_time = ?, is_public = ?, author_id = ? WHERE custom_id = ?",
+        [content.replace( /(<([^>]+)>)/ig, ''), currentTime, 1, req.user, req.params.message_id], (err, result)=> {
             if (err) {
                 req.flash('error_msg', 'No database connection.');
                 res.redirect("/admin/message");
@@ -190,7 +191,7 @@ router.post('/admin/post_response/:message_id', async (req,res) => {js
                             if(userEmail == '') {
                                 req.flash('error_msg', `Email Wasn't sent :(`);
                             } else {
-                                email.sendEmail(userEmail, 'Answer to your message: '.concat(req.params.message_id),
+                                email.sendEmail(userEmail, 'Answer to your message: ' + result[0].cusstom_id,
                                     content.replace( /(<([^>]+)>)/ig, ''));
 
                             }
@@ -199,16 +200,18 @@ router.post('/admin/post_response/:message_id', async (req,res) => {js
             }
         });
 
-    db.query("INSERT INTO posts (title, text, html) VALUES (?, ?, ?);", [postname, content, content], function(err, result) {
+    db.query("INSERT INTO posts (title, html, author_id) VALUES (?, ?, ?);", [postname, content, req.user], function(err, result) {
 
         //Error handling for database connection
         if (err){
             req.flash('error_msg', 'Error connecting to database: ' + err);
+            console.log('error connecting for posts: '+ err);
             res.render('text_editor', {title: 'Post Response', postname: postname, doc: content});
 
             //Redirects user to posts index if upload was successful
         } else {
             req.flash('success_msg', 'Successfully saved post to database');
+            console.log('successfully publically posted');
             res.redirect('/admin/message');
         }
     });
