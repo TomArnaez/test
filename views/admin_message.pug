@@ -3,7 +3,8 @@ extends side-nav-sublayout
 append head
   style(type='text/css').
     button {
-      margin-left:5px;
+      margin:1px;
+      padding:1px;
     }
 
 block primary
@@ -45,24 +46,30 @@ block primary
                     //- These actions only show if the question has no response
                     if (item.response == null)
                       td(class='col-sm-2')
-                        a(href='/admin/post_response/'+item.custom_id)
-                          button(type='button', class='btn btn-primary gap-2' title='Post Public Response')
-                            i(class="fas fa-upload")
-                        a(href='/admin/respond/' + item.custom_id)
-                          button(type='button' class='btn btn-success gap-2' title='Private Response')
+                        -if(item.is_public){
+                          a(href='/admin/post_response/'+item.custom_id class='btn')
+                            button(type='button', class='btn btn-primary' title='Post Public Response')
+                              i(class="fas fa-upload")
+                        -} else {
+                          a(href='/admin/post_response/'+item.custom_id class='btn disabled' disabled)
+                            button(type='button', class='btn btn-primary disabled' title='Post Public Response' disabled)
+                              i(class="fas fa-upload")
+                        -}
+                        a(href='/admin/respond/' + item.custom_id class='btn')
+                          button(type='button' class='btn btn-success' title='Private Response')
                             i(class="fas fa-lock")
-                        a(href='/admin/respond/forward/'+item.custom_id)
-                          button(type='button' class='btn btn-info gap-2' title='Forward Message')
+                        a(href='/admin/respond/forward/'+item.custom_id class='btn')
+                          button(type='button' class='btn btn-info' title='Forward Message')
                             i(class="fas fa-forward")
                     //- Actions id the message has a response
                     else 
                       //-  Actions if the response is public 
                       if (item.is_public == 1)
-                        td
+                        td(class='col-sm-2')
                           a(href='/edit/view/title/' + item.custom_id)
                             button(class='btn btn-primary w-75 p-1 gap-2 ') View Post
                       //- Actions if the response is private
                       else
-                        td 
+                        td(class='col-sm-2') 
                           a(href='/message/response/' + item.custom_id)
                             button(class='btn btn-info w-75 p-1 gap-2') View Response
