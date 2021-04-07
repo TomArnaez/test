@@ -31,7 +31,6 @@ exports.findOne = (req, res) => {
 };
 
 exports.create = (req, res) => {
-    console.log(req.body);
     return Term.create({ termName: req.body.termName, termType: req.body.termType, termSlug: req.body.termSlug, description: req.body.description })
         .then(term => {
             res.status(201).json(

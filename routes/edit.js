@@ -210,7 +210,6 @@ router.get('/:id', function (req, res, next) {
   //Query database for post with provided ID
   Post.findOne({where: {id: post_id}, include: { model: db.Term, as: "terms"}})
       .then(post => {
-          console.log(post);
           if (post != null) {
               res.render('text_editor', {postname:post.title, html:post.html, posttags: post.tags,
                   category_id: post.category_id, description: post.description, back: '/edit/', messages: req.flash()});
@@ -357,9 +356,7 @@ function updateAssociations(postId, newCategory, newTagIds) {
                         return err;
                 })
             })
-            console.log(newTagIds);
             newTagIds.forEach(tag => {
-                console.log(tag);
                 db.query("INSERT INTO postTerms (postId, termId) VALUES (?, ?);", [postId, tag], function(err, result) {
                     if (err)
                         return err;

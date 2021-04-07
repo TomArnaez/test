@@ -162,9 +162,7 @@ block content
                         a(class='nav-link dropdown-toggle' id="navbarCategoryDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false") Categories
                         ul(class='dropdown-menu' aria-labelledby='navbarDropdown')
                           - var i = 0;
-                          - console.log("m8");
                           for category in categories
-                            - console.log(category.url)
                             - i++;
                             li
                               a(class='dropdown-item' href=category.url) #{category.termName}

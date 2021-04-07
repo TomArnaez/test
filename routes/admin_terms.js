@@ -7,8 +7,8 @@ const Post = db.Post;
 
 // Example code to check user is authenticated. The logged in user id can be found in req.user.
 router.get('/', function(req, res, next) {
+
     if (req.isAuthenticated()) {
-        console.log('hi');
         axios('http://localhost:3000/api/terms/', {
             method: 'GET',
         }).then(results => {

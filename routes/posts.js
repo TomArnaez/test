@@ -24,7 +24,6 @@ router.get('/category/:category', function(req, res, next) {
                         resp.on("end", () => {
                             let json = JSON.parse(data);
                             json.posts = json.posts.filter(post => post.terms[0].termSlug == req.params.category);
-                            console.log(json);
                             json.found = true;
                             json.categoryName = token.termName;
                             /*
@@ -79,7 +78,6 @@ router.get('/:category/:id/:slug', async(req, res, next) => {
     if (req.isAuthenticated()) {
         const db = require("../models");
         const post = await db.Post.findOne({where: {id: post_id}, include: { model: db.Term, as: "terms"}})
-        console.log(post);
         const user = await db.User.findOne({where: {id: post.author_id}});
 
         if (post != null) {

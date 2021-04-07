@@ -311,7 +311,7 @@ async function mediaManager(req, res) {
             names.push([media.mediaroot + file.fs_name, file.filename, media.mediaroot + file.fs_name, false, file.filename])
         }
     }
-
+    console.log("hi")
     res.render('media', {files : names, active: 'media manager'})
 }
 

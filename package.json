@@ -43,6 +43,7 @@
     "querystring": "*",
     "sanitize-filename": "*",
     "sequelize": "^6.5.0",
+    "supertest": "^6.1.3",
     "tinymce": "*",
     "unique-filename": "*",
     "uuid": "*"
