@@ -48,7 +48,12 @@ exports.findOne = (req, res) => {
     //Post.findByPk(id)
     Post.findOne({where: {id: id}, include: [{ model: Term, as: "terms"}, {model: User}]})
         .then(data => {
-            res.send(data);
+            if (data === null)
+                res.status(500).send({
+                    message: "Error retrieving Post with id: " + id
+                });
+            else
+                res.send(data);
         })
         .catch(err => {
             res.status(500).send({
