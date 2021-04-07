@@ -184,18 +184,15 @@ block content
                           li
                             a(class='dropdown-item' href='/media') Term Manager
                       li(class='nav-item' id='navbar-small')
-                        a(class='nav-link' href='/admin/dashboard') Account
-                    div(id='navbar-big')
-                      form(class='d-flex' id='navbar-big' action='/search' method='GET')
-                        div(id='input' class="form-row")
-                          div(class="form-group col-md-6")
-                            include search_dropdown
-                          div(class="form-group col-md-6")
-                            button(class="btn btn-outline-success gap-2" type="submit" style='margin-left:10px')
-                              i(class="fas fa-search")
-                            a(href='/admin/dashboard' id='navbar-big')
-                              button(class='btn btn-outline-primary my-2 my-sm-0' style='margin-left:10px ') Account
-                                i(class="fas fa-user-circle" style='padding-left:8px')
+                        a(class='nav-link' href='/admin/dashboard') AccountA
+                    div(id='navbar-big' class="form-row")
+                      div(id='input' class="form-row")
+                        div(class="col-lg")
+                          include search_dropdown
+                        div(class="col-md")
+                          a(href='/admin/dashboard' id='navbar-big')
+                            button(class='btn btn-outline-primary my-2 my-sm-0' style='margin-left:10px ') Account
+                              i(class="fas fa-user-circle" style='padding-left:8px')
                     //- form(class='d-flex' id='navbar-small')
                     //- Todo: add code to only show if admin
                       //- div(class='d-flex justify-content-end' )

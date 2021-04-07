@@ -25,18 +25,15 @@ exports.findAll = (req, res) => {
     let condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
     const { limit, offset } = getPagination(page, size);
 
-    Post.findAndCountAll({ where: condition, include: { model: Term, as: "terms"}, order: [['created_on', 'DESC']]})
+    Post.findAll({ where: condition, include: [{ model: Term, as: "terms"}, {model: User}], order: [['created_on', 'DESC']]})
         .then(data => {
             if (category)
-                data.rows = data.rows.filter(post => post.category === category);
+                data = data.filter(post => post.category === category);
             if (tag)
-                data.rows = data.rows.filter(post => post.tags.filter(function (e) {
+                data = data.filter(post => post.tags.filter(function (e) {
                     return e.termSlug === tag;
                 }).length > 0)
-            data.count = data.rows.length;
-            const response = getPagingData(data, page, offset, limit);
-
-            res.send(response);
+            res.send(data);
         })
         .catch(err => {
             res.status(500).send({
@@ -51,7 +48,6 @@ exports.findOne = (req, res) => {
     //Post.findByPk(id)
     Post.findOne({where: {id: id}, include: [{ model: Term, as: "terms"}, {model: User}]})
         .then(data => {
-
             res.send(data);
         })
         .catch(err => {

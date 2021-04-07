@@ -16,24 +16,19 @@ router.get('/category/:category', function(req, res, next) {
                 } else {
                     const http = require('http')
 
-                    http.get("http://localhost:3000/api/posts?category=" + req.params.category + "&page=" + page, (resp) => {
+                    http.get("http://localhost:3000/api/posts?category=" + req.params.category, (resp) => {
                         let data = "";
                         resp.on("data", d => {
                             data += d
                         });
                         resp.on("end", () => {
                             let json = JSON.parse(data);
-                            json.posts = json.posts.filter(post => post.terms[0].termSlug == req.params.category);
-                            json.found = true;
-                            json.categoryName = token.termName;
-                            /*
-                            // Don't zero index
-                            json.currentPage = json.currentPage + 1;
-                            json.next_page = "/posts/" + req.params.category + "?page=" + (parseInt(page) + 1);
-                            json.prev_page = "/posts/" + req.params.category + "?page=" + (parseInt(page) - 1);
-
-                             */
-                            res.render('category', json);
+                            console.log(json);
+                            var obj = {};
+                            obj.posts = json.filter(post => post.terms[0].termSlug == req.params.category);
+                            obj.found = true;
+                            obj.categoryName = token.termName;
+                            res.render('category', obj);
                         });
                     });
                 }
@@ -51,7 +46,7 @@ router.get("/tag/:tag", function(req, res, next) {
                 res.render('category', {found: false});
             } else {
                 const http = require('http')
-                http.get("http://localhost:3000/api/posts?tag=" + req.params.tag + "&page=" + page, (resp) => {
+                http.get("http://localhost:3000/api/posts?tag=" + req.params.tag, (resp) => {
                     let data = "";
                     resp.on("data", d => {
                         data += d

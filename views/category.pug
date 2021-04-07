@@ -14,19 +14,10 @@ append head
 
 block primary
     if found
-            //- Container for feed posts.
-            div(class='container-xl')
-                h1(style="text-align:center") #{categoryName} content
-                each item in posts
-                    include PostBox
-                p Displaying page #{currentPage} of #{totalPages}
-                nav(aria-label='Page navigation example')
-                    ul.pagination
-                        if currentPage > 1
-                            li.page-item
-                                a.page-link(href=prev_page) Previous
-                        if currentPage < totalPages
-                            li.page-item
-                                a.page-link(href=next_page) Next
+        //- Container for feed posts.
+        div(class='container-xl')
+            h1(style="text-align:center") #{categoryName} content
+            each item in posts
+                include PostBox
     else
         h1 Category not found

@@ -17,7 +17,6 @@
     "bootstrap": "*",
     "connect-flash": "*",
     "cookie-parser": "*",
-    "curl": "^0.1.4",
     "debug": "*",
     "esm": "*",
     "express": "*",

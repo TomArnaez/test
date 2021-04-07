@@ -6,12 +6,9 @@ const maybePluralize = (count, noun, suffix = 's') =>
 
 /* GET search results. */
 router.get('/', async (req, res, next) => {
-    const db = require("../models");
+    const seq = require("../models");
     const { Op } = require("sequelize");
-    const Post = db.Post;
-    const Message = db.Message;
-    const Term = db.Term;
-    const post_results = await Post.findAll({include: { model: Term, as: "terms"}, where: {
+    const post_results = await seq.Post.findAll({include: [{ model: seq.Term, as: "terms"}, {model: seq.User}], where: {
         [Op.or]: [
             {
                 title: {
@@ -26,7 +23,7 @@ router.get('/', async (req, res, next) => {
         ]
         }
     });
-    const message_results = await Message.findAll({where: {
+    const message_results = await seq.Message.findAll({where: {
         title: {
             [Op.substring]: req.query.q
             }

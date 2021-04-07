@@ -1,5 +1,6 @@
 var express = require('express');
 const db = require('../database.js');
+var axios = require('axios');
 const passport = require('passport');
 var router = express.Router();
 
@@ -32,6 +33,8 @@ router.get('/view/:id', async (req, res, next) => {
   //Checks user is an admin. Only admins can access editing router
   if (req.isAuthenticated()) {
       const db = require("../models");
+
+      axios
       const post = await db.Post.findOne({where: {id: post_id}, include: { model: db.Term, as: "terms"}})
       const user = await db.User.findOne({where: {id: post.author_id}});
 

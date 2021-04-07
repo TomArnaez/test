@@ -1,6 +1,7 @@
 var express = require('express');
 const db = require('../database.js');
 var router = express.Router();
+var axios = require('axios');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -17,21 +18,19 @@ router.get('/info', function(req, res, next) {
 
 // Fetches main feed page
 router.get('/feed', function(req, res, next) {
-
+  const seq = require("../models");
   //Checks user is authenticated.
   if (req.isAuthenticated()) {
     const seq = require("../models");
-
-    //Querries databasae for posts in descending date order. (feed will be chronological going down the page)
-    seq.Post.findAll({ include: [{ model: seq.Term, as: "terms"}, {model: seq.User, attributes: ["user_fname", "user_lname"]}], order: [['created_on', 'DESC']]})
-      .then(data => {
-          res.render('feed', {title: 'Posts', results: data});
-      })
-      .catch(err => {
+    axios('http://localhost:3000/api/posts/', {
+      method: 'GET',
+        }).then(results => {
+          res.render('feed', {title: 'Posts', results: results.data});
+        })
+        .catch(err => {
           req.flash('error_msg', 'Error when accessing database');
           res.redirect('/')
-      });
-
+        });
   //Redirects user to login page if not authenticated
   } else {
       req.flash('error_msg', 'You are not authenticated.');
