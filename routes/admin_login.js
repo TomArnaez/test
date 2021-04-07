@@ -350,7 +350,7 @@ function getUserViewRole(userid) {
 }
 
 //Get permission level (int)
-function getUserViewRole(userid) {
+function getUserPermLevel(userid) {
     var db = require('../database.js');
     return new Promise(function (resolve, reject){
         db.query("SELECT permission_level as LEVEL FROM users WHERE id = ?", [userid], function (err, result) {
