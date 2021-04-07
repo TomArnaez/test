@@ -19,15 +19,17 @@ Information Hub is a web application comprising of a content management system a
 ```
 $ git clone https://github.com/ChristianDobbie/SEGMajorProject
 ```
-2. Install dependancies (node modules):
+2. Setup MySQL Database and import ```template.sql``` file
+3. Edit ```/config/config.js``` to connect to the database and configure values other parts of the application
+4. Install dependancies (node modules):
 ```
 $ npm install
 ```
-3. Run the application using npm:
+5. Run the application using npm:
 ```
 $ npm start
 ```
-4. Your application should run on port 3000, so open browser to:
+6. Your application should run on port 3000, so open browser to:
 ```
 http://localhost:3000
 ```
