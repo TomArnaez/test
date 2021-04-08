@@ -1,4 +1,8 @@
 extends side-nav-sublayout
+append head
+    script(src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/group-by-v2/bootstrap-table-group-by.min.js")
+    link(rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css")
+    script(src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js")
 
 block primary
     h1(align="center") Term Manager

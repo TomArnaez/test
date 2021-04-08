@@ -134,7 +134,7 @@ exports.update = (req, res) => {
           })
         }
         post.save();
-        res.status(201).json(ResponseFormat.build(post, "Post created successfully", 201, "success"))
+        res.status(200).json(ResponseFormat.build(post, "Post created successfully", 200, "success"))
     })
       .catch(err=> {
         res.status(400).json(

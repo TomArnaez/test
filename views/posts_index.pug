@@ -1,7 +1,9 @@
 //- Page for admins to view all current posts on the site
 extends side-nav-sublayout
-
 append head
+  script(src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/group-by-v2/bootstrap-table-group-by.min.js")
+  link(rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css")
+  script(src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js")
   style(type='text/css').
     .table-image {
     td, th {
@@ -15,6 +17,8 @@ append head
 
 block primary
 
+  link(rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/group-by-v2/bootstrap-table-group-by.css")
+  script(src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/group-by-v2/bootstrap-table-group-by.min.js")
   //- container-fluid sets div to largest size for bootstrap
   div(class='container-fluid')
     h1= title
@@ -28,10 +32,10 @@ block primary
       button(type='button', class='btn btn-light') New Post
 
   //- Creates large Div container
-  div(class='container-fluid')
+  div(class='container-lg')
 
-    div(class='row')
-      table(id="table" class="table table-bordered" data-toggle="table" data-pagination="true" data-search="true" data-group-by-field="Visible" data-toolbar="#toolbar")
+    div(class='col')
+      table(id="table" class="table table-bordered" data-toggle="table" data-pagination="true" data-search="true" data-group-by="true" data-group-by-field="visible" data-toolbar="#toolbar")
       script.
         var $table = $('#table')
         var $remove = $('#remove')
@@ -51,9 +55,25 @@ block primary
         }
 
         function timeFormatter(value, row, index) {
-          return row.created_on
+          return String(formatDate(row.created_on));
         }
 
+        function formatDate(dateString) {
+          var date = new Date(dateString);
+          var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+          var days = date.getDate();
+          var month = monthNames[date.getMonth()];
+          var year = date.getFullYear();
+          var hours = date.getHours();
+          if (hours < 10) {
+            hours = "0" + hours;
+          }
+          var mins = date.getMinutes();
+          if (mins < 10) {
+            mins = "0" + mins;
+          }
+          return days + ' ' + month + ' ' + year + ' | ' + hours + ':' + mins;
+        }
         function actionFormatter(value, row, index) {
           let view_url = '/edit/view/' + row.id;
           let edit_url = '/edit/' + row.id;
@@ -62,21 +82,24 @@ block primary
           let show_url = '/edit/show/' + row.id;
           let actions = [
             '<a class="view" href="' + view_url + '" title="Edit">',
+            '<button class=\'btn btn-primary\' title=\'View Post\'>',
             '<i class="fa fa-eye"></i>',
-            '</a>  ',
+            '</button></a>  ',
             '<a class="edit" href="' + edit_url + '" title="Edit">',
+            '<button class=\'btn btn-success\' title=\'View Post\'>',
             '<i class="fa fa-edit"></i>',
-            '</a>  ',
+            '</button></a>  ',
             '<a class="delete" href="' + delete_url + '" title="Delete">',
+            '<button class=\'btn btn-danger\' title=\'View Post\'>',
             '<i class="fa fa-trash"></i>',
-            '</a>  '
+            '</button></a>  '
           ].join('')
 
           // Depending on whether the post is visible or not we use a show/hide button.
           if (row.visible) {
-            actions += '<a class="hide" href="' + hide_url + '" title="Hide"><i class="fa fa-eye-slash"></i></a>'
+            actions += '<a class="hide" href="' + hide_url + '" title="Hide"><button type=\'submit\' class=\'btn btn-info\' title=\'Delete\'><i class="fa fa-eye"></i></button></a>'
           } else {
-            actions += '<a class="show" href="' + show_url + '" title="Show"><i class="fa fa-eye-slash"></i></a>'
+            actions += '<a class="show" href="' + show_url + '" title="Show"><button type=\'submit\' class=\'btn btn-info\' title=\'Hide\'><i class="fa fa-eye-slash"></i></button></a>'
           }
 
           return actions
@@ -93,7 +116,7 @@ block primary
 
         function initTable() {
           $table.bootstrapTable('destroy').bootstrapTable({
-            height: 550,
+            height: 900,
             locale: $('#locale').val(),
             data: !{JSON.stringify(results)},
             columns: [
@@ -106,12 +129,13 @@ block primary
                 title: "Visible",
                 field: "visible",
                 align: "center",
-                sortable: "true"
+                sortable: "true",
                 }, {
                 title: 'ID',
                 field: 'id',
                 align: 'center',
                 sortable: true,
+
               }, {
                 title: 'Description',
                 field: 'description',
@@ -151,9 +175,6 @@ block primary
                     selections = getIdSelections()
                     // push or splice the selections if you want to save all data selections
                   })
-          $table.on('all.bs.table', function (e, name, args) {
-            console.log(name, args)
-          })
 
           $remove.click(function () {
             var ids = getIdSelections();
@@ -169,7 +190,6 @@ block primary
               values: ids
             });
 
-            //db.Term.destroy({ where: { id: ids}})
             $remove.prop('disabled', true)
           })
         }
@@ -179,63 +199,3 @@ block primary
 
           //$('#locale').change(initTable)
         })
-
-      table(class='table table-striped')
-        thead
-          tr
-            th(scope='col') Id
-            th(scope='col') Name
-            th(scope='col') Description
-            th(scope='col') Created
-            th(scope='col') Actions
-        tbody
-          //- creates all of the below tags for each item in the results array
-          //- results array is a select query for all posts in the posts table
-          each item in results
-            if (item.visible == 1)
-              tr
-                th(scope='row' class='col-lg-1') #{item.id}
-                td(class='col-lg-2') #{item.title}
-                td(class='col-lg-4') #{item.description}
-                td(class='col-lg-2') #{formatDate(item.created_on)}
-                //- Action Buttons for below table data tag. Each route request appropriatley.
-                td(class='col-lg-2')
-                  a(href='/edit/view/'+item.id class='btn')
-                    button(class='btn btn-primary' title='View Post')
-                      i(class="fas fa-eye")
-                  a(href='/edit/' + item.id class='btn')
-                    button(class='btn btn-success' title='Edit')
-                      i(class="far fa-edit")
-                  a(class='btn')
-                    button(type='button', class='btn btn-danger', onClick='confirmDelete('+item.id+')' title='Delete')
-                      i(class="fas fa-trash-alt")
-                  form(action='hide/'+item.id method='post' class='btn')
-                    button(type='submit' class='btn btn-info' title='Hide')
-                      i(class="fas fa-eye-slash")
-          tr(class='table-secondary')
-            td
-            td
-            th(scope='row') Not visible posts
-            td
-            td
-          each item in results
-            if (item.visible == 0)
-              tr
-                th(scope='row' class='col-lg-1') #{item.id}
-                td(class='col-lg-2') #{item.title}
-                td(class='col-lg-4') #{item.text}
-                td(class='col-lg-2') #{formatDate(item.created_on)}
-                //- Action Buttons for below table data tag. Each route request appropriatley.
-                td(class='col-lg-2')
-                  a(href='/edit/view/'+item.id class='btn')
-                    button(type='button', class='btn btn btn-primary' title='View Post')
-                      i(class="fas fa-eye")
-                  a(href='/edit/' + item.id class='btn')
-                    button(type='button' class='btn btn-success' title='Edit')
-                      i(class="far fa-edit")
-                  a( class='btn')
-                    button(type='button', class='btn btn-danger', onClick='confirmDelete('+item.id+')' title='Delete')
-                      i(class="fas fa-trash-alt")
-                  form(action='show/'+item.id method='post' class='btn')
-                    button(type='submit' class='btn btn-info' title='Show')
-                      i(class="fas fa-eye")

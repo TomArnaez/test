@@ -17,15 +17,21 @@ const validUserCredentials = {
     password: 'password'
 }
 
+const invalidUserCredentials = {
+  username: 'tom',
+  password: 'password2'
+}
+
 describe('Pages', () => {
     var authenticatedUser;
+    var badLoginUser;
     before(function (done) {
         authenticatedUser = request.agent(app)
         authenticatedUser
             .post('/admin/login')
             .send(validUserCredentials)
             .end(function (err, res) {
-                done();
+              done();
             })
     });
 
@@ -37,6 +43,7 @@ describe('Pages', () => {
                     res.should.have.status(200);
                     done();
                 })
+
         })
     });
 
@@ -62,15 +69,17 @@ describe('Pages', () => {
         })
     });
     describe('Admin Dashboard', ()  => {
-        it("It should return status 200", (done) => {
-            authenticatedUser
-                .get('/admin/dashboard')
-                .end((err, res) => {
-                    res.should.have.status(200);
-                    done();
-                })
-        })
+      it("It should return status 200", (done) => {
+        authenticatedUser
+            .get('/admin/dashboard')
+            .end((err, res) => {
+              res.should.have.status(200);
+              done();
+            })
+
+      });
     });
+
     describe('Respond To Questions', ()  => {
         it("It should return status 200", (done) => {
             authenticatedUser
@@ -101,69 +110,5 @@ describe('Pages', () => {
                 })
         })
     });
-
 })
 
-describe('Terms', ()  => {
-    let id = 0;
-    describe('/POST term', () => {
-        it("it should POST a single term", (done) => {
-            const term = {
-                termName: "testTag",
-                termType: "category",
-                description: "basic",
-                termSlug: "basic-description"
-            }
-            chai.request(app)
-                .post('/api/terms')
-                .send(term)
-                .end((err, res) => {
-                    res.should.have.status(201);
-                    res.body.should.have.property('data');
-                    res.body.should.have.property('message');
-                    res.body.should.have.property('statusType').eq('success');
-                    id = res.body.data.id;
-                    done();
-                });
-        })
-    });
-    describe('/GET terms', () => {
-        it("it should GET all the terms", (done) => {
-            chai.request(app)
-                .get('/api/terms')
-                .end((err, res) => {
-                    res.should.have.status(200);
-                    res.body.should.be.a('array')
-                    res.body[0].should.be.a('object');
-                    res.body[0].should.have.property("posts");
-                    done();
-                })
-        });
-    });
-    describe('/GET term', () => {
-        it("it should GET a single term", (done) => {
-            chai.request(app)
-                .get('/api/terms/' + id)
-                .end((err, res) => {
-                    res.should.have.status(200);
-                    res.body.should.be.a('object');
-                    res.body.should.have.property("posts");
-                    done();
-                })
-        })
-    });
-
-    describe('/DELETE term', () => {
-        it("it should DELETE a single term", (done) => {
-            chai.request(app)
-                .delete('/api/terms/' + id)
-                .end((err, res) => {
-                    res.should.have.status(200);
-                    res.body.should.have.property('data');
-                    res.body.should.have.property('message');
-                    res.body.should.have.property('statusType').eq('success');
-                    done();
-                })
-        })
-    });
-})

@@ -3,67 +3,27 @@ var router = express.Router();
 const db = require("../models");
 const Term = db.Term;
 const Post = db.Post;
+var axios = require('axios');
 
 router.get('/category/:category', function(req, res, next) {
-    let page = req.query.page;
-    if (page == null)
-        page = 0;
-
-    Term.findOne({where: {termSlug: req.params.category, termType: "category"}})
-            .then(token => {
-                if (token === null) {
-                    res.render('category', {found: false});
-                } else {
-                    const http = require('http')
-
-                    http.get("http://localhost:3000/api/posts?category=" + req.params.category, (resp) => {
-                        let data = "";
-                        resp.on("data", d => {
-                            data += d
-                        });
-                        resp.on("end", () => {
-                            let json = JSON.parse(data);
-                            console.log(json);
-                            var obj = {};
-                            obj.posts = json.filter(post => post.terms[0].termSlug == req.params.category);
-                            obj.found = true;
-                            obj.categoryName = token.termName;
-                            res.render('category', obj);
-                        });
-                    });
-                }
-            }
-        );
+    // Send get request to API to get posts
+    axios('http://localhost:3000/api/posts', {
+        method: 'GET',
+    }).then(results => {
+        results.data = results.data.filter(post => post.category.termSlug == req.params.category)
+        res.render('category', {posts: results.data, found: true, categoryName: req.params.category})
+    })
 });
 
 router.get("/tag/:tag", function(req, res, next) {
-    let page = req.query.page;
-    if (page == null)
-        page = 0;
-    Term.findOne({where: {termSlug: req.params.tag, termType: "tag"}})
-        .then(token => {
-            if (token === null) {
-                res.render('category', {found: false});
-            } else {
-                const http = require('http')
-                http.get("http://localhost:3000/api/posts?tag=" + req.params.tag, (resp) => {
-                    let data = "";
-                    resp.on("data", d => {
-                        data += d
-                    });
-                    resp.on("end", () => {
-                        let json = JSON.parse(data);
-                        json.found = true;
-                        json.categoryName = token.termName;
-                        // Don't zero index
-                        json.currentPage = json.currentPage + 1;
-                        json.next_page = "/posts/tag/" + req.params.tag + "?page=" + (parseInt(page) + 1);
-                        json.prev_page = "/posts/tag/" + req.params.tag + "?page=" + (parseInt(page) - 1);
-                        res.render('category', json);
-                    });
-                });
-            }
-        })
+    // Send get request to API to get posts
+    axios('http://localhost:3000/api/posts', {
+        method: 'GET',
+    }).then(results => {
+        console.log(results.data)
+        results.data = results.data.filter(post => post.tags.filter(tag => tag.termSlug == req.params.tag).length > 0)
+        res.render('category', {posts: results.data, found: true, categoryName: req.params.category})
+    })
 });
 /* GET post */
 router.get('/:category/:id/:slug', async(req, res, next) => {
