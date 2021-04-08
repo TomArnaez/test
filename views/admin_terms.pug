@@ -36,7 +36,6 @@ block primary
 
                 br
                 table(id="table" class="table table-bordered" data-toggle="table" data-pagination="true" data-toolbar="#toolbar" data-search="true")
-
                 script.
                     var $table = $('#table')
                     var $remove = $('#remove')
@@ -106,7 +105,7 @@ block primary
                             function () {
                                 $remove.prop('disabled', !$table.bootstrapTable('getSelections').length)
                                 // save your data, here just save the current page
-                                selections = getIdSelections()
+                                selections = getSelections()
                                 // push or splice the selections if you want to save all data selections
                             })
 
@@ -130,6 +129,7 @@ block primary
                     }
 
                     $(function() {
+                        console.log(!{JSON.stringify(terms)});
                         initTable();
                         //$('#locale').change(initTable)
                     })

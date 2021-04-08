@@ -18,10 +18,9 @@ router.get('/info', function(req, res, next) {
 
 // Fetches main feed page
 router.get('/feed', function(req, res, next) {
-  const seq = require("../models");
+  getUserPermission(req.user).then(function (permissions){
   //Checks user is authenticated.
   if (req.isAuthenticated()) {
-    const seq = require("../models");
     axios('http://localhost:3000/api/posts/', {
       method: 'GET',
         }).then(results => {
@@ -32,35 +31,50 @@ router.get('/feed', function(req, res, next) {
           res.redirect('/')
         });
   //Redirects user to login page if not authenticated
-  } else {
-      req.flash('error_msg', 'You are not authenticated.');
-      res.redirect("/admin/login");
-  }
-})
+    } else {
+        req.flash('error_msg', 'You are not authenticated.');
+        res.redirect("/admin/login");
+    }
+  });
+});
 
 router.get('/author/:id', function(req, res, next) {
-  //Checks user is authenticated.
-  if (req.isAuthenticated()) {
+  getUserPermission(req.user).then(function (permissions){
+    //Checks user is authenticated.
+    if (req.isAuthenticated()) {
 
-    db.query("SELECT * FROM users WHERE ? IN (id);", [req.params.id], function(err, result) {
+      db.query("SELECT * FROM users WHERE ? IN (id);", [req.params.id], function(err, result) {
 
-      //Error handling for databasae connection. Re-routes user to index page
-      if (err){
-          req.flash('error_msg', 'Error when accessing database');
-          res.redirect('/')
+        //Error handling for databasae connection. Re-routes user to index page
+        if (err){
+            req.flash('error_msg', 'Error when accessing database');
+            res.redirect('/')
 
-      } else {
-        res.render('author_info', {title: 'Author Information', results: result, back:req.header('Referer')})
-      }
-    });
+        } else {
+          res.render('author_info', {title: 'Author Information', results: result, back:req.header('Referer'), permission: permissions[0].permission_level})
+        }
+      });
 
-  } else {
-    req.flash('error_msg', 'You are not authenticated.');
-    res.redirect("/admin/login");
-  }
+    } else {
+      req.flash('error_msg', 'You are not authenticated.');
+      res.redirect("/admin/login");
+    }
+  });
 })
 
 module.exports = router;
+
+function getUserPermission(userID){
+  return new Promise((resolve,reject)=>{
+    db.query("SELECT * FROM users WHERE id = ?",[userID], (err, result)=> {
+        if(err) throw err
+        if(result.length > 0)
+        resolve(result);
+        else resolve(null);
+
+    });
+  });
+}
 
 function getDatabaseVersion() {
   var db = require('../database.js');

@@ -7,95 +7,76 @@ var router = express.Router();
 
 //Takes user to posts index page
 router.get('/', function(req, res, next) {
-  //Checks user is an admin. Only admins can access editing router
-  if (req.isAuthenticated()) {
-    //Gets all posts in database
-    db.query("SELECT * FROM posts;", [], function(err, result) {
-      if (err){
-          //error handling
-          req.flash('error_msg', 'Error when accessing database');
-          res.redirect('/')
-      } else {
-          res.render('posts_index', {title: 'Posts', results: result, messages: req.flash('error_msg'), active: 'view posts'});
-      }
-    });
-  } else {
-      //Returns user to login
-      req.flash('error_msg', 'You are not authenticated.');
-      res.redirect("/admin/login");
-  }
+  getUserPermission(req.user).then(function (permissions){
+
+    //Checks user is an admin. Only admins can access editing router
+    if (req.isAuthenticated()) {
+      //Gets all posts in database
+      db.query("SELECT * FROM posts;", [], function(err, result) {
+        if (err){
+            //error handling
+            req.flash('error_msg', 'Error when accessing database');
+            res.redirect('/')
+        } else {
+            res.render('posts_index', {title: 'Posts', results: result, messages: req.flash('error_msg'), active: 'view posts', permission: permissions[0].permission_level});
+        }
+      });
+    } else {
+        //Returns user to login
+        req.flash('error_msg', 'You are not authenticated.');
+        res.redirect("/admin/login");
+    }
+  });
 });
 
 //Renders page to view a post using the ID of the post
-router.get('/view/:id', async (req, res, next) => {
-  var post_id = req.params.id;
+router.get('/view/:id', function (req, res, next) {
+    getUserPermission(req.user).then(function (permissions) {
 
-  //Checks user is an admin. Only admins can access editing router
-  if (req.isAuthenticated()) {
-
-      axios('http://localhost:3000/api/posts/' + post_id, {
-          method: 'GET',
-      }).then(results => {
-          res.render('Post', {title: 'Post Viewer', id: post_id, postname: results.data.title, html: results.data.html, description: results.data.description,
-          category_url: results.data.category_url, category: results.data.category, tags: results.data.tags, user: results.data.user, post:results.data});
-      }).catch(error => {
-          req.flash('error_msg', 'No post with id: \'' + post_id + '\' in database');
-          res.redirect('/edit/');
-      })
-  } else {
-      req.flash('error_msg', 'You are not authenticated.');
-      res.redirect("/admin/login");
-  }
-
-});
-
-router.get('/view/title/:title', function (req, res, next) {
-  var post_title = req.params.title;
-
-  //Checks user is an admin. Only admins can access editing router
-  if (req.isAuthenticated()) {
-
-    //Query to get the post from the database
-    db.query("SELECT title, html FROM posts WHERE ? IN (title) LIMIT 1;", [post_title], function(err, result) {
-
-      //error handling for database errors
-      if (err) {
-        req.flash('error_msg', 'Error connecteing with database')
-        res.redirect('/edit/');
-      } else {
-
-        //Checks a post with the ID Exists and renders a page with the post
-        if (result.length != 0) {
-          res.render('Post', {title: 'Post Viewer', id:post_title, postname:result[0].title, doc:result[0].html,});
-
-        //Redirects user to Posts index if no post exists in the data base with the provided ID
+        var post_id = req.params.id;
+        //Checks user is an admin. Only admins can access editing router
+        if (req.isAuthenticated()) {
+            // Send get request to API to get posts
+            axios('http://localhost:3000/api/posts/' + post_id, {
+                method: 'GET',
+            }).then(results => {
+                res.render('Post', {
+                    title: 'Post Viewer',
+                    id: post_id,
+                    postname: results.data.title,
+                    html: results.data.html,
+                    description: results.data.description,
+                    category_url: results.data.category_url,
+                    category: results.data.category,
+                    tags: results.data.tags,
+                    user: results.data.user,
+                    post: results.data
+                });
+            }).catch(error => {
+                req.flash('error_msg', 'No post with id: \'' + post_id + '\' in database');
+                res.redirect('/edit/');
+            })
         } else {
-          req.flash('error_msg', 'No post with title: \'' + post_title + '\' in database');
-          res.redirect('/edit/');
+            req.flash('error_msg', 'You are not authenticated.');
+            res.redirect("/admin/login");
         }
-      }
     });
-
-  //Redirects user to login page if they are not logged in
-  } else {
-      req.flash('error_msg', 'You are not authenticated.');
-      res.redirect("/admin/login");
-  }
-})
+});
 
 //Renders empty post editor to create a new post
 router.get('/new', function (req, res, next) {
+  getUserPermission(req.user).then(function (permissions){
+    //Checks user is an admin. Only admins can access editing router
+    if (req.isAuthenticated()) {
+        res.render('text_editor', {title: 'Content Editor', postname:null, doc: null, back: '/edit/', active: 'create posts', permission: permissions[0].permission_level});
 
-  //Checks user is an admin. Only admins can access editing router
-  if (req.isAuthenticated()) {
-      res.render('text_editor', {title: 'Content Editor', postname:null, doc: null, back: '/edit/', active: 'create posts'});
-
-  //Redirects user to login page if they are not authenticated
-  } else {
-      req.flash('error_msg', 'You are not authenticated.');
-      res.redirect("/admin/login");
-  }
-})
+    //Redirects user to login page if they are not authenticated
+    } else {
+        req.flash('error_msg', 'You are not authenticated.');
+        res.redirect("/admin/login");
+    }
+  });
+});
 
 //Saves post in database
 router.post('/new', function (req, res) {
@@ -178,36 +159,29 @@ router.post('/new', function (req, res) {
 //Renders page to edit post with given ID
 router.get('/:id', function (req, res, next) {
   var post_id = req.params.id;
-  const db = require("../models");
-  const Term = db.Term;
-  const Post = db.Post;
+  getUserPermission(req.user).then(function (permissions){
 
-  //Checks user is an admin. Only admins can access editing router
-  if (req.isAuthenticated()) {
-
-  //Query database for post with provided ID
-  Post.findOne({where: {id: post_id}, include: { model: db.Term, as: "terms"}})
-      .then(post => {
-          if (post != null) {
-              res.render('text_editor', {postname:post.title, html:post.html, posttags: post.tags,
-                  category_id: post.category_id, description: post.description, back: '/edit/', messages: req.flash()});
-          } else {
-              req.flash('error_msg', 'No post with id: \'' + post_id + '\' in database');
-              res.redirect('/edit');
-          };
-      })
-      .catch(err => {
-          req.flash('error_msg', 'Error connecteing with database');
-          res.redirect('/edit');
-      })
-
-  //Redirects user to login page if not authenticated
-  } else {
-      req.flash('error_msg', 'You are not authenticated.');
-      res.redirect("/admin/login");
-  }
-
-})
+    //Checks user is an admin. Only admins can access editing router
+    if (req.isAuthenticated()) {
+        // Send get request to API to get post with provided iq
+        axios('http://localhost:3000/api/posts/' + post_id, {
+            method: 'GET',
+        }).then(results => {
+            res.render('text_editor', {title: 'Content Editor', postname:results.data.title, doc:results.data.html, posttags: results.data.tags,
+                category_url: results.data.category_url, category: results.data.category, description: results.data.description,
+                back: req.header('referer'), permission: permissions[0].permission_level});
+            })
+            .catch(err => {
+                req.flash('error_msg', 'No post with id: \'' + post_id + '\' in database');
+                res.redirect('/edit');
+            });
+      //Redirects user to login page if not authenticated
+      } else {
+          req.flash('error_msg', 'You are not authenticated.');
+          res.redirect("/admin/login");
+      }
+  });
+});
 
 router.get('/hide/:post_id', function(req, res, next) {
   db.query("UPDATE posts SET visible = ? WHERE id = ?;", [0, req.params.post_id], function(err, result) {
@@ -295,8 +269,30 @@ router.get('/delete/:id', function(req, res, next) {
 })
 
 //edit, create, update, delete functions.
+function process(userID, callback){
+  getUserPermission(function (err, data) {
+    db.query("SELECT * FROM users WHERE id = ?",[userID], (err, result)=> {
+        if(err) throw err
+        if(result.length > 0)
+        return callback(result);
+        else return callback(0);
+    });
+  });
+}
 
 module.exports = router;
+
+function getUserPermission(userID){
+  return new Promise((resolve,reject)=>{
+    db.query("SELECT * FROM users WHERE id = ?",[userID], (err, result)=> {
+        if(err) throw err
+        if(result.length > 0)
+        resolve(result);
+        else resolve(null);
+
+    });
+  });
+}
 
 function getTime() {
     const date = new Date();

@@ -50,7 +50,7 @@ exports.delete = (req, res) => {
         .then(del => {
             if (del === 1) {
                 res.status(200).json(
-                    ResponseFormat.build(del, "Term created successfully", 201, "success")
+                    ResponseFormat.build(del, "Term deleted successfully", 201, "success")
                 );
             } else {
                 res.status(400).json(

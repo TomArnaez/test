@@ -12,7 +12,7 @@ router.get('/', function(req, res, next) {
         axios('http://localhost:3000/api/terms/', {
             method: 'GET',
         }).then(results => {
-            res.render('admin_terms', {terms: results.data.rows, active: 'term manager'})
+            res.render('admin_terms', {terms: results.data, active: 'term manager'})
         })
             .catch(err => {
                 req.flash("error_msg", err);

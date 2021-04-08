@@ -3,7 +3,7 @@ extends side-nav-sublayout
 
 append head
   script(type="application/javascript" src="/tinymce/tinymce.min.js")
-  script(id='config' data-content=html type="application/javascript" src= "/js/tinymce-config.js")
+  script(id='config' data-content=doc type="application/javascript" src= "/js/tinymce-config.js")
   
 block primary
   div(class='container-fluid')
@@ -12,11 +12,11 @@ block primary
   //- container for post form
   div(class='container-xl')
       form(name="editor-form", method="post")
-        div(id='input' class="form-row")
-            div(class="form-group col-md-6")
+        div(id='input' class="row")
+            div(class="form-group col-sm-4")
                 label(for='filename') Title:
                 input(type="text" class="form-control" id='postLbl', name="filename", value=postname, placeholder="Enter the title for the post here...")
-            div(class="form-group col-md-6")
+            div(class="form-group col-sm-4")
                 label(for='category') Category:
                 select(class="form-control" name="category")
                     for category in categories
@@ -24,36 +24,36 @@ block primary
                             option(value=category.id selected) #{category.termName}
                         else
                             option(value=category.id) #{category.termName}
-            div(class="form-group col")
-                p Tags:
-                input(type="text" class="form-control" id="tagstype" name='tags')
-                script.
-                    const tags = new Bloodhound({
-                        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('termName'),
-                        queryTokenizer: Bloodhound.tokenizers.whitespace,
-                        local: !{JSON.stringify(tags)}
-                    });
+        div(class="form-group col")
+            label(for='tagstype') Tags:
+            input(type="text" class="form-control" id="tagstype" name='tags')
+            script.
+                const tags = new Bloodhound({
+                    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('termName'),
+                    queryTokenizer: Bloodhound.tokenizers.whitespace,
+                    local: !{JSON.stringify(tags)}
+                });
 
+                $('#tagstype').tagsinput({
+                    itemValue: 'id',
+                    itemText: 'termName',
+                    freeInput: true,
+                    typeaheadjs: ({
+                        hint: true,
+                        highlight: true,
+                        minLength: 1
+                    }, {
+                        name: 'states',
+                        displayKey: 'termName',
+                        source: tags
+                    })
+                });
 
-                    $('#tagstype').tagsinput({
-                        itemValue: 'id',
-                        itemText: 'termName',
-                        freeInput: true,
-                        typeaheadjs: ({
-                            hint: true,
-                            highlight: true,
-                            minLength: 1
-                        }, {
-                            name: 'states',
-                            displayKey: 'termName',
-                            source: tags
-                        })
-                    });
-
-                    // Enable the tags already applied to this this post in the tag input form.
-                    $.each(!{JSON.stringify(posttags)}, function (index, value) {
-                        $('#tagstype').tagsinput('add', value);
-                    });
+                // Enable the tags already applied to this this post in the tag input form.
+                $.each(!{JSON.stringify(posttags)}, function (index, value) {
+                    $('#tagstype').tagsinput('add', value);
+                });
+        br
         div(class="form-group")
             label(for="description") Description:
             textarea(type="text" class="form-control" id="descriptionLabel" rows="2" name="description" placeholder="A brief description of this post's content...") #{description}

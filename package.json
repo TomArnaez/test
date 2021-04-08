@@ -1,7 +1,7 @@
 {
   "name": "segmajorproject",
   "engines": {
-    "node": ">=15.12.0"
+    "node": "15.12.0"
   },
   "version": "0.0.0",
   "private": true,
@@ -27,6 +27,7 @@
     "http-errors": "*",
     "jquery": "*",
     "jsonwebtoken": "*",
+    "mocha": "^8.3.2",
     "morgan": "*",
     "multer": "*",
     "mysql": "*",
@@ -49,7 +50,6 @@
   },
   "devDependencies": {
     "chai": "*",
-    "chai-http": "*",
-    "mocha": "*"
+    "chai-http": "*"
   }
 }

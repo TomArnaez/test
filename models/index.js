@@ -22,6 +22,8 @@ db.User = require('./user.model.js')(sequelize, Sequelize);
 const postTerms = sequelize.define('postTerms', {
 }, { timestamps: false});
 
+db.PostTerms = postTerms;
+
 db.Post.belongsToMany(db.Term, {through: postTerms});
 db.Term.belongsToMany(db.Post, {through: postTerms});
 db.User.hasMany(db.Post, {

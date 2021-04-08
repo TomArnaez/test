@@ -17,15 +17,6 @@ router.get('/login', (req, res) => {
 })
 
 /**
- * There is no ability to register in this version of the software. This is by design as only admin users should exist.
- * This may change in a future version
- */
-router.get('/register', (req, res) => {
-    req.flash('error_msg', 'You can not register.');
-    res.redirect('/admin/login');
-})
-
-/**
  * Process a login request. Passport handles the session token & login script (found in passport.js).
  */
 router.post('/login', (req, res, next) => {
@@ -218,14 +209,125 @@ router.post('/forgotpassword', (req, res) => {
     }
 })
 
-/**
- * There is no ability to register in this version of the software. This is by design as only admin users should exist.
- * This may change in a future version
- */
-router.post('/register', (req, res) => {
-    req.flash('error_msg', 'You can not register.');
-    res.redirect('/admin/login');
+router.get('/register', (req, res) => {
+    res.render('register-partA');
 })
+
+router.post('/register', (req, res) => {
+    if(req.body.code != ""){
+        res.redirect('/admin/register/' + req.body.code);
+    } else {
+        req.flash('error_msg', 'Please enter an account creation code.');
+        res.redirect('/admin/register');
+    }
+
+})
+
+router.get('/register/:token', (req, res) => {
+    isValidRegToken(req.params.token).then(function (result) {
+        if(result){
+            res.render('register-partB', { token: req.params.token });
+        } else {
+            req.flash('error_msg', 'Invalid code.');
+            res.redirect('/admin/register');
+        }
+    })
+})
+
+router.post('/register/:token', (req, res) => {
+    isValidRegToken(req.params.token).then(function (result) {
+        if (result) {
+            //check fields are not empty
+            if (req.body.email == "" ||
+                req.body.username == "" ||
+                req.body.fname == "" ||
+                req.body.lname == "" ||
+                req.body.role == "") { //Check that fields are not empty.
+                req.flash('error_msg', 'Missing field(s).');
+                res.redirect("/admin/register/" + req.params.token);
+            } else {
+                //check valid role
+                if (req.body.role != "patient" || req.body.role != "parent") {
+                    req.flash('error_msg', 'Invalid role.');
+                    res.redirect("/admin/register/" + req.params.token);
+                } else {
+                    //check tos accepted
+                    if(!req.body.tos) {
+                        req.flash('error_msg', 'You must accept the Terms and Condition and Privacy Policy.');
+                        res.redirect("/admin/register/" + req.params.token);
+                    } else {
+                        //check if email/username in use.
+                        db.query("SELECT id AS user_id FROM users WHERE ? = user_email LIMIT 1;", [req.body.email], function(err, result) {
+                            if (err) {
+                                req.flash('error_msg', 'No database connection.');
+                                res.redirect("/admin/register/" + req.params.token);
+                            }
+                            if (result.length > 0){
+                                req.flash('error_msg', 'This email is already in use.');
+                                res.redirect("/admin/register/" + req.params.token);
+                            } else {
+                                db.query("SELECT id AS user_id FROM users WHERE ? = user_login LIMIT 1;", [req.body.username], function(err, result) {
+                                    if (err) {
+                                        req.flash('error_msg', 'No database connection.');
+                                        res.redirect("/admin/register/" + req.params.token);
+                                    }
+                                    if (result.length > 0){
+                                        req.flash('error_msg', 'This username is already in use.');
+                                        res.redirect("/admin/register/" + req.params.token);
+                                    } else {
+                                        //random password to begin with:
+                                        let newpass = [...Array(16)].map(i=>(~~(Math.random()*36)).toString(36)).join('');
+
+                                        //add user to database
+                                        bcrypt.hash(newpass, 10, function(err, newhash) { //Hash new password and update database.
+                                            db.query("INSERT INTO `users` (`id`, `user_login`, `user_email`, `user_pass`, `user_fname`, `user_lname`, ) VALUES (NULL, '?', '?', '?', '?', '?')", [req.body.username, req.body.email, newhash, req.body.fname, req.body.lname], function(err, result) {
+                                                if (err) {
+                                                    req.flash('error_msg', 'No database connection.');
+                                                    res.redirect("/admin/register/" + req.params.token);
+                                                }
+
+                                                //TODO: user activation/must confirm email to continue?
+
+                                                //success, redirect to login/homepage & decrement uses remaining
+                                                decrementRegToken(req.params.token)
+                                                req.flash('success_msg', 'Account created! Please login:');
+                                                res.redirect("/admin/login");
+
+                                            });
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            }
+        } else {
+            req.flash('error_msg', 'Invalid code.');
+            res.redirect('/admin/register');
+        }
+    })
+})
+
+function isValidRegToken(token) {
+    return new Promise(function (resolve, reject) {
+        db.query("SELECT * FROM registration_codes WHERE code = ? AND expiry > CURRENT_TIMESTAMP AND uses_remaining > 0 LIMIT 1;", [token], function (err, result) {
+            if (err) {
+                reject("No database connection.");
+            } else {
+                if (result.length > 0) {
+                    resolve(true);
+                } else {
+                    resolve(false);
+                }
+            }
+        });
+    });
+}
+
+function decrementRegToken(token) {
+    db.query("UPDATE registration_codes SET uses_remaining = uses_remaining - 1 WHERE code = ?;", [token]);
+}
 
 /**
  * Process a user logout. This kills the session.
@@ -236,6 +338,27 @@ router.get('/logout', (req, res) => {
     res.redirect('/admin/login');
 })
 
+//Get parent/patient/staff as string
+function getUserViewRole(userid) {
+    var db = require('../database.js');
+    return new Promise(function (resolve, reject){
+        db.query("SELECT view_role as ROLE FROM users WHERE id = ?", [userid], function (err, result) {
+            if (err) reject(err);
+            resolve(result[0].ROLE);
+        });
+    });
+}
+
+//Get permission level (int)
+function getUserPermLevel(userid) {
+    var db = require('../database.js');
+    return new Promise(function (resolve, reject){
+        db.query("SELECT permission_level as LEVEL FROM users WHERE id = ?", [userid], function (err, result) {
+            if (err) reject(err);
+            resolve(result[0].LEVEL);
+        });
+    });
+}
 
 // Everything after this middleware will REQUIRE a login!
 /**

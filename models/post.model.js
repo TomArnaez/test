@@ -34,7 +34,10 @@ module.exports = (sequelize, Sequelize) => {
         category: {
             type: DataTypes.VIRTUAL,
             get() {
-                return `${this.terms[0].termSlug}`;
+                if (this.terms != null)
+                    return `${this.terms[0].termSlug}`;
+                else
+                    return "uncategorised";
             },
             set(value) {
                 throw new Error("Do not try to set a category value!");
@@ -43,7 +46,10 @@ module.exports = (sequelize, Sequelize) => {
         category_id: {
             type: DataTypes.VIRTUAL,
             get() {
-                return `${this.terms[0].id}`;
+                if (this.terms != null)
+                    return `${this.terms[0].id}`;
+                else
+                    return "0";
             },
             set(value) {
                 throw new Error("Do not try to set a category value!");
@@ -61,16 +67,23 @@ module.exports = (sequelize, Sequelize) => {
         category_url: {
             type: DataTypes.VIRTUAL,
             get() {
-                return `${this.terms[0].url}`;
+                if (this.terms != null)
+                    return `${this.terms[0].url}`;
+                else
+                    return null;
             },
             set(value) {
                 throw new Error("Do not try to set a category url value!");
             }
         },
+
         tags: {
             type: DataTypes.VIRTUAL,
             get() {
-                return this.terms.filter(term => term.termType == "tag")
+                if (this.terms != null)
+                    return this.terms.filter(term => term.termType == "tag")
+                else
+                    return [];
             },
             set(value) {
                 throw new Error("Do not try to set a category url value!");
