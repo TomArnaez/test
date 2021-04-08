@@ -1,39 +1,35 @@
 extends side-nav-sublayout
 
-//- hiding sidebar for people not logged in
-append head
-  style(type='text/css').
-    .side-panel {
-      display: none;
-    }
-    img.fluid {
-      max-width: 40%;
-      height: auto;
-    }
-
 block primary
-  
-  div(class='container-fluid')
-    br
-    h1= title
-    br
-      
-  h6 Welcome to Information Hub for Kings Young Adults Liver Center
-  h6 Database version: #{databaseVersion}
-  br
-  div 
-    img(src="", alt="xxx" class='rounded img-fluid')
-    br
-  div(class='container-xl')
-    div 
-      a(href='/admin/login') 
-        button(class='btn btn-success mb-2 w-25') Login
-    div
-      a(href='/contact') 
-        button(class='btn btn-primary mb-2 w-25') Contact Us
-    div
-      a(href='/message')
-        button(class='btn btn-warning mb-2 w-25') Send Message
-    div
-      a(href='/admin/message')
-        button(class='btn btn-danger mb-2 w-25') Messages Admin Panel
+    div(class='container-fluid')
+    h1 Media Content Manager
+    include ./partial/msg 
+
+    a(href='/admin/upload')
+        button(class='btn btn-primary mb-4') Upload File
+    
+    ul
+        each file in files
+            li
+                a(href=file[0]) #{file[1]}
+                if file[3]
+                    form(action=file[2] + '?update', method='POST')
+                        label Name
+                        input(type='text', name='name', value=file[4])
+                        br
+                        label File Type
+                        input(type='text', name='filetype', value=file[5])
+                        br
+                        input(type='submit', value='Update')
+                        if file[6]
+                            br
+                            label Uploaded by #{file[6]}
+                        if file[7]
+                            br
+                            label Last modified by #{file[7]}
+                else
+                    form(action=file[2] + '?convert', method='POST')
+                        input(type='submit', value='Convert')
+                form(action=file[2] + '?delete', method='POST')
+                    input(type='submit', value='Delete')
+                br
