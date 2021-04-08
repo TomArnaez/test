@@ -34,37 +34,50 @@ app.use(bodyParser.json());
 
 /* Contact Us page */
 router.post('/contact/send', (req, res) => {
-    const message = `
-    <p>You have a new contact request</p>
-    <h3>Contact Details</h3>
-    <ul>
-      <li>Name: ${req.body.name}</li>
-      <li>Email: ${req.body.email}</li>
-      <li>Phone: ${req.body.phone}</li>
-    </ul>
-    <h3>Message</h3>
-    <h4>${req.body.title}</h4>
-    <p>${req.body.message}</p>
-  `;
+    const name = req.body.name;
+    const email = req.body.email;
+    const phone = req.body.phone;
+    const title = req.body.title;
+    const messageBody = req.body.message;
+    const regexEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+    const regexPhone = /^[0-9]*\d$/
 
-    // setup email data with unicode symbols
-    let mailOptions = {
-        from: '"Information Hub" <informationhub.kings@gmail.com>', // sender address
-        to: 'informationhub.kings@gmail.com', // list of receivers
-        subject: `${req.body.title}`, // Subject
-        text: 'Nothing for now!', // text body
-        html: message // html body
-    };
+    if(name.length >= 5 && regexEmail.test(email) && regexPhone.test(phone) && title.length >= 5 && messageBody.length >= 20){
+        const message = `
+        <p>You have a new contact request</p>
+        <h3>Contact Details</h3>
+        <ul>
+          <li>Name: ${name}</li>
+          <li>Email: ${email}</li>
+          <li>Phone: ${phone}</li>
+        </ul>
+        <h3>Message</h3>
+        <h4>${title}</h4>
+        <p>${messageBody}</p>
+      `;
 
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) return console.log(error);
+        // setup email data with unicode symbols
+        let mailOptions = {
+            from: '"Information Hub" <informationhub.kings@gmail.com>', // sender address
+            to: 'informationhub.kings@gmail.com', // list of receivers
+            subject: `${req.body.title}`, // Subject
+            text: 'Nothing for now!', // text body
+            html: message // html body
+        };
 
-        console.log('Message has been sent: %s', info.messageId);
-        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) return console.log(error);
 
-        req.flash('success_msg', 'Your Message Has Been Sent!!!');
+            console.log('Message has been sent: %s', info.messageId);
+            console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+
+            req.flash('success_msg', 'Your Message Has Been Sent!!!');
+            res.redirect("/contact");
+        });
+    }else{
+        req.flash('error_msg', 'Invalid Input');
         res.redirect("/contact");
-    });
+    }
 });
 
 /*

@@ -163,7 +163,6 @@ router.post('/message/send', (req,res) => {
     const title = `${req.body.title}`;
     const messageBody = `${req.body.message}`;
 
-    console.log(req.body);
     if(user.length != 0 && title.length >= 5 && messageBody.length >= 20)
     {
         db.query("INSERT INTO messages VALUE (DEFAULT,? ,? ,? ,? ,?,NULL,NULL,NULL, ?)",
