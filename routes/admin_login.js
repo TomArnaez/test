@@ -247,7 +247,7 @@ router.post('/register/:token', (req, res) => {
                 res.redirect("/admin/register/" + req.params.token);
             } else {
                 //check valid role
-                if (req.body.role != "patient" || req.body.role != "parent") {
+                if (!(req.body.role == "patient" || req.body.role == "parent")) {
                     req.flash('error_msg', 'Invalid role.');
                     res.redirect("/admin/register/" + req.params.token);
                 } else {
