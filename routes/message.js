@@ -52,7 +52,7 @@ router.get('/admin/respond/forward/:custom_id', async (req, res) => {
     db.query("SELECT * FROM messages WHERE ? IN (custom_id) LIMIT 1;", [req.params.custom_id], function(err, result) {
         //Error handling for database connection. Reroutes user to posts index (most likely the origin)
         if (err) {
-          console.log('Error connecteing with database');
+          console.log('Error connecting with database');
           req.flash('error_msg', 'Failed to connect to database: ' + err);
           res.redirect('/admin/message');
         } else {
@@ -71,6 +71,49 @@ router.get('/admin/respond/forward/:custom_id', async (req, res) => {
     res.redirect('admin/login');
   }
 })
+
+
+//for forwarding messages to specific email
+router.post('/admin/respond/forward/:custom_id', (req,res) => {
+    const messageId = req.params.custom_id;
+// ------------
+    db.query("SELECT title, message, time FROM messages JOIN users ON messages.user_id = users.id WHERE custom_id = ?",
+        [messageId], (err, result)=>{
+            if (err) {
+                req.flash('error_msg', 'No database connection.');
+                console.log('error connecting: ' + err);
+                res.redirect("/admin/message");
+            }
+            else {
+                let userEmail = req.body.ccEmail;
+                let respondMessage = req.body.responseMessage;
+
+                if(userEmail.length < 4 || respondMessage.length < 1)
+                {
+                    req.flash('error_msg', `Email Wasn't sent :(`);
+                    console.log('e-mail failed to send');
+                }else
+                {
+                    let messageHTML = `
+                    <h2> This Message Was Forwarded to You </h2>
+                    <p>------------------------------------------------</p>
+                    <h3> Title of the message: ${result[0].title}</h3>
+                    <h3> Message Body: ${req.body.message} </h3>                    
+                    <p>------------------------------------------------</p>
+                    <h3> Admin Notes: ${respondMessage} <h3>
+                    `
+                    email.sendEmail(userEmail, 'Forwarded Message: '.concat(result[0].title) + ` (${messageId})`,
+                        messageHTML, `${req.body.ccEmail}`);
+
+                }
+
+                req.flash('success_msg', 'Your Message Has Been Sent');
+                res.redirect("/admin/message");
+            }
+        });
+});
+
+
 
 // Gets page to create a new Questions
 router.get('/message/new', async (req,res) => {
@@ -158,7 +201,7 @@ router.post('/message/send', (req,res) => {
     const customID = getUniqueID();
     const currentTime = getTime();
     let isPublic = 1;
-    if(`${req.body.public}` == 0) isPublic = 0;
+    if(req.body.public != 1) isPublic = 0;
     const user = req.user;
     const title = `${req.body.title}`;
     const messageBody = `${req.body.message}`;
