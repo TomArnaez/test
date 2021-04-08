@@ -35,7 +35,7 @@ module.exports = (sequelize, Sequelize) => {
             type: DataTypes.VIRTUAL,
             get() {
                 if (this.terms != null)
-                    return `${this.terms[0].termSlug}`;
+                    return `${this.terms.find(t => t.termType == "category").termName}`;
                 else
                     return "uncategorised";
             },
@@ -47,7 +47,7 @@ module.exports = (sequelize, Sequelize) => {
             type: DataTypes.VIRTUAL,
             get() {
                 if (this.terms != null)
-                    return `${this.terms[0].id}`;
+                    return `${this.terms.find(t => t.termType == "category").id}`;
                 else
                     return "0";
             },

@@ -64,12 +64,9 @@ exports.findOne = (req, res) => {
 }
 
 exports.delete = (req, res) => {
-    console.log(req.params);
     const id = req.params.id
     return Post.destroy({where: {id: id}})
         .then(del => {
-            console.log(id);
-            console.log(del);
             if (del === 1) {
                 res.status(200).json(
                     ResponseFormat.build(del, "Post deleted successfully", 201, "success")
@@ -88,15 +85,18 @@ exports.delete = (req, res) => {
 }
 
 exports.create = (req, res) => {
-    console.log(req.body)
-    Post.create({ title: req.body.title, html: req.body.html, author_id: req.body.author_id, description: req.body.description})
+    return Post.create({ title: req.body.title, html: req.body.html, author_id: req.body.author_id, description: req.body.description})
         .then(post => {
+            // Add Category association
             db.PostTerms.create({postId: post.id, termId: req.body.category})
                 .then(pt => {
-                    post.getTerms().then(a => {
-                        console.log(a);
-                    })
                 })
+            // Add Tag association
+            if (req.body.tags)
+              req.body.tags.forEach(tag => {
+                db.PostTerms.create({postId: post.id, termId: tag});
+              })
+
             res.status(201).json(
                 ResponseFormat.build(post, "Post created successfully", 201, "success")
             );
@@ -106,4 +106,39 @@ exports.create = (req, res) => {
                 ResponseFormat.error(String(err), "Something went wrong with creating post", 400, "error")
             );
         })
+}
+
+exports.update = (req, res) => {
+  return Post.findOne({where: {id: req.body.id}, include: [{ model: Term, as: "terms"}]})
+      .then(post => {
+        if (req.body.title)
+          post.title = req.body.title
+        if (req.body.html)
+          post.html = req.body.html
+        if (req.body.description)
+          post.description = req.body.description
+        if (req.body.last_modified) {
+          post.last_modified = req.body.last_modified;
+        }
+        if (req.body.category) {
+          db.PostTerms.destroy({where: {postId: req.body.id, termId: post.category_id}})
+          db.PostTerms.create({postId: req.body.id, termId: req.body.category})
+        }
+        if (req.body.tags) {
+          post.tags.forEach(tag => {
+            db.PostTerms.destroy({where: {postId: req.body.id, termId: tag.id}})
+          })
+          req.body.tags.forEach(tag => {
+            if (tag != '')
+              db.PostTerms.create({postId: req.body.id, termId: tag})
+          })
+        }
+        post.save();
+        res.status(201).json(ResponseFormat.build(post, "Post created successfully", 201, "success"))
+    })
+      .catch(err=> {
+        res.status(400).json(
+            ResponseFormat.error(String(err), "Something went wrong with creating post", 400, "error")
+        );
+      })
 }

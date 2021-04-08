@@ -9,6 +9,7 @@ router.get('/posts', posts.findAll);
 router.get('/posts/:id', posts.findOne);
 router.post('/posts', posts.create);
 router.delete('/posts/:id', posts.delete);
+router.put('/posts', posts.update);
 
 // Term routes
 router.get('/terms/:id', terms.findOne);

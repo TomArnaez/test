@@ -186,14 +186,13 @@ block content
                             a(class='dropdown-item' href='/media') Media Manager
                       li(class='nav-item' id='navbar-small')
                         a(class='nav-link' href='/admin/dashboard') Account
-                    div(id='navbar-big' class="form-row")
-                        div(id='input' class="form-row")
-                            div(class="col-lg")
-                                include search_dropdown
-                            div(class="col-md")
-                                a(href='/admin/dashboard' id='navbar-big')
-                                    button(class='btn btn-outline-primary my-2 my-sm-0' style='margin-left:10px ') Account
-                                        i(class="fas fa-user-circle" style='padding-left:8px')
+                    div(id='navbar-big' class="row")
+                        div(class="col-md")
+                            include search_dropdown
+                        div(class="col-md")
+                            a(href='/admin/dashboard' id='navbar-big')
+                                button(class='btn btn-outline-primary my-2 my-sm-0' style='margin-left:10px ') Account
+                                    i(class="fas fa-user-circle" style='padding-left:8px')
                     //- Todo: add code to only show if admin
                       //- div(class='d-flex justify-content-end' )
 

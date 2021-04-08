@@ -25,7 +25,7 @@ block primary
                         else
                             option(value=category.id) #{category.termName}
         div(class="form-group col")
-            label(for='tagstype') Tags:
+            p Tags:
             input(type="text" class="form-control" id="tagstype" name='tags')
             script.
                 const tags = new Bloodhound({
@@ -33,7 +33,6 @@ block primary
                     queryTokenizer: Bloodhound.tokenizers.whitespace,
                     local: !{JSON.stringify(tags)}
                 });
-
                 $('#tagstype').tagsinput({
                     itemValue: 'id',
                     itemText: 'termName',
@@ -48,15 +47,16 @@ block primary
                         source: tags
                     })
                 });
-
-                // Enable the tags already applied to this this post in the tag input form.
-                $.each(!{JSON.stringify(posttags)}, function (index, value) {
-                    $('#tagstype').tagsinput('add', value);
-                });
-        br
+                var current_tags = !{JSON.stringify(posttags)}
+                if (current_tags)
+                    // Enable the tags already applied to this this post in the tag input form.
+                    $.each(current_tags, function (index, value) {
+                        $('#tagstype').tagsinput('add', value);
+                    });
         div(class="form-group")
             label(for="description") Description:
             textarea(type="text" class="form-control" id="descriptionLabel" rows="2" name="description" placeholder="A brief description of this post's content...") #{description}
+        br
         div.input
             textarea(name="content", id="my-expressjs-tinymce-app", value="Enter title here")
         br

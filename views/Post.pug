@@ -22,7 +22,7 @@ block primary
             - var i = 0;
             each tag in tags
                 - i++;
-                span  #[a(href=tag.url) #{tag.url}]
+                span  #[a(href=tag.url) #{tag.termName}]
                     if (i < tags.length)
                         span ,
             p Description: #{post.description}
