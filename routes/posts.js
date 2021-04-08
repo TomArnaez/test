@@ -13,7 +13,6 @@ router.get('/category/:category', async(req, res, next) => {
             method: 'GET',
         }).then(results => {
             results.data = results.data.filter(post => post.category_slug == req.params.category)
-            console.log(results.data[0].terms)
             res.render('category', {posts: results.data, found: true, categoryName: req.params.category, permission: permissions[0].permission_level})
         })
     } else {
