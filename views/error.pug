@@ -1,13 +1,17 @@
-extends layout
+extends side-nav-sublayout
 
-block content
-  div(class='mx-auto text:center')
-    i(class='far fa-frown' style='font-size:200px')
-  div
-    h1(style='text-align:center')= error.status
-    h3(style='text-align:center')= 'Page Not Found'
-    h5(style='text-align:center')= 'The page you are looking for does not exist'
-    h5(style='text-align:center')= 'Go back or head over to the homepage to choose a new direction'
+block primary
+  div(class='container')
+    div(style='text-align:left')
+      i(class='far fa-frown' style='font-size:200px')
+    br
+    br
+    h1(style='text-align:left')= error.status + ' Error'
+    br
+    h3(style='text-align:left')= 'Page Not Found'
+    br
+    h5(style='text-align:left')= 'The page you are looking for does not exist'
+    h5(style='text-align:left')= 'Go back or head over to the homepage to choose a new direction'
     br
   div
     //- pre #{error.stack}
