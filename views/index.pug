@@ -6,20 +6,44 @@ append head
     .side-panel {
       display: none;
     }
+  style(type='text/css').
+    #index-title {
+      font-size: 50px;
+      color: white;
+      background-color: #a10000;
+    }
+    #login-button, #contact-button, #message-button, #admin-button {
+      width: 20%;
+    }
+    #banner {
+      width: 100%;
+      height: auto;
+    }
 
 block primary
 
   div(class='container-fluid')
+    //- br
+    //- h1= title
+    //- br
+  br
+  div
+    h1(id='index-title' class='w-100' style='text-align:center')= 'Information Hub - Kings College Hospital'
     br
-    h1= title
+  div(class='container-xl')
+    div
+      a(href='/admin/login')
+        button(class='btn btn-success ml-4 mb-2 mr-5' id='login-button') Login
+      a(href='/contact')
+        button(class='btn btn-primary mb-2 mr-5' id='contact-button') Contact Us
+      a(href='/message')
+        button(class='btn btn-warning mb-2 mr-5' id='message-button') Send Message
+      a(href='/admin/message')
+        button(class='btn btn-danger mb-2' id='admin-button') Messages Admin Panel
     br
-
-  p Welcome to #{title}
-  p Database version: #{databaseVersion}
-  a(href='/admin/login') Login
-  br
-  a(href='/contact') Contact Us
-  br
-  a(href='/message') Send Message
-  br
-  a(href='/admin/message') Messages Admin Panel
+    div
+      img(src="/index-banner.png", alt="xxx" id='banner')
+    div
+      img(src="/index-banner-2.png", alt="xxx" id='banner')
+    br
+    h6 Database version: #{databaseVersion}

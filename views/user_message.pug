@@ -1,46 +1,45 @@
 extends side-nav-sublayout
 
 block primary
-    
-    div(class='container-fluid')
-      h1= title
 
-    include ./partial/msg
-    div(class='container-fluid' style='padding:2rem;')
-      a(href='/message/new')
-        button(type='button', class='btn btn-light') New Question
-      
-      
-    div(class='container-fluid')
-      div(class='row')
-        table(class='table table-striped')
-          thead
-            tr
-              th(scope='col') Message ID
-              th(scope='col') Title
-              th(scope='col') Message
-              th(scope='col') Time
-              th(scope='col') Response
-          tbody
-            if (message != null) 
-                each item in message
-                  tr
-                    th(scope='row') #{item.custom_id}
-                    td #{item.title}
-                    td #{item.message}
-                    td #{formatDate(item.time)}
-                    if (item.is_public == 1)
-                      td
-                        a(href='/edit/view/title/' + item.custom_id)
-                          button(class='btn btn-primary w-75 p-1 gap-2') View Post
-                    else
-                      if (item.response != null)
-                        td 
-                          a(href='/message/response/' + item.custom_id)
-                            button(class='btn btn-info w-75 p-1 gap-2') View Response
-                      else 
-                        td No Response yet, Keep checking back!
-                    //- Action Buttons for below table data tag. Each route request appropriatley.
-            else 
+  div(class='container-fluid')
+    h1= title
+
+  div(class='container-fluid mt-4 mb-4')
+    a(href='/message/new')
+      button(type='button', class='btn btn-primary') New Question
+
+
+  div(class='container-fluid')
+    div(class='row')
+      table(class='table table-striped table-bordered')
+        thead(class='thead-dark')
+          tr
+            th(scope='col') Message ID
+            th(scope='col') Title
+            th(scope='col') Message
+            th(scope='col') Time
+            th(scope='col') Response
+        tbody
+          if (message != null)
+            each item in message
               tr
-                td No Questions Asked Yet
+                th(scope='row') #{item.custom_id}
+                td #{item.title}
+                td #{item.message}
+                td #{formatDate(item.time)}
+                if (item.is_public == 1)
+                  td
+                    a(href='/edit/view/title/' + item.custom_id)
+                      button(class='btn btn-primary w-100 p-1 gap-2') View Post
+                else
+                  if (item.response != null)
+                    td
+                      a(href='/message/response/' + item.custom_id)
+                        button(class='btn btn-info w-100 p-1 gap-2') View Response
+                  else
+                    td No Response yet, Keep checking back!
+                //- Action Buttons for below table data tag. Each route request appropriatley.
+          else
+            tr
+              td No Questions Asked Yet

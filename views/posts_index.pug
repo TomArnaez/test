@@ -34,7 +34,7 @@ block primary
   //- Creates large Div container
   div(class='container-lg')
     div(class='col')
-      table(id="table" class="table table-bordered" data-toggle="table" data-pagination="true" data-search="true" data-group-by="true" data-group-by-field="visible" data-toolbar="#toolbar")
+      table(id="table" class="table table-bordered table-striped" data-toggle="table" data-pagination="true" data-search="true" data-group-by="true" data-group-by-field="visible" data-toolbar="#toolbar")
       script.
         var $table = $('#table')
         var $remove = $('#remove')
@@ -105,13 +105,13 @@ block primary
         }
 
         window.operateEvents = {
-            'click .remove': function (e, value, row, index) {
-              $table.bootstrapTable('remove', {
-                field: 'id',
-                values: [row.id]
-              })
-            }
+          'click .remove': function (e, value, row, index) {
+            $table.bootstrapTable('remove', {
+              field: 'id',
+              values: [row.id]
+            })
           }
+        }
 
         function initTable() {
           $table.bootstrapTable('destroy').bootstrapTable({
@@ -129,7 +129,7 @@ block primary
                 field: "visible",
                 align: "center",
                 sortable: "true",
-                }, {
+              }, {
                 title: 'ID',
                 field: 'id',
                 align: 'center',

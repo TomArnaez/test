@@ -23,36 +23,37 @@ block primary
   //- Container for contact form
   div(class='container-xl')
     form(method='post' action='contact/send')
-      p(style='font-weight: bold') * Required
+      h6(style='font-weight: bold') * Required
+      br
       //- Name
       div(class='form-group row')
-        label(for='name' class='col-sm-2 col-form-label') Full Name*
-        div(class='col-sm-10')
-          input(type='text' name='name' required=true minlength=5 placeholder='John Example' class='form-control')
+        label(for='name' class='col-sm-1 col-form-label') *Full Name
+        div(class='col-sm-6')
+          input(type='text' name='name' required=true minlength=5 placeholder='John Doe' class='form-control')
       br
       //- Email
       div(class='form-group row')
-        label(for='email' class='col-sm-2 col-form-label') Email*
-        div(class='col-sm-10')
+        label(for='email' class='col-sm-1 col-form-label') *Email
+        div(class='col-sm-6')
           input(type='text' name='email' required=true placeholder='email@example.com' class='form-control')
       br
       //- Phone
       div(class='form-group row')
-        label(for='phone' class='col-sm-2 col-form-label') Phone Number*
-        div(class='col-sm-10')
-          input(type='text' name='phone' required=true minlength=10 class='form-control')
+        label(for='phone' class='col-sm-1 col-form-label') *Phone
+        div(class='col-sm-6')
+          input(type='text' name='phone' required=true placeholder='07000000000' minlength=10 class='form-control')
       br
       //- Message Title
       div(class='form-group row')
-        label(for='title' class='col-sm-2 col-form-label') Subject*
-        div(class='col-sm-10')
-          input(type='text' name='title' required=true minlength=5 class='form-control')
+        label(for='title' class='col-sm-1 col-form-label') *Subject
+        div(class='col-sm-6')
+          input(type='text' name='title' required=true placeholder='Message subject' minlength=5 class='form-control')
       br
       //- Message Body
       div(class='form-group row')
-        label(for='message' class='col-sm-2 col-form-label') Message*
-        div(class='col-sm-10')
-          textarea(name='message' required=true minlength=20 placeholder='Type your message here' class='form-control')
+        label(for='message' class='col-sm-1 col-form-label') *Message
+        div(class='col-sm-6')
+          textarea(name='message' required=true minlength=20 rows='4' placeholder='Type your message here' class='form-control')
       br
       //- submit Button
-      button(class='btn btn-success' type='submit') Send
+      button(class='btn btn-success w-25' type='submit') Send
