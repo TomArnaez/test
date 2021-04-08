@@ -80,7 +80,7 @@ module.exports = (sequelize, Sequelize) => {
             type: DataTypes.VIRTUAL,
             get() {
                 if (this.terms != null)
-                    return `${this.terms[0].url}`;
+                    return `${this.terms.find(term => term.termType == "category").url}`;
                 else
                     return null;
             },
@@ -88,7 +88,6 @@ module.exports = (sequelize, Sequelize) => {
                 throw new Error("Do not try to set a category url value!");
             }
         },
-
         tags: {
             type: DataTypes.VIRTUAL,
             get() {

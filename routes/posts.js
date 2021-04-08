@@ -12,13 +12,14 @@ router.get('/category/:category', async(req, res, next) => {
         axios('http://localhost:3000/api/posts', {
             method: 'GET',
         }).then(results => {
-            console.log(results.data)
             results.data = results.data.filter(post => post.category_slug == req.params.category)
-            console
-            console.log(results.data);
+            console.log(results.data[0].terms)
             res.render('category', {posts: results.data, found: true, categoryName: req.params.category, permission: permissions[0].permission_level})
         })
+    } else {
+        res.redirect('/admin/login');
     }
+
 });
 
 router.get("/tag/:tag", async(req, res, next) => {
@@ -28,11 +29,13 @@ router.get("/tag/:tag", async(req, res, next) => {
         axios('http://localhost:3000/api/posts', {
             method: 'GET',
         }).then(results => {
-            console.log(results.data)
             results.data = results.data.filter(post => post.tags.filter(tag => tag.termSlug == req.params.tag).length > 0)
             res.render('category', {posts: results.data, found: true, categoryName: req.params.category, permission: permissions[0].permission_level})
         })
+    } else {
+        res.redirect('/admin/login');
     }
+
 });
 /* GET post */
 router.get('/:category/:id/:slug', async(req, res, next) => {

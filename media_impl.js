@@ -303,16 +303,34 @@ mediaRouter.post('/:id', async (req, res)=> {
 })
 
 async function mediaManager(req, res) {
-    let names = []
-    for (const file of await media.getFilesFromDatabase()) {
-        if (file.database) {
-            names.push([media.mediaroot + file.fs_name + '/' + file.filename, file.filename + " (" + file.id + ")", media.mediaroot + file.fs_name, true, file.filename, file.filetype, file.uploader_name, file.modifier_name])
-        } else {
-            names.push([media.mediaroot + file.fs_name, file.filename, media.mediaroot + file.fs_name, false, file.filename])
+    if (req.isAuthenticated()) {
+        var permissions = await getUserPermission(req.user);
+        let names = []
+        for (const file of await media.getFilesFromDatabase()) {
+            if (file.database) {
+                names.push([media.mediaroot + file.fs_name + '/' + file.filename, file.filename + " (" + file.id + ")", media.mediaroot + file.fs_name, true, file.filename, file.filetype, file.uploader_name, file.modifier_name])
+            } else {
+                names.push([media.mediaroot + file.fs_name, file.filename, media.mediaroot + file.fs_name, false, file.filename])
+            }
         }
+        res.render('media', {files: names, active: 'media manager', permission: permissions[0].permission_level})
+    } else {
+        res.redirect('/admin/login');
     }
-    console.log("hi")
-    res.render('media', {files : names, active: 'media manager'})
+
+}
+
+function getUserPermission(userID){
+    return new Promise((resolve,reject)=>{
+        const db = require('./database.js');
+        db.query("SELECT * FROM users WHERE id = ?",[userID], (err, result)=> {
+            if(err) throw err
+            if(result.length > 0)
+                resolve(result);
+            else resolve(null);
+
+        });
+    });
 }
 
 module.exports = {

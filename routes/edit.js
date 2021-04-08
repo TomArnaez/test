@@ -71,19 +71,61 @@ router.get('/view/:id', function (req, res, next) {
         }
 });
 
+router.get('/view/title/:title', function (req, res, next) {
+  var post_title = req.params.title;
+
+  //Checks user is an admin. Only admins can access editing router
+  if (req.isAuthenticated()) {
+    getUserPermission(req.user).then(function (permissions){
+      let perm_level = permissions[0].permission_level;
+      //Query to get the post from the database
+      db.query("SELECT * FROM posts WHERE ? IN (title) LIMIT 1;", [post_title], function(err, result) {
+
+        //error handling for database errors
+        if (err) {
+          req.flash('error_msg', 'Error connecteing with database')
+          res.redirect(req.header('referer'));
+        } else {
+
+          //Checks a post with the ID Exists and renders a page with the post
+          if (result.length != 0) {
+            res.render('Post', {title: 'Post Viewer', id:result[0].id, postname:result[0].title, doc:result[0].html, back: req.header('referer'), permission: perm_level});
+
+            //Redirects user to Posts index if no post exists in the data base with the provided ID
+          } else {
+            req.flash('error_msg', 'No post with title: \'' + post_title + '\' in database');
+            res.redirect(req.header('referer'));
+          }
+        }
+      });
+    });
+
+    //Redirects user to login page if they are not logged in
+  } else {
+    req.flash('error_msg', 'You are not authenticated.');
+    res.redirect("/admin/login");
+  }
+})
+
 //Renders empty post editor to create a new post
 router.get('/new', function (req, res, next) {
-  getUserPermission(req.user).then(function (permissions){
-    //Checks user is an admin. Only admins can access editing router
-    if (req.isAuthenticated()) {
-        res.render('text_editor', {title: 'Content Editor', postname:null, doc: null, posttags: [], back: '/edit/', active: 'create posts', permission: permissions[0].permission_level});
+  if (req.isAuthenticated()) {
+    getUserPermission(req.user).then(function (permissions){
+      let perm_level = permissions[0].permission_level;
+      if (perm_level >= 2) {
 
-    //Redirects user to login page if they are not authenticated
-    } else {
-        req.flash('error_msg', 'You are not authenticated.');
-        res.redirect("/admin/login");
-    }
-  });
+        res.render('text_editor', {title: 'Content Editor', postname:null, doc: null, posttags: [], back: req.header('referer'), active: 'create posts', permission: perm_level});
+
+        //Redirects user to login page if they are not authenticated
+      } else {
+        req.flash('error_msg', 'You are not Authorised to access this section.');
+        res.redirect("/");
+      }
+    });
+  } else {
+    req.flash('error_msg', 'You are not authenticated.');
+    res.redirect("/admin/login");
+  }
 });
 
 //Saves post in database
@@ -125,28 +167,43 @@ router.post('/new', function (req, res) {
 //Renders page to edit post with given ID
 router.get('/:id', function (req, res, next) {
   var post_id = req.params.id;
-  getUserPermission(req.user).then(function (permissions){
 
-    //Checks user is an admin. Only admins can access editing router
-    if (req.isAuthenticated()) {
+  if (req.isAuthenticated()) {
+    getUserPermission(req.user).then(function (permissions) {
+      //Checks user is an admin. Only admins can access editing router
+      let perm_level = permissions[0].permission_level;
+      if (perm_level >= 2) {
+
         // Send get request to API to get post with provided iq
         axios('http://localhost:3000/api/posts/' + post_id, {
-            method: 'GET',
+          method: 'GET',
         }).then(results => {
-            res.render('text_editor', {title: 'Content Editor', postname:results.data.title, doc:results.data.html, posttags: results.data.tags,
-                category_url: results.data.category_url, category_id: results.data.category_id, description: results.data.description,
-                back: req.header('referer'), permission: permissions[0].permission_level});
-            })
-            .catch(err => {
-                req.flash('error_msg', 'No post with id: \'' + post_id + '\' in database');
-                res.redirect('/edit');
-            });
+          res.render('text_editor', {
+            title: 'Content Editor',
+            postname: results.data.title,
+            doc: results.data.html,
+            posttags: results.data.tags,
+            category_url: results.data.category_url,
+            category_id: results.data.category_id,
+            description: results.data.description,
+            back: req.header('referer'),
+            permission: permissions[0].permission_level
+          });
+        })
+          .catch(err => {
+            req.flash('error_msg', 'No post with id: \'' + post_id + '\' in database');
+            res.redirect('/edit');
+          });
+      } else {
+        req.flash('error_msg', 'You are not Authorised to access this section.');
+        res.redirect("/");
+      }
+    });
       //Redirects user to login page if not authenticated
       } else {
           req.flash('error_msg', 'You are not authenticated.');
           res.redirect("/admin/login");
       }
-  });
 });
 
 router.get('/hide/:post_id', function(req, res, next) {
