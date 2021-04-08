@@ -158,7 +158,7 @@ router.post('/message/send', (req,res) => {
     const customID = getUniqueID();
     const currentTime = getTime();
     let isPublic = 1;
-    if(`${req.body.public}` == 0) isPublic = 0;
+    if(req.body.public != 1) isPublic = 0;
     const user = req.user;
     const title = `${req.body.title}`;
     const messageBody = `${req.body.message}`;
