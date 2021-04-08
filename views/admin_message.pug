@@ -12,11 +12,11 @@ block primary
   div(class='container-fluid')
     br
     h1= title
-    //- Shows NUmber of messages listed
+    //- Shows Number of messages listed
     -if (message != null) {
-      p Total Number of Messages: #{message.length}
+      h6 Total Number of Messages: #{message.length}
     -  } else {
-      p Total Number of Messages: 0
+      h6 Total Number of Messages: 0
     -  }
     br
 
@@ -24,8 +24,8 @@ block primary
     div(class='container-fluid')
       //- Creating Table with Bootstrap
       div(class='row')
-        table(class='table table-striped')
-          thead
+        table(class='table table-striped table-bordered')
+          thead(class='thead-dark')
             tr
               th(scope='col') Message ID
               th(scope='col') Title
@@ -40,12 +40,12 @@ block primary
                   tr
                     td(class='col-md-1') #{item.custom_id}
                     td #{item.title}
-                    td(class='col-md-1') #{item.message}
-                    td(class='col-md-1') #{formatDate(item.time)}
+                    td(class='col-md-3') #{item.message}
+                    td(class='col-md-2') #{formatDate(item.time)}
                     //- Action Buttons for below table data tag. Each route request appropriatley.
                     //- These actions only show if the question has no response
                     if (item.response == null)
-                      td(class='col-sm-2')
+                      td(class='col-sm-3')
                         -if(item.is_public){
                           a(href='/admin/post_response/'+item.custom_id class='btn')
                             button(type='button', class='btn btn-primary' title='Post Public Response')

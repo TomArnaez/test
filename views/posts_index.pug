@@ -20,16 +20,16 @@ block primary
   div(class='container-fluid')
     h1= title
   
-  div(class='container-fluid' style='padding:2rem;')
+  div(class='container-fluid mt-4 mb-4')
     a(href='/edit/new')
-      button(type='button', class='btn btn-light') New Post
+      button(type='button', class='btn btn-primary') New Post
   
   //- Creates large Div container 
   div(class='container-fluid')
     //- Creating Table with Bootstrap
     div(class='row')
-      table(class='table table-striped')
-        thead
+      table(class='table table-striped table-bordered')
+        thead(class='thead-dark')
           tr
             th(scope='col') Id
             th(scope='col') Name

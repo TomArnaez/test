@@ -1,11 +1,13 @@
 extends layout
 
 block content
-    h1(style="text-align:center") Register an account
+    div(class='container-fluid text-center')
+        h1(style="text-align:center") Register an account
         div(class="col-xl-3 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form-group p-4 border rounded-lg")
             include ./partial/msg
             form(action='/admin/register' method='POST')
                 div(class="form-group w-100")
                     label(for='code' class="h4") Registration Code
                     input(id='code' class="w-75" name='code')
-                button(type='submit' class='btn btn-primary w-75') Continue
+                div
+                    button(type='submit' class='btn btn-primary w-75') Continue

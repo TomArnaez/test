@@ -2,9 +2,15 @@ extends side-nav-sublayout
 
 block primary
     h1  Admin Dashboard
-    p Logged in as USER_ID: #{user_id}
-    a(href='/admin/changepassword') Change Password
-    = ' '
-    a(href='/admin/logout') Logout
-    br
-    a(href='/admin/media') Media Content Manager
+    h6 Logged in as USER ID: #{user_id}
+    div 
+        a(href='/admin/media') 
+            button(class='btn btn-primary mb-2 w-25') Media Content Manager
+    div
+        a(href='/admin/changepassword') 
+            button(class='btn btn-warning mb-2 w-25') Change Password
+            = ' '
+    div
+        a(href='/admin/logout') 
+            button(class='btn btn-danger mb-2 w-25') Logout
+        

@@ -1,6 +1,17 @@
-extends layout
+extends side-nav-sublayout
 
-block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+block primary
+  div(class='container')
+    div(style='text-align:left')
+      i(class='far fa-frown' style='font-size:200px')
+    br
+    br
+    h1(style='text-align:left')= error.status + ' Error'
+    br
+    h3(style='text-align:left')= 'Page Not Found'
+    br
+    h5(style='text-align:left')= 'The page you are looking for does not exist'
+    h5(style='text-align:left')= 'Go back or head over to the homepage to choose a new direction'
+    br
+  div
+    //- pre #{error.stack}

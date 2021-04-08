@@ -6,11 +6,9 @@ block primary
     br
     h1 Upload Media Content
     include ./partial/msg
-    br
     
-  p(style="text-align:center")
-      u 
-          a(href='/admin/media') View all uploaded files
+    a(href='/admin/media')
+        button(class='btn btn-primary mb-4') View all uploaded files
   div(class="col-xl-4 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form-group p-4 border rounded-lg")
       form(method='POST', enctype="multipart/form-data")
           div(class="form-group w-100")
