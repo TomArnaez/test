@@ -24,16 +24,15 @@ block primary
     h1= title
     include ./partial/msg
 
-  div(class='container-fluid' style='padding:2rem;' id="toolbar")
-    button#remove.btn.btn-danger
+  div(class='btn-toolbar' style='padding:2rem;' id="toolbar")
+    button(id="remove", class="btn btn-danger")
       i.fa.fa-trash
       |  Delete
     a(href='/edit/new')
-      button(type='button', class='btn btn-light') New Post
+      button(class='btn btn-primary') New Post
 
   //- Creates large Div container
   div(class='container-lg')
-
     div(class='col')
       table(id="table" class="table table-bordered" data-toggle="table" data-pagination="true" data-search="true" data-group-by="true" data-group-by-field="visible" data-toolbar="#toolbar")
       script.

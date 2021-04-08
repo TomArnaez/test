@@ -164,7 +164,7 @@ router.get('/hide/:post_id', function(req, res, next) {
   });
 })
 
-router.post('/show/:post_id', function(req, res, next) {
+router.get('/show/:post_id', function(req, res, next) {
   db.query("UPDATE posts SET visible = ? WHERE id = ?;", [1, req.params.post_id], function(err, result) {
     if (err){
       req.flash('error_msg', 'Error when accessing database');
