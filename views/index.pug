@@ -1,35 +1,49 @@
 extends side-nav-sublayout
 
-block primary
-    div(class='container-fluid')
-    h1 Media Content Manager
-    include ./partial/msg 
+//- hiding sidebar for people not logged in
+append head
+  style(type='text/css').
+    .side-panel {
+      display: none;
+    }
+  style(type='text/css').
+    #index-title {
+        font-size: 50px;
+        color: white;
+        background-color: #a10000;
+      }
+    #login-button, #contact-button, #message-button, #admin-button {
+      width: 20%;
+    }
+    #banner {
+      width: 100%;
+      height: auto;
+    }
 
-    a(href='/admin/upload')
-        button(class='btn btn-primary mb-4') Upload File
-    
-    ul
-        each file in files
-            li
-                a(href=file[0]) #{file[1]}
-                if file[3]
-                    form(action=file[2] + '?update', method='POST')
-                        label Name
-                        input(type='text', name='name', value=file[4])
-                        br
-                        label File Type
-                        input(type='text', name='filetype', value=file[5])
-                        br
-                        input(type='submit', value='Update')
-                        if file[6]
-                            br
-                            label Uploaded by #{file[6]}
-                        if file[7]
-                            br
-                            label Last modified by #{file[7]}
-                else
-                    form(action=file[2] + '?convert', method='POST')
-                        input(type='submit', value='Convert')
-                form(action=file[2] + '?delete', method='POST')
-                    input(type='submit', value='Delete')
-                br
+block primary
+  
+  div(class='container-fluid')
+    //- br
+    //- h1= title
+    //- br
+  br
+  div 
+   h1(id='index-title' class='w-100' style='text-align:center')= 'Information Hub - Kings College Hospital'
+   br
+  div(class='container-xl')
+    div 
+      a(href='/admin/login') 
+        button(class='btn btn-success ml-4 mb-2 mr-5' id='login-button') Login
+      a(href='/contact') 
+        button(class='btn btn-primary mb-2 mr-5' id='contact-button') Contact Us
+      a(href='/message')
+        button(class='btn btn-warning mb-2 mr-5' id='message-button') Send Message
+      a(href='/admin/message')
+        button(class='btn btn-danger mb-2' id='admin-button') Messages Admin Panel
+    br 
+    div 
+      img(src="/index-banner.png", alt="xxx" id='banner')
+    div 
+      img(src="/index-banner-2.png", alt="xxx" id='banner')
+    br
+    h6 Database version: #{databaseVersion}
