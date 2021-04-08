@@ -1,6 +1,13 @@
 extends layout
 
 block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+  div(class='mx-auto text:center')
+    i(class='far fa-frown' style='font-size:200px')
+  div
+    h1(style='text-align:center')= error.status
+    h3(style='text-align:center')= 'Page Not Found'
+    h5(style='text-align:center')= 'The page you are looking for does not exist'
+    h5(style='text-align:center')= 'Go back or head over to the homepage to choose a new direction'
+    br
+  div
+    //- pre #{error.stack}
