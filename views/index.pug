@@ -6,6 +6,10 @@ append head
     .side-panel {
       display: none;
     }
+    img.fluid {
+      max-width: 40%;
+      height: auto;
+    }
 
 block primary
   
@@ -14,12 +18,22 @@ block primary
     h1= title
     br
       
-  p Welcome to #{title}
-  p Database version: #{databaseVersion}
-  a(href='/admin/login') Login
+  h6 Welcome to Information Hub for Kings Young Adults Liver Center
+  h6 Database version: #{databaseVersion}
   br
-  a(href='/contact') Contact Us
-  br
-  a(href='/message') Send Message
-  br
-  a(href='/admin/message') Messages Admin Panel
+  div 
+    img(src="", alt="xxx" class='rounded img-fluid')
+    br
+  div(class='container-xl')
+    div 
+      a(href='/admin/login') 
+        button(class='btn btn-success mb-2 w-25') Login
+    div
+      a(href='/contact') 
+        button(class='btn btn-primary mb-2 w-25') Contact Us
+    div
+      a(href='/message')
+        button(class='btn btn-warning mb-2 w-25') Send Message
+    div
+      a(href='/admin/message')
+        button(class='btn btn-danger mb-2 w-25') Messages Admin Panel
