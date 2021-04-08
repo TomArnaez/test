@@ -41,14 +41,15 @@ div(class='social-feed-box rounded')
     div(class='media-body d-flex justify-content-between align-items-center')
         div(class='mr-2')
             h2=item.title
-            a(href='#' style='text-decoration:none')
-                small(class='text-muted' style='text-decoration:none') Written By !{item.user.user_fname} !{item.user.user_lname}
+            u
+              a(href='/author/' + item.author_id style='font-color:blue')
+                small(class='text-muted' style='font-color:blue') Written By !{item.user.user_fname} !{item.user.user_lname}
             br
             small(class='text-muted') #{formatDate(item.created_on)}
         //- Drop down is an admin action. Gives admin option to edit post or hide it from view.
-        div(class="dropdown" style="float: right")
+        div(class="dropleft")
             button(type='button' class='btn btn-light dropdown-toggle btn-sm' id='dropdownButton' data-toggle='dropdown')
-            div(class='dropdown-content')
+            div(class='dropdown-menu')
                 a(class='dropdown-item' href='/edit/' + item.id)
                     button(class='btn w-100 text-left') Edit
                 a(class='dropdown-item')

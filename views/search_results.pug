@@ -16,7 +16,7 @@ block primary
     h2(style="text-align:center") #{resultsString}
     //- Creates large Div container
     div(class='container-xl')
-    h3 Posts
+    h3 Posts - #{post_results.length}
     each item in post_results
         include PostBox
 

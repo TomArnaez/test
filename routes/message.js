@@ -166,17 +166,17 @@ router.post('/message/send', (req,res) => {
     if(user.length != 0 && title.length >= 5 && messageBody.length >= 20)
     {
         db.query("INSERT INTO messages VALUE (DEFAULT,? ,? ,? ,? ,?,NULL,NULL,NULL, ?)",
-            [user ,customID, title ,messageBody , currentTime, isPublic ], (err, result)=> {
-                if (err) {
-                    console.log(err , 'error');
-                    req.flash('error_msg', 'No database connection.');
-                    res.redirect("/message");
-                }
-                else{
-                    req.flash('success_msg', 'Your Message Has Been Sent, Your Unique ID is:  '.concat(customID));
-                    res.redirect("/message");
-                }
-            });
+          [user ,customID, title ,messageBody , currentTime, isPublic ], (err, result)=> {
+              if (err) {
+                  console.log(err , 'error');
+                  req.flash('error_msg', 'No database connection.');
+                  res.redirect("/message");
+              }
+              else{
+                  req.flash('success_msg', 'Your Message Has Been Sent, Your Unique ID is:  '.concat(customID));
+                  res.redirect("/message");
+              }
+          });
     }
     else{
         req.flash('error_msg', 'Invalid Input');
@@ -195,30 +195,30 @@ router.post('/admin/post_response/:message_id', async (req,res) => {
 
 
     db.query("UPDATE messages SET response = ?, response_time = ?, is_public = ?, author_id = ? WHERE custom_id = ?",
-        [content.replace( /(<([^>]+)>)/ig, ''), currentTime, 1, req.user, req.params.message_id], (err, result)=> {
-            if (err) {
-                req.flash('error_msg', 'No database connection.');
-                res.redirect("/admin/message");
-            } else {
-                db.query("SELECT user_email, custom_id FROM messages JOIN users ON messages.user_id = users.id WHERE custom_id = ?",
-                    [req.params.message_id], (err, result)=> {
-                        if (err) {
-                            req.flash('error_msg', 'No database connection.');
-                            res.redirect("/admin/message");
+      [content.replace( /(<([^>]+)>)/ig, ''), currentTime, 1, req.user, req.params.message_id], (err, result)=> {
+          if (err) {
+              req.flash('error_msg', 'No database connection.');
+              res.redirect("/admin/message");
+          } else {
+              db.query("SELECT user_email, custom_id FROM messages JOIN users ON messages.user_id = users.id WHERE custom_id = ?",
+                [req.params.message_id], (err, result)=> {
+                    if (err) {
+                        req.flash('error_msg', 'No database connection.');
+                        res.redirect("/admin/message");
+                    } else {
+                        userEmail = result[0].user_email;
+
+                        if(userEmail == '') {
+                            req.flash('error_msg', `Email Wasn't sent :(`);
                         } else {
-                            userEmail = result[0].user_email;
+                            email.sendEmail(userEmail, 'Answer to your message: ' + result[0].cusstom_id,
+                              content.replace( /(<([^>]+)>)/ig, ''));
 
-                            if(userEmail == '') {
-                                req.flash('error_msg', `Email Wasn't sent :(`);
-                            } else {
-                                email.sendEmail(userEmail, 'Answer to your message: ' + result[0].cusstom_id,
-                                    content.replace( /(<([^>]+)>)/ig, ''));
-
-                            }
                         }
-                    });
-            }
-        });
+                    }
+                });
+          }
+      });
 
     db.query("INSERT INTO posts (title, html, author_id) VALUES (?, ?, ?);", [postname, content, req.user], function(err, result) {
 
@@ -276,37 +276,37 @@ router.post('/admin/respond/:custom_id', (req,res) => {
     const messageId = req.params.custom_id;
 
     db.query("UPDATE messages SET response = ?, response_time = ?, author_id = ?, is_public =? WHERE custom_id = ?;",
-        [req.body.message, currentTime, req.user, 0, req.params.custom_id], (err, result)=>{
-            if (err) {
-                req.flash('error_msg', 'No database connection.');
-                console.log('error connecting: ' + err);
-                res.redirect("/admin/message");
-            }
-            else {
-                db.query("SELECT title, user_email, custom_id FROM messages JOIN users ON messages.user_id = users.id WHERE custom_id = ?",
-                    [messageId], (err, result)=> {
-                        if (err) {
-                            console.log('error connecting second part: ' + err);
-                        } else {
-                            userEmail = result[0].user_email;
+      [req.body.message, currentTime, req.user, 0, req.params.custom_id], (err, result)=>{
+          if (err) {
+              req.flash('error_msg', 'No database connection.');
+              console.log('error connecting: ' + err);
+              res.redirect("/admin/message");
+          }
+          else {
+              db.query("SELECT title, user_email, custom_id FROM messages JOIN users ON messages.user_id = users.id WHERE custom_id = ?",
+                [messageId], (err, result)=> {
+                    if (err) {
+                        console.log('error connecting second part: ' + err);
+                    } else {
+                        userEmail = result[0].user_email;
 
-                            if(userEmail == '')
-                            {
-                                req.flash('error_msg', `Email Wasn't sent :(`);
-                                console.log('e-mail failed to send');
-                            }else
-                            {
-                                email.sendEmail(userEmail, 'Answer to your message: '.concat(result[0].title) + ` (${messageId})`,
-                                    `${req.body.message}`, `${req.body.ccEmail}`);
+                        if(userEmail == '')
+                        {
+                            req.flash('error_msg', `Email Wasn't sent :(`);
+                            console.log('e-mail failed to send');
+                        }else
+                        {
+                            email.sendEmail(userEmail, 'Answer to your message: '.concat(result[0].title) + ` (${messageId})`,
+                              `${req.body.message}`, `${req.body.ccEmail}`);
 
-                            }
                         }
-                    });
+                    }
+                });
 
-                req.flash('success_msg', 'Your Message Has Been Sent');
-                res.redirect("/admin/message");
-            }
-        });
+              req.flash('success_msg', 'Your Message Has Been Sent');
+              res.redirect("/admin/message");
+          }
+      });
 });
 
 /*
@@ -319,34 +319,34 @@ router.post('/admin/message/send', (req,res) => {
     const messageId = req.params.custom_id;
 
     db.query("UPDATE messages SET response = ?, response_time = ? WHERE custom_id = ?",
-        [req.body.message, currentTime, messageId], (err, result)=>{
-            if (err) {
-                req.flash('error_msg', 'No database connection.');
-                res.redirect("/admin/message");
-            }
-            else {
-                db.query("SELECT title, user_email FROM messages JOIN users ON messages.user_id = users.id WHERE custom_id = ?",
-                    [`${req.body.id}`], (err, result)=> {
-                        if (err) {
-                        } else {
-                            userEmail = result[0].user_email;
+      [req.body.message, currentTime, messageId], (err, result)=>{
+          if (err) {
+              req.flash('error_msg', 'No database connection.');
+              res.redirect("/admin/message");
+          }
+          else {
+              db.query("SELECT title, user_email FROM messages JOIN users ON messages.user_id = users.id WHERE custom_id = ?",
+                [`${req.body.id}`], (err, result)=> {
+                    if (err) {
+                    } else {
+                        userEmail = result[0].user_email;
 
-                            if(userEmail == '')
-                            {
-                                req.flash('error_msg', `Email Wasn't sent :(`);
-                            }else
-                            {
-                                email.sendEmail(userEmail, 'Answer to your message: '.concat(result[0].title) + ` (${messageId})`,
-                                    `${req.body.message}`, `${req.body.ccEmail}`);
+                        if(userEmail == '')
+                        {
+                            req.flash('error_msg', `Email Wasn't sent :(`);
+                        }else
+                        {
+                            email.sendEmail(userEmail, 'Answer to your message: '.concat(result[0].title) + ` (${messageId})`,
+                              `${req.body.message}`, `${req.body.ccEmail}`);
 
-                            }
                         }
-                    });
+                    }
+                });
 
-                req.flash('success_msg', 'Your Message Has Been Sent');
-                res.redirect("/admin/message");
-            }
-        });
+              req.flash('success_msg', 'Your Message Has Been Sent');
+              res.redirect("/admin/message");
+          }
+      });
 });
 
 /* Gets unresponded messages from database */
@@ -400,16 +400,16 @@ function getUniqueID(){
 function getTime() {
     const date = new Date();
     return date.getFullYear()
-        + '-' +
-        date.getMonth()
-        + '-' +
-        date.getDate()
-        + ' ' +
-        date.getHours()
-        + ':' +
-        date.getMinutes()
-        + ':' +
-        date.getSeconds();
+      + '-' +
+      date.getMonth()
+      + '-' +
+      date.getDate()
+      + ' ' +
+      date.getHours()
+      + ':' +
+      date.getMinutes()
+      + ':' +
+      date.getSeconds();
 
 }
 

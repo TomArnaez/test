@@ -55,6 +55,18 @@ module.exports = (sequelize, Sequelize) => {
                 throw new Error("Do not try to set a category value!");
             }
         },
+          category_slug: {
+              type: DataTypes.VIRTUAL,
+              get() {
+                  if (this.terms != null)
+                      return `${this.terms.find(t => t.termType == "category").termSlug}`;
+                  else
+                      return "0";
+              },
+              set(value) {
+                  throw new Error("Do not try to set a category value!");
+              }
+          },
         url: {
             type: DataTypes.VIRTUAL,
             get() {

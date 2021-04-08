@@ -5,25 +5,34 @@ const Term = db.Term;
 const Post = db.Post;
 var axios = require('axios');
 
-router.get('/category/:category', function(req, res, next) {
-    // Send get request to API to get posts
-    axios('http://localhost:3000/api/posts', {
-        method: 'GET',
-    }).then(results => {
-        results.data = results.data.filter(post => post.category.termSlug == req.params.category)
-        res.render('category', {posts: results.data, found: true, categoryName: req.params.category})
-    })
+router.get('/category/:category', async(req, res, next) => {
+    if (req.isAuthenticated()) {
+        var permissions = await getUserPermission(req.user);
+        // Send get request to API to get posts
+        axios('http://localhost:3000/api/posts', {
+            method: 'GET',
+        }).then(results => {
+            console.log(results.data)
+            results.data = results.data.filter(post => post.category_slug == req.params.category)
+            console
+            console.log(results.data);
+            res.render('category', {posts: results.data, found: true, categoryName: req.params.category, permission: permissions[0].permission_level})
+        })
+    }
 });
 
-router.get("/tag/:tag", function(req, res, next) {
-    // Send get request to API to get posts
-    axios('http://localhost:3000/api/posts', {
-        method: 'GET',
-    }).then(results => {
-        console.log(results.data)
-        results.data = results.data.filter(post => post.tags.filter(tag => tag.termSlug == req.params.tag).length > 0)
-        res.render('category', {posts: results.data, found: true, categoryName: req.params.category})
-    })
+router.get("/tag/:tag", async(req, res, next) => {
+    if (req.isAuthenticated()) {
+        var permissions = await getUserPermission(req.user);
+        // Send get request to API to get posts
+        axios('http://localhost:3000/api/posts', {
+            method: 'GET',
+        }).then(results => {
+            console.log(results.data)
+            results.data = results.data.filter(post => post.tags.filter(tag => tag.termSlug == req.params.tag).length > 0)
+            res.render('category', {posts: results.data, found: true, categoryName: req.params.category, permission: permissions[0].permission_level})
+        })
+    }
 });
 /* GET post */
 router.get('/:category/:id/:slug', async(req, res, next) => {
@@ -47,5 +56,18 @@ router.get('/:category/:id/:slug', async(req, res, next) => {
         res.redirect("/admin/login");
     }
 });
+
+function getUserPermission(userID){
+    return new Promise((resolve,reject)=>{
+        const db = require("../database");
+        db.query("SELECT * FROM users WHERE id = ?",[userID], (err, result)=> {
+            if(err) throw err
+            if(result.length > 0)
+                resolve(result);
+            else resolve(null);
+
+        });
+    });
+}
 
 module.exports = router;

@@ -24,7 +24,7 @@ router.get('/feed', function(req, res, next) {
     axios('http://localhost:3000/api/posts/', {
       method: 'GET',
         }).then(results => {
-          res.render('feed', {title: 'Posts', results: results.data});
+          res.render('feed', {title: 'Posts', results: results.data, permission: permissions[0].permission_level});
         })
         .catch(err => {
           req.flash('error_msg', 'Error when accessing database');

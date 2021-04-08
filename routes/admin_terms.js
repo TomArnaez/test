@@ -1,18 +1,17 @@
 var express = require('express');
 var axios = require('axios');
 var router = express.Router();
-const db = require("../models");
-const Term = db.Term;
-const Post = db.Post;
+const db = require("../database");
 
 // Example code to check user is authenticated. The logged in user id can be found in req.user.
-router.get('/', function(req, res, next) {
+router.get('/', async (req, res, next) => {
 
     if (req.isAuthenticated()) {
+        var permissions = await getUserPermission(req.user);
         axios('http://localhost:3000/api/terms/', {
             method: 'GET',
         }).then(results => {
-            res.render('admin_terms', {terms: results.data, active: 'term manager'})
+            res.render('admin_terms', {terms: results.data, active: 'term manager', permission: permissions[0].permission_level})
         })
             .catch(err => {
                 req.flash("error_msg", err);
@@ -45,5 +44,17 @@ router.post('/', function (req, res, next) {
     });
 
 });
+
+function getUserPermission(userID){
+    return new Promise((resolve,reject)=>{
+        db.query("SELECT * FROM users WHERE id = ?",[userID], (err, result)=> {
+            if(err) throw err
+            if(result.length > 0)
+                resolve(result);
+            else resolve(null);
+
+        });
+    });
+}
 
 module.exports = router;
