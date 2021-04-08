@@ -25,11 +25,10 @@ block primary
               br
               textarea(name='message' class='form-control' minlength=20 rows='8' required=true)
             div(class='mb-3 form-check')
-              input(type='checkbox' class='form-check-input' id='flexCheckDefault')
-              label(class='form-check-label' for='flexCheckDefault') CC this reponse
+              label(class='form-check-label') CC others in the Email
             div(class='form-floating mb-3')
-              input(type='email' name='email' class='form-control' id='floatingInput' placeholder='example@email.com')
-              label(for='floatingInput') Forwarding Email address
+              input(type='email' name='ccEmail' class='form-control' id='floatingInput' placeholder='example@email.com')
+              label(for='floatingInput') one@example.com, two@example.com, ...
             br
             br
             //- submit button
